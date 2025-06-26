@@ -35,26 +35,25 @@ struct RemoteImage<Placeholder: View>: View {
             }
         }
         .task {
-            loadImage()
+            await loadImage()
         }
-        
+
     }
 
-    func loadImage() {
+    func loadImage() async {
         var request = URLRequest(url: url)
         request.setValue("https://yymh.app/", forHTTPHeaderField: "Referer")
 
-        URLSession.shared.dataTask(with: request) { data, response, error in
-            if let data = data, let uiImage = UIImage(data: data) {
-                DispatchQueue.main.async {
-                    self.image = Image(uiImage: uiImage)
-                }
+        do {
+            let (data, _) = try await URLSession.shared.data(for: request)
+            if let uiImage = UIImage(data: data) {
+                self.image = Image(uiImage: uiImage)
             } else {
-                DispatchQueue.main.async {
-                    self.hasError = true
-                }
+                self.hasError = true
             }
-        }.resume()
+        } catch {
+            self.hasError = true
+        }
     }
 }
 
