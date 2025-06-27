@@ -28,6 +28,15 @@ class HomeComicFetcher {
             )
         }
     }
+    
+    static var defaultComics: [Comic] {
+        let decoded: HomeComicResponseWrapper = load("homecomic.json")
+
+        var newComics: [Comic] = []
+        newComics.append(contentsOf: decoded.data.newComics1.data)
+        newComics.append(contentsOf: decoded.data.newComics2.data)
+        return newComics
+    }
 
     private func getNewAndRecommend() async throws -> (
         newComics: [Comic], recommendedComics: [Comic]
