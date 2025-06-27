@@ -5,4 +5,59 @@
 //  Created by Zhongqiu Ruan on 2025/6/26.
 //
 
-import Foundation
+import SwiftUI
+
+struct Comic: Identifiable, Decodable {
+    let id: Int
+    let title: String
+    let image: String
+    let cover: String
+    let description: String
+    let author: String
+    let keyword: String
+    let follow: Int
+    let view: Int64
+    let updateTime: Date
+    let isOver: Bool
+    let score: Double
+    
+    enum CodingKeys: String, CodingKey {
+        case id
+        case title
+        case image
+        case cover
+        case description = "desc"
+        case author = "auther"
+        case keyword
+        case follow = "mark"
+        case view
+        case updateTime = "update_time"
+        case isOver = "mhstatus"
+        case score = "pingfen"
+    }
+    
+    private static func transTime(from timeString: String) -> Date {
+        let formatter = DateFormatter()
+        formatter.dateFormat = "yyyy-MM-dd HH:mm:ss"
+        formatter.locale = Locale(identifier: "en_US_POSIX")
+        return formatter.date(from: timeString)!
+    }
+    
+    init(from decoder: any Decoder) throws {
+        let container = try decoder.container(keyedBy: CodingKeys.self)
+        self.id = Int(try container.decode(String.self, forKey: .id))!
+        self.title = try container.decode(String.self, forKey: .title)
+        self.image = Server.image.rawValue + (try container.decode(String.self, forKey: .image))
+        self.cover = Server.image.rawValue + (try container.decode(String.self, forKey: .cover))
+        self.description = try container.decode(String.self, forKey: .description)
+        self.author = try container.decode(String.self, forKey: .author)
+        self.keyword = try container.decode(String.self, forKey: .keyword)
+        self.follow = Int(try container.decode(String.self, forKey: .follow)) ?? 0
+        self.view = Int64(try container.decode(String.self, forKey: .view)) ?? 0
+        let dateString = try container.decode(String.self, forKey: .updateTime)
+        self.updateTime = Comic.transTime(from: dateString)
+        let isOver = try container.decode(String.self, forKey: .isOver)
+        self.isOver = isOver == "1" ? true : false
+        self.score = Double(try container.decode(String.self, forKey: .score)) ?? 8.0
+    }
+}

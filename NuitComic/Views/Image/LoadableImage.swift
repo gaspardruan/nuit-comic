@@ -11,7 +11,7 @@ struct LoadableImage: View {
     let url: String
     
     var body: some View {
-        AsyncImage(url: <#T##URL?#>)
+//        AsyncImage(url: <#T##URL?#>)
     }
 }
 
