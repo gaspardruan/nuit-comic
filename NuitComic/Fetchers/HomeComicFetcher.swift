@@ -34,7 +34,7 @@ class HomeComicFetcher {
 
         var newComics: [Comic] = []
         newComics.append(contentsOf: decoded.data.newComics1.data)
-        newComics.append(contentsOf: decoded.data.newComics2.data)
+        newComics.append(contentsOf: decoded.data.recommendedComics1.data)
         return newComics
     }
 

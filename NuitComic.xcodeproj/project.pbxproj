@@ -6,6 +6,10 @@
 	objectVersion = 77;
 	objects = {
 
+/* Begin PBXBuildFile section */
+		1BCB4DC32E1051EF00BB61DE /* ExpandableText in Frameworks */ = {isa = PBXBuildFile; productRef = 1BCB4DC22E1051EF00BB61DE /* ExpandableText */; };
+/* End PBXBuildFile section */
+
 /* Begin PBXFileReference section */
 		1BCB4D342E0C70EE00BB61DE /* NuitComic.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = NuitComic.app; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
@@ -23,6 +27,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				1BCB4DC32E1051EF00BB61DE /* ExpandableText in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -65,6 +70,7 @@
 			);
 			name = NuitComic;
 			packageProductDependencies = (
+				1BCB4DC22E1051EF00BB61DE /* ExpandableText */,
 			);
 			productName = NuitComic;
 			productReference = 1BCB4D342E0C70EE00BB61DE /* NuitComic.app */;
@@ -94,6 +100,9 @@
 			);
 			mainGroup = 1BCB4D2B2E0C70EE00BB61DE;
 			minimizedProjectReferenceProxies = 1;
+			packageReferences = (
+				1BCB4DC12E1051EF00BB61DE /* XCRemoteSwiftPackageReference "ExpandableText" */,
+			);
 			preferredProjectObjectVersion = 77;
 			productRefGroup = 1BCB4D352E0C70EE00BB61DE /* Products */;
 			projectDirPath = "";
@@ -324,6 +333,25 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
+
+/* Begin XCRemoteSwiftPackageReference section */
+		1BCB4DC12E1051EF00BB61DE /* XCRemoteSwiftPackageReference "ExpandableText" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/n3d1117/ExpandableText";
+			requirement = {
+				branch = main;
+				kind = branch;
+			};
+		};
+/* End XCRemoteSwiftPackageReference section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		1BCB4DC22E1051EF00BB61DE /* ExpandableText */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 1BCB4DC12E1051EF00BB61DE /* XCRemoteSwiftPackageReference "ExpandableText" */;
+			productName = ExpandableText;
+		};
+/* End XCSwiftPackageProductDependency section */
 	};
 	rootObject = 1BCB4D2C2E0C70EE00BB61DE /* Project object */;
 }

@@ -20,29 +20,32 @@ struct RemoteImagePhase {
     }
 }
 
-
 struct RemoteImage<Content: View>: View {
     let url: URL
     let content: (RemoteImagePhase) -> Content
-    
+    let fallback: URL?
+
+    @State private var triedFallback: Bool = false
     @State private var phase = RemoteImagePhase.empty
 
     init(
         url: URL,
+        fallback: URL? = nil,
         @ViewBuilder content: @escaping (RemoteImagePhase) -> Content
     ) {
         self.url = url
         self.content = content
+        self.fallback = fallback
     }
 
     var body: some View {
         content(phase)
-        .task {
-            await loadImage()
-        }
+            .task {
+                await loadImage(url)
+            }
     }
 
-    func loadImage() async {
+    func loadImage(_ url: URL) async {
         var request = URLRequest(url: url)
         request.setValue("https://yymh.app/", forHTTPHeaderField: "Referer")
 
@@ -50,12 +53,21 @@ struct RemoteImage<Content: View>: View {
             let (data, _) = try await URLSession.shared.data(for: request)
             if let uiImage = UIImage(data: data) {
                 let image = Image(uiImage: uiImage)
-                                phase = .success(image)
+                phase = .success(image)
             } else {
                 phase = .failure(nil)
             }
         } catch {
-            phase = .failure(error)
+            guard triedFallback == false else {
+                phase = .failure(error)
+                return
+            }
+            if  let fallback = self.fallback {
+                triedFallback = true
+                await loadImage(fallback)
+            } else {
+                phase = .failure(error)
+            }
         }
     }
 }

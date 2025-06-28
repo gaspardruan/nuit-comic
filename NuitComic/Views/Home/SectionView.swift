@@ -32,7 +32,12 @@ struct SectionView<Content: View>: View {
                     row in
                     GridRow {
                         ForEach(row) { comic in
-                            SectionItemView(comic: comic)
+                            NavigationLink(
+                                destination: ComicDetailView(comic: comic)
+                            ) {
+                                SectionItemView(comic: comic)
+                            }
+
                         }
                     }
                 }

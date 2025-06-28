@@ -7,7 +7,7 @@
 
 import SwiftUI
 
-struct Comic: Identifiable, Decodable, Equatable {
+struct Comic: Identifiable, Decodable, Equatable, Hashable {
     let id: Int
     let title: String
     let image: String
@@ -58,7 +58,7 @@ struct Comic: Identifiable, Decodable, Equatable {
         self.updateTime = Comic.transTime(from: dateString)
         let isOver = try container.decode(String.self, forKey: .isOver)
         self.isOver = isOver == "1" ? true : false
-        self.score = Double(try container.decodeIfPresent(String.self, forKey: .score) ?? "8.0") ?? 8.0
+        self.score = Double(try container.decodeIfPresent(String.self, forKey: .score) ?? "9.0") ?? 9.0
     }
     
     static func == (lhs: Self, rhs: Self) -> Bool {
