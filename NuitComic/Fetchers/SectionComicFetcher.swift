@@ -5,12 +5,12 @@
 //  Created by Zhongqiu Ruan on 2025/6/27.
 //
 
-import SwiftUI
+import Foundation
 
 @Observable
 class SectionComicFetcher {
     private let section: HomeSection
-    private static let pageSize = 20
+    private let pageSize = 20
     private var pageNum = 1
 
     var comics: [Comic] = []
@@ -22,54 +22,56 @@ class SectionComicFetcher {
     }
 
     func loadNextPage() async {
-        isLoading = true
-        
-        let url = URL(string: Server.api.rawValue + "/getbook.html")!
-        var request = URLRequest(url: url)
-        request.httpMethod = "POST"
-        request.setValue(
-            "application/x-www-form-urlencoded",
-            forHTTPHeaderField: "Content-Type"
-        )
-
-        var parameters: [(String, String)]
+        var order: String?
+        var isOver: Bool? = nil
         switch section {
         case .newComics:
-            parameters = [
-                ("order", "id desc"),
-                ("type", "1"),
-                ("start", "\((pageNum - 1) * SectionComicFetcher.pageSize)"),
-                ("limit", "\(SectionComicFetcher.pageSize)")
-            ]
-        default:
-            parameters = [
-                ("order", "id desc"),
-                ("type", "1"),
-                ("start", "\((pageNum - 1) * SectionComicFetcher.pageSize)"),
-                ("limit", "\(SectionComicFetcher.pageSize)"),
-            ]
+            order = "id desc"
+        case .updatedComics:
+            order = "update_time desc"
+        case .mostReadComics:
+            order = "view desc"
+        case .mostFollowedComics:
+            order = "mark desc"
+        case .mostReadOverComics:
+            order = "view desc"
+            isOver = true
+        case .recommendedComics:
+            // Recommended comics are requested by method Get.
+            order = nil
+        case .mostSearchedComics:
+            // MostSearched comics are
+            return
         }
-        request.httpBody = formatParamters(from: parameters).data(using: .utf8)
-        
-        var decoded: Comics
+        let start = (pageNum - 1) * pageSize
+        let limit = pageSize
+
+        isLoading = true
+        var moreComics: [Comic]
         do {
-            let data = try await NetworkManager.shared.data(from: request)
-//            let (data, _) = try await URLSession.shared.data(for: request)
-            decoded = try JSONDecoder().decode(Comics.self, from: data)
+            if let order = order {
+                let data = try await NetworkManager.shared.post(
+                    relativeURL: "/getbook.html", start: start, limit: limit, order: order, isOver: isOver)
+                let decoded = try JSONDecoder().decode(Comics.self, from: data)
+                moreComics = decoded.data
+            } else {
+                let data = try await NetworkManager.shared.get(relativeURL: "/getpage/tp/1-recommend-\(pageNum)")
+                let decoded = try JSONDecoder().decode(RecommendComicWrapper.self, from: data)
+                moreComics = decoded.result.list
+            }
         } catch {
             print(error.localizedDescription)
             return
         }
-        
-        
-        Task {@MainActor in
-            if (decoded.data.count < SectionComicFetcher.pageSize) {
+
+        Task { @MainActor in
+            if moreComics.count < pageSize {
                 isFinished = true
             }
-            comics.append(contentsOf: decoded.data)
+            comics.append(contentsOf: moreComics)
             pageNum += 1
             isLoading = false
         }
-        
+
     }
 }

@@ -5,7 +5,7 @@
 //  Created by Zhongqiu Ruan on 2025/6/27.
 //
 
-import SwiftUI
+import Foundation
 
 /// Load file from the file system.
 ///

@@ -20,11 +20,18 @@ struct ComicListView: View {
         Group {
             if fetcher.comics.count > 0 {
                 List {
-                    ForEach(Array(fetcher.comics.enumerated()), id: \.element.id) {index, comic in
-                        ComicListItemView(
-                            comic: comic,
-                            hideTopSeperator: comic == fetcher.comics.first,
-                            hideBottomSeperator: comic == fetcher.comics.last
+                    ForEach(Array(fetcher.comics.enumerated()), id: \.element.id) { index, comic in
+                        NavigationLink(
+                            destination: ComicDetailView(comic: comic)
+                        ) {
+                            ComicListItemView(
+                                comic: comic
+                            )
+                        }
+                        .listRowSeparator(comic == fetcher.comics.first ? .hidden : .visible, edges: .top)
+                        .listRowSeparator(
+                            comic == fetcher.comics.last ? .hidden : .visible,
+                            edges: .bottom
                         )
                         .onAppear {
                             Task {
@@ -47,11 +54,11 @@ struct ComicListView: View {
             }
         }
     }
-    
+
     private func loadNextPage(currentIndex: Int) async {
-        guard !fetcher.isLoading && !fetcher.isFinished else {return}
-        if currentIndex < fetcher.comics.count - 5 {return}
-        
+        guard !fetcher.isLoading && !fetcher.isFinished else { return }
+        if currentIndex < fetcher.comics.count - 5 { return }
+
         await fetcher.loadNextPage()
     }
 }

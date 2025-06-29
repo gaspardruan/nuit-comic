@@ -27,17 +27,26 @@ struct SectionItemView: View {
                         .cornerRadius(4)
                 } else if phase.error != nil {
                     Color.red
+                        .aspectRatio(5 / 7, contentMode: .fill)
                 } else {
                     Color.gray
+                        .aspectRatio(5 / 7, contentMode: .fill)
                 }
             }
             Text(comic.title)
                 .font(.callout)
+                .foregroundColor(.accentColor)
                 .lineLimit(1)
 
             Text(keywords)
                 .font(.footnote)
                 .foregroundColor(.secondary)
         }
+    }
+}
+
+#Preview {
+    ScrollView {
+        SectionItemView(comic: NetworkManager.defaultComics[0])
     }
 }

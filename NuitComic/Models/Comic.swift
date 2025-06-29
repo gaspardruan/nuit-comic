@@ -5,7 +5,7 @@
 //  Created by Zhongqiu Ruan on 2025/6/26.
 //
 
-import SwiftUI
+import Foundation
 
 struct Comic: Identifiable, Decodable, Equatable, Hashable {
     let id: Int

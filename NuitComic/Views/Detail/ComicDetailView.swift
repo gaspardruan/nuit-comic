@@ -51,15 +51,18 @@ struct ComicDetailView: View {
                             .resizable()
                             .scaledToFit()
                             .cornerRadius(6)
-                            .frame(maxHeight: coverMaxHeight)
-                            .padding(.vertical, verticalSpace)
+                            
 
                     } else if phase.error != nil {
                         Color.red
+                            .aspectRatio(15 / 8, contentMode: .fit)
                     } else {
                         Color.gray
+                            .aspectRatio(15 / 8, contentMode: .fit)
                     }
                 }
+                .frame(maxHeight: coverMaxHeight)
+                .padding(.vertical, verticalSpace)
 
                 Text(comic.title)
                     .font(.title2)
@@ -130,6 +133,6 @@ struct ComicDetailView: View {
 
 #Preview {
     NavigationStack {
-        ComicDetailView(comic: HomeComicFetcher.defaultComics[0])
+        ComicDetailView(comic: NetworkManager.defaultComics[0])
     }
 }

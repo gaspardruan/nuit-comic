@@ -9,8 +9,6 @@ import SwiftUI
 
 struct ComicListItemView: View {
     let comic: Comic
-    let hideTopSeperator: Bool
-    let hideBottomSeperator: Bool
 
     var body: some View {
         HStack {
@@ -42,20 +40,14 @@ struct ComicListItemView: View {
             }
             .padding([.top], 10)
         }
-        .listRowSeparator(hideTopSeperator ? .hidden : .visible, edges: .top)
-        .listRowSeparator(
-            hideBottomSeperator ? .hidden : .visible,
-            edges: .bottom
-        )
+       
 
     }
 }
 
 #Preview {
     ComicListItemView(
-        comic: HomeComicFetcher.defaultComics.first!,
-        hideTopSeperator: true,
-        hideBottomSeperator: true
+        comic: NetworkManager.defaultComics.first!
     )
     .frame(maxHeight: 130)
     .border(.black)

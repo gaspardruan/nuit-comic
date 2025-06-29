@@ -5,7 +5,7 @@
 //  Created by Zhongqiu Ruan on 2025/6/27.
 //
 
-import SwiftUI
+import Foundation
 
 /// Format request parameters as a string.
 func formatParamters(from parameters: [(String, String)]) -> String {
@@ -15,7 +15,6 @@ func formatParamters(from parameters: [(String, String)]) -> String {
         }
         .joined(separator: "&")
 }
-
 
 func printRequest(_ request: URLRequest, label: String) {
     if let body = request.httpBody {

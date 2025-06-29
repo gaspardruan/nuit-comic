@@ -8,7 +8,6 @@
 import SwiftUI
 
 struct SectionView<Content: View>: View {
-    let title: String
     let comics: [Comic]
     let header: () -> Content
 
@@ -44,5 +43,14 @@ struct SectionView<Content: View>: View {
             }
         }
         .padding(20)
+    }
+}
+
+#Preview {
+    ScrollView {
+
+        SectionView(comics: NetworkManager.defaultComics) {
+            Text("Header")
+        }
     }
 }
