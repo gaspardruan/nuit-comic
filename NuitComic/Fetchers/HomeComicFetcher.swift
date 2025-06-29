@@ -41,14 +41,14 @@ class HomeComicFetcher {
     private func getNewAndRecommend() async throws -> (
         newComics: [Comic], recommendedComics: [Comic]
     ) {
-//        let url = URL(string: Server.api.rawValue + "/yymhindex.html")!
-//        let request = URLRequest(url: url)
-//        let (data, _) = try await URLSession.shared.data(for: request)
-//        let decoded = try JSONDecoder().decode(
-//            HomeComicResponseWrapper.self,
-//            from: data
-//        )
-        let decoded: HomeComicResponseWrapper = load("homecomic.json")
+        let url = URL(string: Server.api.rawValue + "/yymhindex.html")!
+        let request = URLRequest(url: url)
+        let data = try await NetworkManager.shared.data(from: request)
+        let decoded = try JSONDecoder().decode(
+            HomeComicResponseWrapper.self,
+            from: data
+        )
+//        let decoded: HomeComicResponseWrapper = load("homecomic.json")
 
         var newComics: [Comic] = []
         newComics.append(contentsOf: decoded.data.newComics1.data)

@@ -32,28 +32,29 @@ class SectionComicFetcher {
             forHTTPHeaderField: "Content-Type"
         )
 
-        var parameters: [String: String]
+        var parameters: [(String, String)]
         switch section {
         case .newComics:
             parameters = [
-                "order": "id desc",
-                "type": "1",
-                "start": "\((pageNum - 1) * SectionComicFetcher.pageSize)",
-                "limit": "\(SectionComicFetcher.pageSize)",
+                ("order", "id desc"),
+                ("type", "1"),
+                ("start", "\((pageNum - 1) * SectionComicFetcher.pageSize)"),
+                ("limit", "\(SectionComicFetcher.pageSize)")
             ]
         default:
             parameters = [
-                "order": "id desc",
-                "type": "1",
-                "start": "\((pageNum - 1) * SectionComicFetcher.pageSize)",
-                "limit": "\(SectionComicFetcher.pageSize)",
+                ("order", "id desc"),
+                ("type", "1"),
+                ("start", "\((pageNum - 1) * SectionComicFetcher.pageSize)"),
+                ("limit", "\(SectionComicFetcher.pageSize)"),
             ]
         }
+        request.httpBody = formatParamters(from: parameters).data(using: .utf8)
         
         var decoded: Comics
         do {
-            request.httpBody = formatParamters(from: parameters).data(using: .utf8)
-            let (data, _) = try await URLSession.shared.data(for: request)
+            let data = try await NetworkManager.shared.data(from: request)
+//            let (data, _) = try await URLSession.shared.data(for: request)
             decoded = try JSONDecoder().decode(Comics.self, from: data)
         } catch {
             print(error.localizedDescription)

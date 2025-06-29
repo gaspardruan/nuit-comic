@@ -119,12 +119,8 @@ struct ComicDetailView: View {
         }
         .onScrollGeometryChange(
             for: Bool.self,
-            of: { geometry in
-                geometry.contentOffset.y > 160
-            },
-            action: { _, newValue in
-                titleVisible = newValue
-            }
+            of: { geo in geo.contentOffset.y > 160 },
+            action: { titleVisible = $1 }
         )
         .navigationTitle(titleVisible ? comic.title : "placeholder")
         .navigationBarTitleDisplayMode(.inline)
@@ -134,6 +130,6 @@ struct ComicDetailView: View {
 
 #Preview {
     NavigationStack {
-        ComicDetailView(comic: HomeComicFetcher.defaultComics[3])
+        ComicDetailView(comic: HomeComicFetcher.defaultComics[0])
     }
 }
