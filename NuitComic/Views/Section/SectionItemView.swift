@@ -34,13 +34,14 @@ struct SectionItemView: View {
                 }
             }
             Text(comic.title)
-                .font(.callout)
-                .foregroundColor(.accentColor)
+                .font(.subheadline)
+                .foregroundColor(.primary)
                 .lineLimit(1)
 
             Text(keywords)
                 .font(.footnote)
                 .foregroundColor(.secondary)
+                .lineLimit(1)
         }
     }
 }

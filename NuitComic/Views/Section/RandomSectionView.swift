@@ -19,9 +19,11 @@ struct RandomSectionView: View {
                 HStack {
                     Text(title)
                         .font(.title3)
-                        .fontWeight(.semibold)
+                        .foregroundColor(.primary)
                     Image(systemName: "arrow.trianglehead.2.clockwise")
+                        .foregroundColor(.secondary)
                 }
+                .fontWeight(.semibold)
             }
         }.task {
             if isLoading {

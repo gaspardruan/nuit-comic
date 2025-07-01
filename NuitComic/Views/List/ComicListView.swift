@@ -48,6 +48,7 @@ struct ComicListView: View {
         .listStyle(.plain)
         .navigationTitle(section.rawValue)
         .navigationBarTitleDisplayMode(.inline)
+    
         .task {
             if fetcher.comics.count == 0 {
                 await fetcher.loadNextPage()

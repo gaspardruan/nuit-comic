@@ -28,7 +28,7 @@ struct ComicListItemView: View {
             }
             VStack(alignment: .leading, spacing: 8) {
                 Text(comic.title)
-                    .font(.callout)
+                    .font(.subheadline)
                 Text(comic.keyword)
                     .font(.footnote)
                     .foregroundColor(.secondary)
@@ -36,9 +36,7 @@ struct ComicListItemView: View {
                     .font(.footnote)
                     .foregroundColor(.secondary)
                     .lineLimit(3)
-                Spacer()
             }
-            .padding([.top], 10)
         }
        
 

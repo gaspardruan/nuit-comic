@@ -14,6 +14,8 @@ struct SectionView<Content: View>: View {
     private let columnNum = 3
 
     private let space: CGFloat = 12
+    
+    @State private var showDetail = false
 
     var chunkedComics: [[Comic]] {
         stride(from: 0, to: comics.count, by: columnNum).map { index in
@@ -36,7 +38,6 @@ struct SectionView<Content: View>: View {
                             ) {
                                 SectionItemView(comic: comic)
                             }
-
                         }
                     }
                 }

@@ -60,9 +60,12 @@ struct NavigableSectionView: View {
                 HStack {
                     Text(section.rawValue)
                         .font(.title3)
-                        .fontWeight(.semibold)
+                        .foregroundColor(.primary)
                     Image(systemName: "chevron.right")
+                        .foregroundColor(.secondary)
                 }
+                .fontWeight(.semibold)
+              
 
             }
 
