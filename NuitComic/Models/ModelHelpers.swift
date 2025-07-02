@@ -34,3 +34,18 @@ func load<T: Decodable>(_ filename: String) -> T {
         fatalError("Couldn't parse \(filename) as \(T.self):\n\(error)")
     }
 }
+
+/// Transform the time string of resonse to Date
+/// example: "2022-02-17 19:23:41"
+func transTime(from timeString: String) -> Date {
+    let formatter = DateFormatter()
+    formatter.dateFormat = "yyyy-MM-dd HH:mm:ss"
+    formatter.locale = Locale(identifier: "en_US_POSIX")
+    return formatter.date(from: timeString)!
+}
+
+
+
+func generateImageItemList(from imageList: [String]) -> [ImageItem] {
+    return []
+}

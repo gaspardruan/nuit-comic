@@ -13,17 +13,13 @@ struct ContentView: View {
             Tab("主页", systemImage: "house.fill") {
                 HomeView()
             }
-            
-                    
             Tab("书架", systemImage: "books.vertical.fill") {
                 ShelfView()
             }
-            
             Tab("搜索", systemImage: "magnifyingglass") {
                 SearchView()
             }
         }
-     
     }
 }
 

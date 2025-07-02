@@ -1,0 +1,109 @@
+//
+//  ChapterListView.swift
+//  NuitComic
+//
+//  Created by Zhongqiu Ruan on 2025/7/2.
+//
+
+import SwiftUI
+
+struct ChapterListView: View {
+    let title: String
+    let chapters: [Chapter]
+    let focusedChapterIndex: Int
+
+    @State private var reversed = false
+
+    @Environment(\.dismiss) private var dismiss
+
+    var actualChapters: [Chapter] {
+        reversed ? Array(chapters.reversed()) : chapters
+    }
+
+    var focusedChapterID: Int {
+        if focusedChapterIndex < chapters.count {
+            chapters[focusedChapterIndex].id
+        } else {
+            0
+        }
+    }
+
+    var body: some View {
+        ScrollViewReader { proxy in
+            List {
+                ForEach(actualChapters) { chapter in
+
+                    VStack(alignment: .leading) {
+                        Text(chapter.title)
+                            .font(.subheadline)
+                            .fontWeight(chapter.id == focusedChapterID ? .bold : .semibold)
+                            .foregroundStyle(chapter.id == focusedChapterID ? .accent : .primary)
+
+                        Text(chapter.createTime.formatted(.dateTime.year().month(.twoDigits).day(.twoDigits)))
+                            .font(.footnote)
+                            .foregroundStyle(.secondary)
+                    }
+
+                }
+
+            }
+            .listStyle(.plain)
+            .toolbar {
+                ToolbarItem(placement: .topBarLeading) {
+                    Button {
+                        dismiss()
+                    } label: {
+                        Image(systemName: "xmark.circle.fill")
+                            .symbolRenderingMode(.hierarchical)
+                    }
+                }
+
+                ToolbarItem(placement: .topBarTrailing) {
+                    HStack(spacing: 8) {
+                        Button {
+                            reversed.toggle()
+                        } label: {
+                            Image(systemName: "arrow.up.arrow.down.circle.fill")
+                                .symbolRenderingMode(reversed ? .monochrome : .hierarchical)
+                        }
+
+                        Button {
+                            withAnimation {
+                                proxy.scrollTo(focusedChapterID, anchor: .center)
+                            }
+                        } label: {
+                            Image(systemName: "location.circle.fill")
+                                .symbolRenderingMode(.hierarchical)
+                        }
+
+                    }
+
+                }
+
+                ToolbarItem(placement: .principal) {
+                    VStack {
+                        Text(title)
+                            .font(.headline)
+                        HStack {
+                            Text("章节")
+                                .foregroundColor(.secondary)
+
+                            Text("第\(focusedChapterIndex + 1)章，共\(actualChapters.count)章")
+                        }
+                        .font(.footnote)
+
+                    }
+                }
+            }
+        }
+        .navigationTitle(title)
+        .navigationBarTitleDisplayMode(.inline)
+
+    }
+}
+
+#Preview {
+    NavigationStack {
+        ChapterListView(title: "秘密教学", chapters: NetworkManager.defaultChapters, focusedChapterIndex: 100)
+    }
+}

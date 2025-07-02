@@ -113,3 +113,11 @@ extension NetworkManager {
         return decoded.data
     }
 }
+
+
+extension NetworkManager {
+    static var defaultChapters: [Chapter] {
+        let decoded: ChaptersWrapper = load("defaultChapters.json")
+        return decoded.result.list
+    }
+}

@@ -36,13 +36,6 @@ struct Comic: Identifiable, Decodable, Equatable, Hashable {
         case score = "pingfen"
     }
     
-    private static func transTime(from timeString: String) -> Date {
-        let formatter = DateFormatter()
-        formatter.dateFormat = "yyyy-MM-dd HH:mm:ss"
-        formatter.locale = Locale(identifier: "en_US_POSIX")
-        return formatter.date(from: timeString)!
-    }
-    
     init(from decoder: any Decoder) throws {
         let container = try decoder.container(keyedBy: CodingKeys.self)
         self.id = Int(try container.decode(String.self, forKey: .id))!
@@ -55,7 +48,7 @@ struct Comic: Identifiable, Decodable, Equatable, Hashable {
         self.follow = Int(try container.decode(String.self, forKey: .follow)) ?? 0
         self.view = Int64(try container.decode(String.self, forKey: .view)) ?? 0
         let dateString = try container.decode(String.self, forKey: .updateTime)
-        self.updateTime = Comic.transTime(from: dateString)
+        self.updateTime = transTime(from: dateString)
         let isOver = try container.decode(String.self, forKey: .isOver)
         self.isOver = isOver == "1" ? true : false
         self.score = Double(try container.decodeIfPresent(String.self, forKey: .score) ?? "9.0") ?? 9.0
