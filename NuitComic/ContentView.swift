@@ -25,7 +25,7 @@ struct ContentView: View {
                 }
             }
             
-            if let index = reader.startReadingChapterIndex {
+            if reader.startReadingChapterIndex != nil {
                 ComicReaderView()
             }
         }
