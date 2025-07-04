@@ -10,6 +10,8 @@ import SwiftUI
 struct HomeView: View {
     @State private var homeComicFetcher = HomeComicFetcher()
 
+    @Environment(ReadingState.self) private var reader
+
     var body: some View {
         NavigationStack {
             Group {
@@ -22,16 +24,15 @@ struct HomeView: View {
                             NavigableSectionView(section: .mostFollowedComics, comics: homeComic.mostFollowedComics)
                             NavigableSectionView(section: .mostReadOverComics, comics: homeComic.mostReadOverComics)
                             NavigableSectionView(section: .recommendedComics, comics: homeComic.recommendedComics)
-                            
+
                             SectionView(comics: homeComic.mostSearchedComics) {
                                 Text(HomeSection.mostSearchedComics.rawValue)
                                     .font(.title3)
                                     .fontWeight(.semibold)
                             }
-                            
+
                             RandomSectionView()
-                            
-                            
+
                         }
                     }
 
@@ -40,10 +41,10 @@ struct HomeView: View {
                 }
             }
             .navigationTitle("主页")
+
         }
         .task {
             try? await homeComicFetcher.fetchAll()
-            print("Home!")
         }
 
     }
@@ -65,7 +66,6 @@ struct NavigableSectionView: View {
                         .foregroundColor(.secondary)
                 }
                 .fontWeight(.semibold)
-              
 
             }
 

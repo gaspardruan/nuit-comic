@@ -12,9 +12,12 @@ struct ChapterListView: View {
     let chapters: [Chapter]
     let focusedChapterIndex: Int
 
+    @Binding var showContent: Bool
+
     @State private var reversed = false
 
     @Environment(\.dismiss) private var dismiss
+    @Environment(ReadingState.self) private var reader
 
     var actualChapters: [Chapter] {
         reversed ? Array(chapters.reversed()) : chapters
@@ -31,7 +34,7 @@ struct ChapterListView: View {
     var body: some View {
         ScrollViewReader { proxy in
             List {
-                ForEach(actualChapters) { chapter in
+                ForEach(Array(actualChapters.enumerated()), id: \.element.id) { index, chapter in
 
                     VStack(alignment: .leading) {
                         Text(chapter.title)
@@ -42,6 +45,13 @@ struct ChapterListView: View {
                         Text(chapter.createTime.formatted(.dateTime.year().month(.twoDigits).day(.twoDigits)))
                             .font(.footnote)
                             .foregroundStyle(.secondary)
+                    }
+                    .onTapGesture {
+                        withAnimation {
+                            showContent = false
+                            reader.read(chapterIndex: index)
+                        }
+
                     }
 
                 }
@@ -104,6 +114,9 @@ struct ChapterListView: View {
 
 #Preview {
     NavigationStack {
-        ChapterListView(title: "秘密教学", chapters: NetworkManager.defaultChapters, focusedChapterIndex: 100)
+        ChapterListView(
+            title: "秘密教学", chapters: NetworkManager.defaultChapters, focusedChapterIndex: 100,
+            showContent: .constant(true))
     }
+    .environment(ReadingState())
 }

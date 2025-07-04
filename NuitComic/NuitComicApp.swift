@@ -12,6 +12,7 @@ struct NuitComicApp: App {
     var body: some Scene {
         WindowGroup {
             ContentView()
+                .environment(ReadingState())
         }
     }
 }

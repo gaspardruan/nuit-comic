@@ -13,23 +13,16 @@ class NetworkManager {
     private let cacheDuration: TimeInterval = 300
 
     func data(from request: URLRequest, noCache: Bool = false) async throws -> Data {
-        let trickeyRequest = request.trickyRequest()
 
-        if !noCache, let cachedResponse = URLCache.shared.cachedResponse(for: trickeyRequest) {
-            let age = Date().timeIntervalSince(cachedResponse.timestamp)
-            if age < cacheDuration {
-                printRequest(request, label: "cache")
-                return cachedResponse.data
-            } else {
-                URLCache.shared.removeCachedResponse(for: trickeyRequest)
-            }
+        if !noCache, let cachedData = Cache.shared.get(for: request) {
+            printRequest(request, label: "cache")
+            return cachedData
         }
 
         printRequest(request, label: "request")
-        let (data, response) = try await URLSession.shared.data(for: request)
-        let cachedResponse = CachedURLResponse(response: response, data: data)
+        let (data, _) = try await URLSession.shared.data(for: request)
         if !noCache {
-            URLCache.shared.storeCachedResponse(cachedResponse.withTimestamp(), for: trickeyRequest)
+            Cache.shared.set(data, for: request)
         }
         return data
     }
@@ -75,37 +68,6 @@ class NetworkManager {
     }
 
 }
-
-extension CachedURLResponse {
-    var timestamp: Date {
-        if let userInfo = userInfo, let date = userInfo["timestamp"] as? Date {
-            return date
-        }
-        return Date.distantPast
-    }
-
-    func withTimestamp(_ date: Date = Date()) -> CachedURLResponse {
-        CachedURLResponse(
-            response: self.response,
-            data: self.data,
-            userInfo: ["timestamp": date],
-            storagePolicy: self.storagePolicy
-        )
-    }
-}
-
-extension URLRequest {
-    func trickyRequest() -> URLRequest {
-        guard self.httpMethod == "POST" else { return self }
-
-        var urlString = self.url!.absoluteString
-        if let body = self.httpBody {
-            urlString += "?\(String(data: body, encoding: .utf8) ?? "")"
-        }
-        return URLRequest(url: URL(string: urlString)!)
-    }
-}
-
 
 extension NetworkManager {
     static var defaultComics: [Comic] {

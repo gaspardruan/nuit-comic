@@ -8,21 +8,32 @@
 import SwiftUI
 
 struct ContentView: View {
+    
+    @Environment(ReadingState.self) private var reader
+    
     var body: some View {
-        TabView {
-            Tab("主页", systemImage: "house.fill") {
-                HomeView()
+        ZStack {
+            TabView {
+                Tab("主页", systemImage: "house.fill") {
+                    HomeView()
+                }
+                Tab("书架", systemImage: "books.vertical.fill") {
+                    ShelfView()
+                }
+                Tab("搜索", systemImage: "magnifyingglass") {
+                    SearchView()
+                }
             }
-            Tab("书架", systemImage: "books.vertical.fill") {
-                ShelfView()
-            }
-            Tab("搜索", systemImage: "magnifyingglass") {
-                SearchView()
+            
+            if let index = reader.startReadingChapterIndex {
+                ComicReaderView()
             }
         }
+        
     }
 }
 
 #Preview {
     ContentView()
+        .environment(ReadingState())
 }

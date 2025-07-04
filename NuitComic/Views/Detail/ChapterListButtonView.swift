@@ -8,29 +8,31 @@
 import SwiftUI
 
 struct ChapterListButtonView: View {
+    let comicID: Int
     let title: String
     let updateTime: Date
     let isOver: Bool
 
     @State private var showContent = false
-    @State private var chapterFetcher: ChapterFectcher
     
     @State private var fullscreen = false
+    
+    @Environment(ReadingState.self) private var reader
 
     init(comicID: Int, title: String, updateTime: Date, isOver: Bool) {
+        self.comicID = comicID
         self.title = title
         self.updateTime = updateTime
         self.isOver = isOver
-        self.chapterFetcher = ChapterFectcher(comicID: comicID)
     }
     
-    var chapterCount: Int {
-        chapterFetcher.chapters.count
+    var chapters: [Chapter] {
+        reader.readingComic?.chapters ?? []
     }
 
     var updateInfo: String {
         let d = Self.formatter.localizedString(for: updateTime, relativeTo: Date())
-        return isOver ? "\(chapterCount)章·完本" : "连载至\(chapterCount)章·\(d)"
+        return isOver ? "\(chapters.count)章·完本" : "连载至\(chapters.count)章·\(d)"
     }
 
     var body: some View {
@@ -43,7 +45,7 @@ struct ChapterListButtonView: View {
                     .fontWeight(.semibold)
                 Spacer()
                 HStack {
-                    if chapterCount > 0 {
+                    if chapters.count > 0 {
                         Text(updateInfo)
                             .font(.subheadline)
                             .transition(.opacity)
@@ -64,16 +66,14 @@ struct ChapterListButtonView: View {
         .sheet(isPresented: $showContent) {
             NavigationStack {
                 ChapterListView(
-                    title: title, chapters: chapterFetcher.chapters,
-                    focusedChapterIndex: chapterFetcher.chapters.count / 2)
+                    title: title, chapters: chapters,
+                    focusedChapterIndex: chapters.count / 2, showContent: $showContent)
             }
 
         }
-        .fullScreenCover(isPresented: $fullscreen, content: {
-            Text("Read comic")
-        })
         .task {
-            await chapterFetcher.fetch()
+            reader.readingComic = nil
+            await reader.read(comicID: comicID, title: title)
         }
     }
 

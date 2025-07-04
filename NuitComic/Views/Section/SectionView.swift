@@ -16,6 +16,8 @@ struct SectionView<Content: View>: View {
     private let space: CGFloat = 12
     
     @State private var showDetail = false
+    
+    @Environment(ReadingState.self) private var reader
 
     var chunkedComics: [[Comic]] {
         stride(from: 0, to: comics.count, by: columnNum).map { index in
@@ -38,6 +40,7 @@ struct SectionView<Content: View>: View {
                             ) {
                                 SectionItemView(comic: comic)
                             }
+                            
                         }
                     }
                 }
@@ -54,4 +57,5 @@ struct SectionView<Content: View>: View {
             Text("Header")
         }
     }
+    .environment(ReadingState())
 }

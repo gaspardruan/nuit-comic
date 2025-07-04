@@ -51,7 +51,7 @@ struct ComicDetailView: View {
         )
         .navigationTitle(titleVisible ? comic.title : "placeholder")
         .navigationBarTitleDisplayMode(.inline)
-
+        
     }
 }
 
