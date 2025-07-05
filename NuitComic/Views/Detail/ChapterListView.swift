@@ -49,7 +49,6 @@ struct ChapterListView: View {
                     .onTapGesture {
                         withAnimation {
                             showContent = false
-                            reader.close()
                             reader.startReadingFrom(chapterIndex: index)
                         }
 

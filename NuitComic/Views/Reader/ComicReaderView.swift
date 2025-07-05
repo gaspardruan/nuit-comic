@@ -26,7 +26,7 @@ struct ComicReaderView: View {
 
     @State private var dragOffset: CGSize = .zero
     @State private var lastDragOffset: CGSize = .zero
-    
+
     @State private var showContent: Bool = false
 
     var imageList: [ImageItem] {
@@ -37,9 +37,13 @@ struct ComicReaderView: View {
     var chapterCount: Int {
         reader.readingComic!.chapters.count
     }
-    
+
     var currentChapterImageCount: Int {
-        reader.readingComic!.chapters[reader.readingChapterIndex!].imageList.count
+        if let index = reader.readingChapterIndex {
+            reader.readingComic!.chapters[index].imageList.count
+        } else {
+            0
+        }
     }
 
     var magnify: some Gesture {
@@ -102,9 +106,11 @@ struct ComicReaderView: View {
                         .font(.title)
                         .foregroundStyle(.mint, .ultraThinMaterial)
                         .symbolRenderingMode(.palette)
+                        .padding(.horizontal, 16)
+                        .padding(.bottom, 16)
 
                 }
-                .padding(.trailing, 32)
+                .padding(.trailing, 16)
             }
         }
     }
@@ -122,9 +128,11 @@ struct ComicReaderView: View {
                         .font(.title)
                         .foregroundStyle(.mint, .ultraThinMaterial)
                         .symbolRenderingMode(.palette)
+                        .padding(.horizontal, 16)
+                        .padding(.top, 16)
 
                 }
-                .padding(.trailing, 32)
+                .padding(.trailing, 16)
             }
         }
     }
@@ -132,7 +140,7 @@ struct ComicReaderView: View {
     var chapterLabelView: some View {
         Group {
             if showTools {
-                Text("\(reader.readingChapterIndex! + 1)/\(chapterCount)章")
+                Text("\((reader.readingChapterIndex ?? -1) + 1)/\(chapterCount)章")
                     .font(.footnote)
                     .padding(.horizontal, 8)
                     .padding(.vertical, 4)
@@ -166,7 +174,7 @@ struct ComicReaderView: View {
                                 image
                                     .resizable()
                                     .scaledToFill()
-                                
+
                             } else if phase.error != nil {
                                 Color.red
                                     .aspectRatio(0.618, contentMode: .fill)
@@ -177,7 +185,7 @@ struct ComicReaderView: View {
                         }
                         .frame(width: screenWidth)
                     }
-                    
+
                 }
                 .scrollTargetLayout()
                 .scaleEffect(scale, anchor: anchor)
@@ -187,13 +195,15 @@ struct ComicReaderView: View {
                 .simultaneousGesture(drag)
                 .onTapGesture(count: 2, perform: autoScale)
                 .onTapGesture(perform: showToolbarTemporarily)
-                
+
             }
             .ignoresSafeArea()
             .background(.background)
-            .onChange(of: imageList, {
+            .onChange(of: imageList) {
+                guard imageList.count > 0 else { return }
                 proxy.scrollTo(imageList.first!)
-            })
+                showToolbarTemporarily()
+            }
             .onScrollGeometryChange(for: CGSize.self, of: { geo in geo.contentSize }) { _, newValue in
                 size = newValue
             }
@@ -212,7 +222,7 @@ struct ComicReaderView: View {
                         title: reader.readingComic!.title, chapters: reader.readingComic!.chapters,
                         focusedChapterIndex: reader.readingChapterIndex!, showContent: $showContent)
                 }
-                
+
             }
         }
 

@@ -43,5 +43,6 @@ class ReadingState {
         startReadingChapterIndex = nil
         readingChapterIndex = nil
         imageList = nil
+        readingImageIndexInChapter = 0
     }
 }
