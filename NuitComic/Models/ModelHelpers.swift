@@ -46,8 +46,8 @@ func transTime(from timeString: String) -> Date {
 
 
 
-func generateImageItemList(from imageList: [String], chapterIndex: Int) -> [ImageItem] {
+func generateImageItemList(from imageList: [String], chapterIndex: Int, startIndexInList: Int = 0) -> [ImageItem] {
     imageList.enumerated().map { index, image in
-        ImageItem(url: image, indexInChapter: index, chapterIndex: chapterIndex)
+        ImageItem(url: image, indexInChapter: index, chapterIndex: chapterIndex, indexInList: index + startIndexInList)
     }
 }

@@ -11,7 +11,8 @@ import Foundation
 class ReadingState {
     var readingComic: ReadingComic?
     var startReadingChapterIndex: Int?
-    var currentReadingChapterIndex: Int?
+    var readingChapterIndex: Int?
+    var readingImageIndexInChapter = 0
 
     var imageList: [ImageItem]?
 
@@ -32,7 +33,7 @@ class ReadingState {
 
     func startReadingFrom(chapterIndex: Int) {
         startReadingChapterIndex = chapterIndex
-        currentReadingChapterIndex = chapterIndex
+        readingChapterIndex = chapterIndex
         imageList = generateImageItemList(
             from: readingComic!.chapters[chapterIndex].imageList,
             chapterIndex: chapterIndex)
@@ -40,7 +41,7 @@ class ReadingState {
 
     func close() {
         startReadingChapterIndex = nil
-        currentReadingChapterIndex = nil
+        readingChapterIndex = nil
         imageList = nil
     }
 }

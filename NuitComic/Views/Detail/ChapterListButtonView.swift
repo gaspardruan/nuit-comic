@@ -90,5 +90,6 @@ struct ChapterListButtonView: View {
     let offsetComponents = DateComponents(year: -2, month: -9, day: -3)
     let date = Calendar.current.date(byAdding: offsetComponents, to: now)!
     ChapterListButtonView(comicID: 361, title: "秘密教学", updateTime: date, isOver: false)
+        .environment(ReadingState())
         .padding(.horizontal, 20)
 }
