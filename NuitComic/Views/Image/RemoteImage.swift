@@ -50,7 +50,7 @@ struct RemoteImage<Content: View>: View {
         request.setValue("https://yymh.app/", forHTTPHeaderField: "Referer")
 
         do {
-            let (data, _) = try await URLSession.shared.data(for: request)
+            let (data, _) = try await NetworkManager.shared.imageSession.data(for: request)
             if let uiImage = UIImage(data: data) {
                 let image = Image(uiImage: uiImage)
                 phase = .success(image)

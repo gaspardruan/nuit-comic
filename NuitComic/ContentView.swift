@@ -8,28 +8,27 @@
 import SwiftUI
 
 struct ContentView: View {
-    
+
     @Environment(ReadingState.self) private var reader
-    
+
     var body: some View {
-        ZStack {
-            TabView {
-                Tab("主页", systemImage: "house.fill") {
-                    HomeView()
-                }
-                Tab("书架", systemImage: "books.vertical.fill") {
-                    ShelfView()
-                }
-                Tab("搜索", systemImage: "magnifyingglass") {
-                    SearchView()
-                }
+        TabView {
+            Tab("主页", systemImage: "house.fill") {
+                HomeView()
             }
-            
+            Tab("书架", systemImage: "books.vertical.fill") {
+                ShelfView()
+            }
+            Tab("搜索", systemImage: "magnifyingglass") {
+                SearchView()
+            }
+        }
+        .overlay {
             if reader.startReadingChapterIndex != nil {
                 ComicReaderView()
             }
         }
-        
+
     }
 }
 

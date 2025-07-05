@@ -10,7 +10,25 @@ import Foundation
 class NetworkManager {
     static let shared = NetworkManager()
 
+    /// Set for `Server.api`
     private let cacheDuration: TimeInterval = 300
+    
+    /// Set for `Server.image`
+    let imageSession: URLSession
+    
+    init() {
+        let memoryCapacity = 50 * 1024 * 1024
+        let diskCapacity = 200 * 1024 * 1024
+        let diskPath = "imageCache"
+
+        let customCache = URLCache(memoryCapacity: memoryCapacity, diskCapacity: diskCapacity, directory: FileManager.default.urls(for: .cachesDirectory, in: .userDomainMask).first?.appendingPathComponent(diskPath))
+
+        let config = URLSessionConfiguration.default
+        config.urlCache = customCache
+        config.requestCachePolicy = .useProtocolCachePolicy
+        
+        imageSession = URLSession(configuration: config)
+    }
 
     func data(from request: URLRequest, noCache: Bool = false) async throws -> Data {
 

@@ -22,127 +22,176 @@ struct ComicReaderView: View {
     @State private var showTools = false
     @State private var hideTask: Task<Void, Never>?
 
+    @State private var anchor: UnitPoint = .center
+
     private let screenWidth = UIScreen.main.bounds.width
     private let screenHeight = UIScreen.main.bounds.height
 
-    var imageList: [String] {
+    @State private var dragOffset: CGSize = .zero
+    @State private var lastDragOffset: CGSize = .zero
+
+    var imageList: [ImageItem] {
         reader.imageList ?? []
     }
 
     var body: some View {
-        ZStack {
-            ScrollView(scale == 1.0 ? .vertical : [.vertical, .horizontal]) {
-                LazyVStack(spacing: 0) {
-                    ForEach(imageList, id: \.self) { image in
-                        RemoteImage(url: URL(string: image)!) {
-                            phase in
-                            if let image = phase.image {
-                                image
-                                    .resizable()
-                                    .scaledToFill()
 
-                            } else if phase.error != nil {
-                                Color.red
-                                    .aspectRatio(1, contentMode: .fill)
-                            } else {
-                                Color.gray
-                                    .aspectRatio(1, contentMode: .fill)
-                            }
+        ScrollView(scale == 1 ? .vertical : [.vertical, .horizontal]) {
+            LazyVStack(spacing: 0) {
+                ForEach(0..<imageList.count, id: \.self) { index in
+                    RemoteImage(url: URL(string: imageList[index].url)!) {
+                        phase in
+                        if let image = phase.image {
+                            image
+                                .resizable()
+                                .scaledToFill()
+
+                        } else if phase.error != nil {
+                            Color.red
+                                .aspectRatio(0.618, contentMode: .fill)
+                        } else {
+                            Color.gray
+                                .aspectRatio(0.618, contentMode: .fill)
                         }
-                        .frame(maxWidth: screenWidth)
                     }
-
+                    .frame(width: screenWidth)
                 }
-                .scaleEffect(scale, anchor: .init(x: 0.5, y: (offset.y + screenHeight / 2) / size.height))
-                .frame(width: UIScreen.main.bounds.width * scale)
-                .animation(.easeInOut, value: scale)
-                .gesture(
-                    MagnificationGesture()
-                        .onChanged { value in
-                            scale = max(value * lastScale, 1)
-                        }
-                        .onEnded { value in
-                            scale = min(scale, 3.0)
-                            lastScale = scale
-                        },
-                    including: .gesture
-                )
-                .gesture(
-                    ExclusiveGesture(
-                        TapGesture(count: 2)
-                            .onEnded {
-                                if scale > 1.0 {
-                                    scale = 1.0
-                                } else {
-                                    scale = 1.5
-                                }
 
-                            },
-                        TapGesture(count: 1)
-                            .onEnded({
-                                withAnimation {
-                                    showToolbarTemporarily()
-                                }
-                            })), including: .gesture
-                )
             }
-            .ignoresSafeArea()
-            .background(.background)
-            .onScrollGeometryChange(for: ScrollGeometry.self, of: { geo in geo }) { _, n in
-                size = n.contentSize
-                offset = n.contentOffset
-            }
+            .scaleEffect(scale, anchor: anchor)
+            .offset(x: dragOffset.width)
+            .animation(.easeInOut, value: scale)
+            .gesture(
+                MagnifyGesture()
+                    .onChanged { value in
+                        scale = value.magnification * lastScale
+                        anchor = value.startAnchor
 
-            if showTools {
-                VStack {
-                    HStack {
-
-                        Image(systemName: "xmark.circle.fill")
-                            .font(.title2)
-                            .opacity(0)
-
-                        Spacer()
-                        Text("23/270章")
-                            .font(.footnote)
-                            .background(.ultraThinMaterial)
-                        Spacer()
-                        Button(action: {
-                            withAnimation {
-                                reader.close()
+                        if value.magnification < 1 {
+                            if scale >= 1 && lastScale != 1 {
+                                let newOffsetWidth = lastDragOffset.width * (scale - 1) / (lastScale - 1)
+                                let newOffsetHeight = lastDragOffset.height * (scale - 1) / (lastScale - 1)
+                                dragOffset = CGSize(width: newOffsetWidth, height: newOffsetHeight)
+                            } else {
+                                dragOffset = .zero
                             }
-                        }) {
-                            Image(systemName: "xmark.circle.fill")
-                                .font(.title2)
-                                .foregroundStyle(.mint, .ultraThinMaterial)
-                                .symbolRenderingMode(.palette)
                         }
+
                     }
-                    Spacer()
+                    .onEnded { value in
+                        scale = max(1, min(scale, 3))
+                        lastScale = scale
 
-                    HStack {
-                        Image(systemName: "line.3.horizontal.circle.fill")
-                            .font(.title2)
-                            .opacity(0)
+                        lastDragOffset = dragOffset
+                    },
 
-                        Spacer()
+            )
+            .simultaneousGesture(
+                DragGesture()
+                    .onChanged { value in
+                        let proposedX = lastDragOffset.width + value.translation.width
+                        let proposedY = lastDragOffset.height + value.translation.height
 
-                        Text("12/24页")
-                            .font(.footnote)
-                            .background(.ultraThinMaterial)
-                            .clipped()
+                        let horizontalLeftLimit = (scale - 1) * size.width * anchor.x
+                        let horizontalRightLimit = (scale - 1) * size.width * (1 - anchor.x)
 
-                        Spacer()
+                        let verticalTopLimit = (scale - 1) * size.height * anchor.y
+                        let verticalBottomLimit = (scale - 1) * size.height * (1 - anchor.y)
 
-                        Image(systemName: "line.3.horizontal.circle.fill")
-                            .font(.title2)
+                        let clampedX = max(-horizontalRightLimit, min(horizontalLeftLimit, proposedX))
+                        let clampedY = max(-verticalBottomLimit, min(verticalTopLimit, proposedY))
+
+                        dragOffset = CGSize(width: clampedX, height: clampedY)
+                    }
+                    .onEnded { _ in
+                        lastDragOffset = dragOffset
+                    }
+            )
+            .onTapGesture(count: 2) { point in
+                anchor = UnitPoint(x: point.x / size.width, y: point.y / size.height)
+                print(dragOffset)
+                print(anchor)
+                if scale > 1.0 {
+                    scale = 1.0
+                    dragOffset = .zero
+                } else {
+                    scale = 2
+                }
+            }
+            .onTapGesture {
+                withAnimation {
+                    showToolbarTemporarily()
+                }
+            }
+
+        }
+        .ignoresSafeArea()
+        .background(.background)
+        .overlay(
+            alignment: .topTrailing,
+            content: {
+                if showTools {
+                    Button(action: {
+                        withAnimation {
+                            reader.close()
+                        }
+                    }) {
+                        Label("Close", systemImage: "xmark.circle.fill")
+                            .labelStyle(.iconOnly)
+                            .font(.title)
                             .foregroundStyle(.mint, .ultraThinMaterial)
                             .symbolRenderingMode(.palette)
+
                     }
-
+                    .padding(.trailing, 32)
                 }
-                .padding(.horizontal, 32)
             }
+        )
+        .overlay(
+            alignment: .top,
+            content: {
+                if showTools {
+                    Text("23/270章")
+                        .font(.footnote)
+                        .background(.ultraThinMaterial)
+                        .clipped()
+                }
+            }
+        )
+        .overlay(
+            alignment: .bottom,
+            content: {
+                if showTools {
+                    Text("12/24页")
+                        .font(.footnote)
+                        .background(.ultraThinMaterial)
+                        .clipped()
+                }
+            }
+        )
+        .overlay(
+            alignment: .bottomTrailing,
+            content: {
+                if showTools {
+                    Button(action: {
+                        withAnimation {
+                            reader.close()
+                        }
+                    }) {
+                        Label("Content", systemImage: "line.3.horizontal.circle.fill")
+                            .labelStyle(.iconOnly)
+                            .font(.title)
+                            .foregroundStyle(.mint, .ultraThinMaterial)
+                            .symbolRenderingMode(.palette)
 
+                    }
+                    .padding(.trailing, 32)
+                }
+            }
+        )
+        .onScrollGeometryChange(for: ScrollGeometry.self, of: { geo in geo }) { _, n in
+            size = n.contentSize
+            offset = n.contentOffset
         }
 
     }
@@ -175,35 +224,12 @@ struct ComicReaderView: View {
 }
 
 #Preview {
-    var readingState = ReadingState()
+    let readingState = ReadingState()
     readingState.readingComic = ReadingComic(title: "秘密教学", chapters: NetworkManager.defaultChapters)
-    readingState.read(chapterIndex: 3)
-    return
-        ComicReaderView()
+    readingState.startReadingFrom(chapterIndex: 3)
+    return ComicReaderView()
         .environment(readingState)
 
 }
 
-//        List {
-//            ForEach(imageList, id: \.self) { image in
-//                RemoteImage(url: URL(string: image)!) {
-//                    phase in
-//                    if let image = phase.image {
-//                        image
-//                            .resizable()
-//                            .scaledToFit()
-//
-//                    } else if phase.error != nil {
-//                        Color.red
-//                            .aspectRatio(1, contentMode: .fill)
-//                    } else {
-//                        Color.gray
-//                            .aspectRatio(1, contentMode: .fill)
-//                    }
-//                }
-//            }
-//            .listRowInsets(EdgeInsets(top: 0, leading: 0, bottom: 0, trailing: 0))
-//            .listRowSeparator(.hidden)
-//
-//        }
-//        .listStyle(.plain)
+//            .scaleEffect(scale, anchor: .init(x: anchor.x, y: (offset.y + screenHeight / 2) / size.height))

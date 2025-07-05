@@ -49,7 +49,7 @@ struct ChapterListView: View {
                     .onTapGesture {
                         withAnimation {
                             showContent = false
-                            reader.read(chapterIndex: index)
+                            reader.startReadingFrom(chapterIndex: index)
                         }
 
                     }

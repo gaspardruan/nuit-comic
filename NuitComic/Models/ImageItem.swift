@@ -7,9 +7,12 @@
 
 import Foundation
 
-struct ImageItem: Identifiable {
-    let id: String
+struct ImageItem: Hashable {
     let url: String
     let indexInChapter: Int
     let chapterIndex: Int
+    
+    func hash(into hasher: inout Hasher) {
+        hasher.combine(chapterIndex * 1000 + indexInChapter)
+    }
 }

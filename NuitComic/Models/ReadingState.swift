@@ -12,9 +12,9 @@ class ReadingState {
     var readingComic: ReadingComic?
     var startReadingChapterIndex: Int?
     var currentReadingChapterIndex: Int?
-    
-    var imageList: [String]?
-    
+
+    var imageList: [ImageItem]?
+
     func read(comicID: Int, title: String) async {
         var decoded: ChaptersWrapper
         do {
@@ -24,18 +24,20 @@ class ReadingState {
             print(error.localizedDescription)
             return
         }
-        
-        Task {@MainActor in
+
+        Task { @MainActor in
             readingComic = ReadingComic(title: title, chapters: decoded.result.list)
         }
     }
-    
-    func read(chapterIndex: Int) {
+
+    func startReadingFrom(chapterIndex: Int) {
         startReadingChapterIndex = chapterIndex
         currentReadingChapterIndex = chapterIndex
-        imageList = readingComic!.chapters[chapterIndex].imageList
+        imageList = generateImageItemList(
+            from: readingComic!.chapters[chapterIndex].imageList,
+            chapterIndex: chapterIndex)
     }
-    
+
     func close() {
         startReadingChapterIndex = nil
         currentReadingChapterIndex = nil
