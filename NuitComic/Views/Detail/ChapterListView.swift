@@ -35,23 +35,26 @@ struct ChapterListView: View {
         ScrollViewReader { proxy in
             List {
                 ForEach(Array(actualChapters.enumerated()), id: \.element.id) { index, chapter in
-
-                    VStack(alignment: .leading) {
-                        Text(chapter.title)
-                            .font(.subheadline)
-                            .fontWeight(chapter.id == focusedChapterID ? .bold : .semibold)
-                            .foregroundStyle(chapter.id == focusedChapterID ? .accent : .primary)
-
-                        Text(chapter.createTime.formatted(.dateTime.year().month(.twoDigits).day(.twoDigits)))
-                            .font(.footnote)
-                            .foregroundStyle(.secondary)
-                    }
-                    .onTapGesture {
+                    Button {
                         withAnimation {
                             showContent = false
                             reader.startReadingFrom(chapterIndex: adaptiveIndex(index: index))
                         }
+                    } label: {
+                        HStack {
+                            VStack(alignment: .leading) {
+                                Text(chapter.title)
+                                    .font(.subheadline)
+                                    .fontWeight(chapter.id == focusedChapterID ? .bold : .semibold)
+                                    .foregroundStyle(chapter.id == focusedChapterID ? .accent : .primary)
 
+                                Text(chapter.createTime.formatted(.dateTime.year().month(.twoDigits).day(.twoDigits)))
+                                    .font(.footnote)
+                                    .foregroundStyle(.secondary)
+                            }
+                            Spacer()
+                        }
+                        
                     }
 
                 }
@@ -110,7 +113,7 @@ struct ChapterListView: View {
         .navigationBarTitleDisplayMode(.inline)
 
     }
-    
+
     func adaptiveIndex(index: Int) -> Int {
         return reversed ? chapters.count - index - 1 : index
     }

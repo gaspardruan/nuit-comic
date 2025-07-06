@@ -49,7 +49,7 @@ struct ComicDetailView: View {
             of: { geo in geo.contentOffset.y > 160 },
             action: { titleVisible = $1 }
         )
-        .navigationTitle(titleVisible ? comic.title : "placeholder")
+        .navigationTitle(titleVisible ? comic.title : "")
         .navigationBarTitleDisplayMode(.inline)
         
     }

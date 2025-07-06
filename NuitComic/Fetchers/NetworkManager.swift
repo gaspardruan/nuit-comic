@@ -84,6 +84,18 @@ class NetworkManager {
         let request = URLRequest(url: url)
         return try await data(from: request)
     }
+    
+    func prefetchImages(imageURLs: [String]) async {
+        await withTaskGroup { group in
+            for url in imageURLs {
+                var request = URLRequest(url: URL(string: url)!)
+                request.setValue("https://yymh.app/", forHTTPHeaderField: "Referer")
+                group.addTask {
+                    try? await self.imageSession.data(for: request)
+                }
+            }
+        }
+    }
 
 }
 

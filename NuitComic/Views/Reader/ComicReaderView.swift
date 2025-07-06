@@ -11,24 +11,22 @@ struct ComicReaderView: View {
     @Environment(\.dismiss) private var dismiss
     @Environment(ReadingState.self) private var reader
 
+    @State private var isLoading: Bool = true
+
+    // MARK: Gesture State
     @State private var lastScale: CGFloat = 1.0
     @State private var scale: CGFloat = 1.0
+    @State private var dragOffset: CGSize = .zero
+    @State private var lastDragOffset: CGSize = .zero
+    @State private var anchor: UnitPoint = .center
 
     @State private var size: CGSize = .zero
 
-    @State private var showTools = false
+    // MARK: Controller
+    @State private var showController = false
     @State private var hideTask: Task<Void, Never>?
 
-    @State private var anchor: UnitPoint = .center
-
-    private let screenWidth = UIScreen.main.bounds.width
-    private let screenHeight = UIScreen.main.bounds.height
-
-    @State private var dragOffset: CGSize = .zero
-    @State private var lastDragOffset: CGSize = .zero
-
-    @State private var showContent: Bool = false
-
+    // MARK: Comic Info
     var imageList: [ImageItem] {
         return reader.imageList ?? []
     }
@@ -37,14 +35,7 @@ struct ComicReaderView: View {
         reader.readingComic!.chapters.count
     }
 
-    var currentChapterImageCount: Int {
-        if let index = reader.readingChapterIndex {
-            reader.readingComic!.chapters[index].imageList.count
-        } else {
-            0
-        }
-    }
-
+    // MARK: Gesture
     var magnify: some Gesture {
         MagnifyGesture()
             .onChanged { value in
@@ -92,162 +83,83 @@ struct ComicReaderView: View {
             }
     }
 
-    var closeButtonView: some View {
-        Group {
-            if showTools {
-                Button(action: {
-                    withAnimation {
-                        reader.close()
-                    }
-                }) {
-                    Label("Close", systemImage: "xmark.circle.fill")
-                        .labelStyle(.iconOnly)
-                        .font(.title)
-                        .foregroundStyle(.mint, .ultraThinMaterial)
-                        .symbolRenderingMode(.palette)
-                        .padding(.horizontal, 16)
-                        .padding(.bottom, 16)
-
-                }
-                .padding(.trailing, 16)
-            }
-        }
-    }
-
-    var menuButtonView: some View {
-        Group {
-            if showTools {
-                Button(action: {
-                    withAnimation {
-                        showContent = true
-                    }
-                }) {
-                    Label("Content", systemImage: "line.3.horizontal.circle.fill")
-                        .labelStyle(.iconOnly)
-                        .font(.title)
-                        .foregroundStyle(.mint, .ultraThinMaterial)
-                        .symbolRenderingMode(.palette)
-                        .padding(.horizontal, 16)
-                        .padding(.top, 16)
-
-                }
-                .padding(.trailing, 16)
-            }
-        }
-    }
-
-    var chapterLabelView: some View {
-        Group {
-            if showTools {
-                Text("\((reader.readingChapterIndex ?? -1) + 1)/\(chapterCount)章")
-                    .font(.footnote)
-                    .padding(.horizontal, 8)
-                    .padding(.vertical, 4)
-                    .background(Capsule().fill(.ultraThinMaterial))
-                    .shadow(radius: 8)
-            }
-        }
-    }
-
-    var pageLabelView: some View {
-        Group {
-            if showTools {
-                Text("\(reader.readingImageIndexInChapter + 1)/\(currentChapterImageCount)页")
-                    .font(.footnote)
-                    .fontWeight(.semibold)
-                    .padding(.horizontal, 8)
-                    .padding(.vertical, 4)
-                    .background(Capsule().fill(.ultraThinMaterial))
-            }
-        }
-    }
-
     var body: some View {
-        ScrollViewReader { proxy in
-            ScrollView(.vertical) {
-                LazyVStack(spacing: 0) {
-                    ForEach(imageList, id: \.self) { image in
-                        RemoteImage(url: URL(string: image.url)!) {
-                            phase in
-                            if let image = phase.image {
-                                image
-                                    .resizable()
-                                    .scaledToFill()
+        Group {
+            if isLoading {
+                ProgressView()
+                    .frame(maxWidth: .infinity, maxHeight: .infinity)
+                    .background(.background)
 
-                            } else if phase.error != nil {
-                                Color.red
-                                    .aspectRatio(0.618, contentMode: .fill)
-                            } else {
-                                Color.gray
-                                    .aspectRatio(0.618, contentMode: .fill)
+            } else {
+                ScrollViewReader { proxy in
+                    ScrollView(.vertical) {
+                        LazyVStack(spacing: 0) {
+                            ForEach(imageList, id: \.self) { image in
+                                ReaderImgaeView(url: image.url)
                             }
                         }
-                        .frame(width: screenWidth)
+                        .scrollTargetLayout()
+                        .scaleEffect(scale, anchor: anchor)
+                        .offset(x: dragOffset.width)
+                        .animation(.easeInOut, value: scale)
+                        .gesture(magnify)
+                        .simultaneousGesture(drag)
+                        .onTapGesture(count: 2, perform: autoScale)
+                        .onTapGesture(perform: showToolbarTemporarily)
+
                     }
+                    .ignoresSafeArea()
+                    .background(.background)
+                    .scrollIndicators(.hidden)
+                    .onChange(of: reader.startReadingChapterIndex) {
+                        guard reader.startReadingChapterIndex != nil else { return }
+                        proxy.scrollTo(imageList.first!)
+                        showToolbarTemporarily()
+                    }
+                    .onScrollGeometryChange(for: CGSize.self, of: { geo in geo.contentSize }) { _, newValue in
+                        size = newValue
+                    }
+                    .onScrollTargetVisibilityChange(idType: ImageItem.self, threshold: 0.01) { items in
+                        if items.count > 0 {
+                            onVisibleImageItemChange(item: items[0])
+                            Task {
+                                await reader.prefetchImagesFrom(indexInList: items[items.count - 1].indexInList + 1)
+                            }
+
+                        }
+                    }
+                    .overlay(alignment: .topTrailing) { CloseButtonView(show: showController) }
+                    .overlay(alignment: .top) { ChapterLabelView(show: showController) }
+                    .overlay(alignment: .bottom) { PageLabelView(show: showController) }
+                    .overlay(alignment: .bottomTrailing) { MenuButtonView(show: showController) }
 
                 }
-                .scrollTargetLayout()
-                .scaleEffect(scale, anchor: anchor)
-                .offset(x: dragOffset.width)
-                .animation(.easeInOut, value: scale)
-                .gesture(magnify)
-                .simultaneousGesture(drag)
-                .onTapGesture(count: 2, perform: autoScale)
-                .onTapGesture(perform: showToolbarTemporarily)
+            }
 
-            }
-            .ignoresSafeArea()
-            .background(.background)
-            .onChange(of: reader.startReadingChapterIndex) {
-                guard reader.startReadingChapterIndex != nil else { return }
-                proxy.scrollTo(imageList.first!)
-                showToolbarTemporarily()
-            }
-            .onScrollGeometryChange(for: CGSize.self, of: { geo in geo.contentSize }) { _, newValue in
-                size = newValue
-            }
-            .onScrollTargetVisibilityChange(idType: ImageItem.self, threshold: 0.01) { items in
-                if items.count > 0 {
-                    onVisibleImageItemChange(item: items[0])
-                }
-            }
-            .overlay(alignment: .topTrailing) { closeButtonView }
-            .overlay(alignment: .top) { chapterLabelView }
-            .overlay(alignment: .bottom) { pageLabelView }
-            .overlay(alignment: .bottomTrailing) { menuButtonView }
-            .sheet(isPresented: $showContent) {
-                NavigationStack {
-                    ChapterListView(
-                        title: reader.readingComic!.title, chapters: reader.readingComic!.chapters,
-                        focusedChapterIndex: reader.readingChapterIndex!, showContent: $showContent)
-                }
-
-            }
+        }
+        .task {
+            guard isLoading else { return }
+            defer { withAnimation { isLoading = false } }
+            await reader.prefetchImagesFrom(indexInList: 0, count: 7)
         }
 
     }
 
     func showToolbarTemporarily() {
-        if showTools {
-            withAnimation {
-                showTools = false
-            }
+        if showController {
+            withAnimation { showController = false }
             hideTask?.cancel()
             hideTask = nil
             return
         }
 
-        withAnimation {
-            showTools = true
-        }
+        withAnimation { showController = true }
 
         hideTask?.cancel()
 
         hideTask = Task { @MainActor in
             try? await Task.sleep(for: .seconds(5))
-            withAnimation {
-                showTools = false
-            }
+            withAnimation { showController = false }
             hideTask = nil
         }
     }
@@ -261,7 +173,7 @@ struct ComicReaderView: View {
             scale = 2
         }
     }
-    
+
     func onVisibleImageItemChange(item: ImageItem) {
         reader.readingImageIndexInChapter = item.indexInChapter
         if reader.readingChapterIndex != item.chapterIndex {
@@ -270,13 +182,14 @@ struct ComicReaderView: View {
         }
         loadNextChapterIfPossible(currentIndexInList: item.indexInList)
     }
-    
+
     func loadNextChapterIfPossible(currentIndexInList: Int) {
         if currentIndexInList < imageList.count && currentIndexInList + 5 == imageList.count {
-            if let nextChpaterIndex = reader.nextChapterIndex{
+            if let nextChpaterIndex = reader.nextChapterIndex {
                 if nextChpaterIndex < chapterCount {
                     reader.loadNextChapter()
                 } else {
+                    // TODO: inform user
                     print("Last Chapter!")
                 }
             }

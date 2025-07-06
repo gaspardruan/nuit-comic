@@ -16,6 +16,8 @@ class ReadingState {
     var readingImageIndexInChapter = 0
 
     var imageList: [ImageItem]?
+    var imageLoaded: [Bool]?
+    
 
     func read(comicID: Int, title: String) async {
         var decoded: ChaptersWrapper
@@ -39,11 +41,13 @@ class ReadingState {
         imageList = generateImageItemList(
             from: readingComic!.chapters[chapterIndex].imageList,
             chapterIndex: chapterIndex)
+        imageLoaded = Array(repeating: false, count: imageList!.count)
     }
     
     func loadNextChapter() {
         let newImageList = generateImageItemList(from: readingComic!.chapters[nextChapterIndex!].imageList, chapterIndex: nextChapterIndex!, startIndexInList: imageList!.count)
         imageList!.append(contentsOf: newImageList)
+        imageLoaded!.append(contentsOf: Array(repeating: false, count: newImageList.count))
         nextChapterIndex! += 1
     }
 
@@ -52,6 +56,21 @@ class ReadingState {
         readingChapterIndex = nil
         nextChapterIndex = nil
         imageList = nil
+        imageLoaded = nil
         readingImageIndexInChapter = 0
+    }
+    
+    func prefetchImagesFrom(indexInList: Int, count: Int = 5) async {
+        guard  indexInList < imageList!.count else { return }
+
+        let end = min(indexInList + count, imageList!.count)
+        var slice: [String] = []
+        for index in indexInList..<end {
+            if !imageLoaded![index] {
+                slice.append(imageList![index].url)
+                imageLoaded![index] = true
+            }
+        }
+        await NetworkManager.shared.prefetchImages(imageURLs: slice)
     }
 }
