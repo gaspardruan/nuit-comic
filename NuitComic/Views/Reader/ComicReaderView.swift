@@ -30,7 +30,6 @@ struct ComicReaderView: View {
     @State private var showContent: Bool = false
 
     var imageList: [ImageItem] {
-        print("newImageList: \(reader.imageList?.count ?? 0)")
         return reader.imageList ?? []
     }
 
@@ -199,8 +198,8 @@ struct ComicReaderView: View {
             }
             .ignoresSafeArea()
             .background(.background)
-            .onChange(of: imageList) {
-                guard imageList.count > 0 else { return }
+            .onChange(of: reader.startReadingChapterIndex) {
+                guard reader.startReadingChapterIndex != nil else { return }
                 proxy.scrollTo(imageList.first!)
                 showToolbarTemporarily()
             }
@@ -209,7 +208,7 @@ struct ComicReaderView: View {
             }
             .onScrollTargetVisibilityChange(idType: ImageItem.self, threshold: 0.01) { items in
                 if items.count > 0 {
-                    reader.readingImageIndexInChapter = items[0].indexInList
+                    onVisibleImageItemChange(item: items[0])
                 }
             }
             .overlay(alignment: .topTrailing) { closeButtonView }
@@ -260,6 +259,27 @@ struct ComicReaderView: View {
             dragOffset = .zero
         } else {
             scale = 2
+        }
+    }
+    
+    func onVisibleImageItemChange(item: ImageItem) {
+        reader.readingImageIndexInChapter = item.indexInChapter
+        if reader.readingChapterIndex != item.chapterIndex {
+            reader.readingChapterIndex = item.chapterIndex
+            showToolbarTemporarily()
+        }
+        loadNextChapterIfPossible(currentIndexInList: item.indexInList)
+    }
+    
+    func loadNextChapterIfPossible(currentIndexInList: Int) {
+        if currentIndexInList < imageList.count && currentIndexInList + 5 == imageList.count {
+            if let nextChpaterIndex = reader.nextChapterIndex{
+                if nextChpaterIndex < chapterCount {
+                    reader.loadNextChapter()
+                } else {
+                    print("Last Chapter!")
+                }
+            }
         }
     }
 

@@ -49,7 +49,7 @@ struct ChapterListView: View {
                     .onTapGesture {
                         withAnimation {
                             showContent = false
-                            reader.startReadingFrom(chapterIndex: index)
+                            reader.startReadingFrom(chapterIndex: adaptiveIndex(index: index))
                         }
 
                     }
@@ -109,6 +109,10 @@ struct ChapterListView: View {
         .navigationTitle(title)
         .navigationBarTitleDisplayMode(.inline)
 
+    }
+    
+    func adaptiveIndex(index: Int) -> Int {
+        return reversed ? chapters.count - index - 1 : index
     }
 }
 

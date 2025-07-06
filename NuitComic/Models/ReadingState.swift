@@ -12,6 +12,7 @@ class ReadingState {
     var readingComic: ReadingComic?
     var startReadingChapterIndex: Int?
     var readingChapterIndex: Int?
+    var nextChapterIndex: Int?
     var readingImageIndexInChapter = 0
 
     var imageList: [ImageItem]?
@@ -34,14 +35,22 @@ class ReadingState {
     func startReadingFrom(chapterIndex: Int) {
         startReadingChapterIndex = chapterIndex
         readingChapterIndex = chapterIndex
+        nextChapterIndex = chapterIndex + 1
         imageList = generateImageItemList(
             from: readingComic!.chapters[chapterIndex].imageList,
             chapterIndex: chapterIndex)
+    }
+    
+    func loadNextChapter() {
+        let newImageList = generateImageItemList(from: readingComic!.chapters[nextChapterIndex!].imageList, chapterIndex: nextChapterIndex!, startIndexInList: imageList!.count)
+        imageList!.append(contentsOf: newImageList)
+        nextChapterIndex! += 1
     }
 
     func close() {
         startReadingChapterIndex = nil
         readingChapterIndex = nil
+        nextChapterIndex = nil
         imageList = nil
         readingImageIndexInChapter = 0
     }
