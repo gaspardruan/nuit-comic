@@ -18,6 +18,9 @@ class ReadingState {
     var imageList: [ImageItem]?
     var imageLoaded: [Bool]?
     
+    var reading: Bool {
+        imageList != nil
+    }
 
     func read(comicID: Int, title: String) async {
         var decoded: ChaptersWrapper

@@ -16,6 +16,8 @@ struct ContentView: View {
             Tab("主页", systemImage: "house.fill") {
                 HomeView()
             }
+            
+           
             Tab("书架", systemImage: "books.vertical.fill") {
                 ShelfView()
             }
@@ -23,6 +25,7 @@ struct ContentView: View {
                 SearchView()
             }
         }
+        
         .overlay {
             if reader.startReadingChapterIndex != nil {
                 ComicReaderView()

@@ -120,12 +120,11 @@ struct ComicReaderView: View {
                         size = newValue
                     }
                     .onScrollTargetVisibilityChange(idType: ImageItem.self, threshold: 0.01) { items in
-                        if items.count > 0 {
+                        if reader.reading && items.count > 0 {
                             onVisibleImageItemChange(item: items[0])
                             Task {
                                 await reader.prefetchImagesFrom(indexInList: items[items.count - 1].indexInList + 1)
                             }
-
                         }
                     }
                     .overlay(alignment: .topTrailing) { CloseButtonView(show: showController) }

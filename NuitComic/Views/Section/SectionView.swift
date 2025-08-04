@@ -13,36 +13,18 @@ struct SectionView<Content: View>: View {
 
     private let columnNum = 3
 
-    private let space: CGFloat = 12
-    
     @State private var showDetail = false
-    
-    @Environment(ReadingState.self) private var reader
 
-    var chunkedComics: [[Comic]] {
-        stride(from: 0, to: comics.count, by: columnNum).map { index in
-            let end = index.advanced(by: columnNum)
-            return Array(comics[index..<min(end, comics.count)])
-        }
-    }
+    @Environment(ReadingState.self) private var reader
 
     var body: some View {
         VStack(alignment: .leading) {
             header()
-            Grid(horizontalSpacing: space, verticalSpacing: space) {
-                ForEach(Array(chunkedComics.enumerated()), id: \.offset) {
-                    _,
-                    row in
-                    GridRow {
-                        ForEach(row) { comic in
-                            NavigationLink(
-                                destination: ComicDetailView(comic: comic)
-                            ) {
-                                SectionItemView(comic: comic)
-                            }
-                            
-                        }
-                    }
+            SimpleGrid(comics: comics, columnNum: columnNum) { comic, _ in
+                NavigationLink(
+                    destination: ComicDetailView(comic: comic)
+                ) {
+                    SectionItemView(comic: comic)
                 }
             }
         }
@@ -52,7 +34,6 @@ struct SectionView<Content: View>: View {
 
 #Preview {
     ScrollView {
-
         SectionView(comics: NetworkManager.defaultComics) {
             Text("Header")
         }

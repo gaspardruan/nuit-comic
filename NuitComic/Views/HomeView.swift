@@ -10,8 +10,6 @@ import SwiftUI
 struct HomeView: View {
     @State private var homeComicFetcher = HomeComicFetcher()
 
-    @Environment(ReadingState.self) private var reader
-
     var body: some View {
         NavigationStack {
             Group {
@@ -75,4 +73,5 @@ struct NavigableSectionView: View {
 
 #Preview {
     HomeView()
+        .environment(ReadingState())
 }

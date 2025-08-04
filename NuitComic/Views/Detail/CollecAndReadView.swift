@@ -8,7 +8,6 @@
 import SwiftUI
 
 struct CollecAndReadView: View {
-    
     let spacing: CGFloat
     
     init(spacing: CGFloat = 20) {
@@ -22,17 +21,19 @@ struct CollecAndReadView: View {
             } label: {
                 Label("收藏", systemImage: "star")
                     .frame(maxWidth: .infinity)
+                    .padding(.vertical, 4)
             }
-            .buttonStyle(.bordered)
 
             Button {
                 print("123")
             } label: {
                 Label("开始阅读", systemImage: "play.fill")
                     .frame(maxWidth: .infinity)
+                    .padding(.vertical, 4)
             }
-            .buttonStyle(.bordered)
+            
         }
+        .buttonStyle(.bordered)
     }
 }
 

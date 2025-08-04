@@ -8,8 +8,23 @@
 import SwiftUI
 
 struct SearchView: View {
+    @State private var isFavorite = true
+
     var body: some View {
-        Text("SearchView")
+        NavigationStack {
+            ScrollView {
+                ForEach(0..<100) { index in
+                    VStack {
+
+                        Text("Item    \(index)")
+
+                    }.frame(maxWidth: .infinity)
+                }
+            }
+            .navigationTitle("搜索")
+
+        }
+
     }
 }
 
