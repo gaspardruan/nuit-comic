@@ -6,6 +6,7 @@
 //
 
 import ExpandableText
+import SwiftData
 import SwiftUI
 
 struct ComicDetailView: View {
@@ -15,15 +16,44 @@ struct ComicDetailView: View {
     private let verticalSpace: CGFloat = 8
 
     @State private var titleVisible = false
-    
+
     @Environment(ReadingState.self) private var reader
+    @Environment(\.modelContext) private var context
+    @Query private var storedComics: [StoredComic]
 
     var coverHeight: CGFloat {
         (UIScreen.main.bounds.width - 2 * horizontalPadding) * 8 / 15
     }
-    
+
     var chapterCount: Int {
         reader.readingComic?.chapters.count ?? 0
+    }
+
+    var sameIdComics: [StoredComic] {
+        var theComics = storedComics.filter { c in
+            c.id == comic.id
+        }
+        theComics.sort { lhs, rhs in
+            lhs.storeTime > rhs.storeTime
+        }
+        return theComics
+    }
+
+    var collectedComic: StoredComic? {
+        sameIdComics.filter { c in
+            c.isCollected
+        }.first
+    }
+
+    var isCollected: Bool {
+        collectedComic != nil
+    }
+
+    var lastReadChapterIndex: Int {
+        if sameIdComics.isEmpty {
+            return 0
+        }
+        return sameIdComics[0].lastReadChapterIndex
     }
 
     var body: some View {
@@ -33,14 +63,14 @@ struct ComicDetailView: View {
 
                 ComicInfoView(comic: comic, spacing: verticalSpace)
 
-                CollecAndReadView(comic: comic, chapterCount: chapterCount, spacing: horizontalPadding)
+                CollecAndReadView(
+                    isCollected: isCollected, lastReadChapterIndex: lastReadChapterIndex,
+                    toggleCollect: toggleCollect, spacing: horizontalPadding)
 
                 ComicDescriptionView(description: comic.description)
 
-                ChapterListButtonView(
-                    comic: comic
-                )
-                .padding(.bottom, verticalSpace)
+                ChapterListButtonView(comic: comic, lastReadChapterIndex: lastReadChapterIndex)
+                    .padding(.bottom, verticalSpace)
 
             }
             .padding(.horizontal, 20)
@@ -61,12 +91,25 @@ struct ComicDetailView: View {
             reader.readingComic = nil
             await reader.read(comic: comic, title: comic.title)
         }
-        
+
+    }
+
+    private func toggleCollect() {
+        if isCollected {
+            context.delete(collectedComic!)
+        } else {
+            context.insert(
+                StoredComic(
+                    from: comic, lastReadChapterIndex: lastReadChapterIndex,
+                    chapterCount: chapterCount, isCollected: true))
+        }
     }
 }
 
 #Preview {
     NavigationStack {
-        ComicDetailView(comic: NetworkManager.defaultComics[0])
+        ComicDetailView(comic: NetworkManager.defaultComics[2])
+            .environment(ReadingState())
+            .modelContainer(SampleStoredComic.shared.modelContainer)
     }
 }

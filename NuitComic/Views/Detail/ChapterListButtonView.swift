@@ -9,6 +9,7 @@ import SwiftUI
 
 struct ChapterListButtonView: View {
     let comic: Comic
+    let lastReadChapterIndex: Int
 
     @State private var showContent = false
 
@@ -57,7 +58,7 @@ struct ChapterListButtonView: View {
             NavigationStack {
                 ChapterListView(
                     comic: comic, chapters: chapters,
-                    focusedChapterIndex: chapters.count / 2, showContent: $showContent)
+                    focusedChapterIndex: lastReadChapterIndex, showContent: $showContent)
             }
 
         }
@@ -73,7 +74,7 @@ struct ChapterListButtonView: View {
 }
 
 #Preview {
-    ChapterListButtonView(comic: NetworkManager.defaultComics[0])
+    ChapterListButtonView(comic: NetworkManager.defaultComics[0], lastReadChapterIndex: 3)
         .environment(ReadingState())
         .padding(.horizontal, 20)
 }
