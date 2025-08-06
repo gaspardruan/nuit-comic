@@ -15,9 +15,15 @@ struct ComicDetailView: View {
     private let verticalSpace: CGFloat = 8
 
     @State private var titleVisible = false
+    
+    @Environment(ReadingState.self) private var reader
 
     var coverHeight: CGFloat {
         (UIScreen.main.bounds.width - 2 * horizontalPadding) * 8 / 15
+    }
+    
+    var chapterCount: Int {
+        reader.readingComic?.chapters.count ?? 0
     }
 
     var body: some View {
@@ -27,12 +33,12 @@ struct ComicDetailView: View {
 
                 ComicInfoView(comic: comic, spacing: verticalSpace)
 
-                CollecAndReadView(spacing: horizontalPadding)
+                CollecAndReadView(comic: comic, chapterCount: chapterCount, spacing: horizontalPadding)
 
                 ComicDescriptionView(description: comic.description)
 
                 ChapterListButtonView(
-                    comicID: comic.id, title: comic.title, updateTime: comic.updateTime, isOver: comic.isOver
+                    comic: comic
                 )
                 .padding(.bottom, verticalSpace)
 
@@ -51,6 +57,10 @@ struct ComicDetailView: View {
         )
         .navigationTitle(titleVisible ? comic.title : "")
         .navigationBarTitleDisplayMode(.inline)
+        .task {
+            reader.readingComic = nil
+            await reader.read(comic: comic, title: comic.title)
+        }
         
     }
 }

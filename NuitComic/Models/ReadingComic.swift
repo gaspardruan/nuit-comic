@@ -8,6 +8,6 @@
 import Foundation
 
 struct ReadingComic {
-    let title: String
+    let comic: Comic
     let chapters: [Chapter]
 }

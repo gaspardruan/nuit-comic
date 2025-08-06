@@ -36,6 +36,21 @@ struct Comic: Identifiable, Decodable, Equatable, Hashable {
         case score = "pingfen"
     }
     
+    init(from comic: StoredComic) {
+        self.id = comic.id
+        self.title = comic.title
+        self.image = comic.image
+        self.cover = comic.cover
+        self.description = comic.desc
+        self.author = comic.author
+        self.keyword = comic.keyword
+        self.follow = comic.follow
+        self.view = comic.view
+        self.updateTime = comic.updateTime
+        self.isOver = comic.isOver
+        self.score = comic.score
+    }
+    
     init(from decoder: any Decoder) throws {
         let container = try decoder.container(keyedBy: CodingKeys.self)
         self.id = Int(try container.decode(String.self, forKey: .id))!

@@ -15,20 +15,21 @@ class SampleStoredComic {
     let modelContainer: ModelContainer
     
     private init() {
-        let schema = Schema([CollectedComic.self, RecentComic.self])
+        let schema = Schema([StoredComic.self])
         let modelConfiguration = ModelConfiguration(schema: schema, isStoredInMemoryOnly: true)
         
         do {
             modelContainer = try ModelContainer(for: schema, configurations: modelConfiguration)
             let context = modelContainer.mainContext
-            let defaultComics = NetworkManager.defaultComics
+            let defaultComics = NetworkManager.defaultComics[1..<6]
             
             for comic in defaultComics {
-                let collectedComic = CollectedComic(from: comic, lastReadChapterIndex: 2, chapterCount: 5)
-                let recentComic = RecentComic(from: comic, lastReadChapterIndex: 3, chapterCount: 5)
+                let collectedComic = StoredComic(from: comic,  lastReadChapterIndex: 2, chapterCount: 5, isCollected: true)
+                let recentComic = StoredComic(from: comic, lastReadChapterIndex: 3, chapterCount: 5)
                 context.insert(collectedComic)
                 context.insert(recentComic);
             }
+            try context.save()
             
         } catch {
             fatalError("Could not create ModelContainer: \(error)")
@@ -39,7 +40,7 @@ class SampleStoredComic {
 extension SampleStoredComic {
     static var defaultStoredComics: [StoredComic] {
         NetworkManager.defaultComics.map { comic in
-            CollectedComic(from: comic, lastReadChapterIndex: 2, chapterCount: 5)
+            StoredComic(from: comic, lastReadChapterIndex: 2, chapterCount: 5)
         }
     }
 }

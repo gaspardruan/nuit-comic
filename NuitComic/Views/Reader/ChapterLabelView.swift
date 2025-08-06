@@ -31,7 +31,7 @@ struct ChapterLabelView: View {
 
 #Preview {
     let readingState = ReadingState()
-    readingState.readingComic = ReadingComic(title: "秘密教学", chapters: NetworkManager.defaultChapters)
+    readingState.readingComic = ReadingComic(comic: NetworkManager.defaultComics[2], chapters: NetworkManager.defaultChapters)
     readingState.startReadingFrom(chapterIndex: 3)
     return ChapterLabelView(show: true)
         .environment(readingState)

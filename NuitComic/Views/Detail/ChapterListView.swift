@@ -5,10 +5,11 @@
 //  Created by Zhongqiu Ruan on 2025/7/2.
 //
 
+import SwiftData
 import SwiftUI
 
 struct ChapterListView: View {
-    let title: String
+    let comic: Comic
     let chapters: [Chapter]
     let focusedChapterIndex: Int
 
@@ -18,6 +19,7 @@ struct ChapterListView: View {
 
     @Environment(\.dismiss) private var dismiss
     @Environment(ReadingState.self) private var reader
+    @Environment(\.modelContext) private var context
 
     var actualChapters: [Chapter] {
         reversed ? Array(chapters.reversed()) : chapters
@@ -39,6 +41,7 @@ struct ChapterListView: View {
                         withAnimation {
                             showContent = false
                             reader.startReadingFrom(chapterIndex: adaptiveIndex(index: index))
+                            reader.syncStoredComics(context: context, chapterIndex: index)
                         }
                     } label: {
                         HStack {
@@ -54,11 +57,8 @@ struct ChapterListView: View {
                             }
                             Spacer()
                         }
-                        
                     }
-
                 }
-
             }
             .listStyle(.plain)
             .toolbar {
@@ -88,14 +88,12 @@ struct ChapterListView: View {
                             Image(systemName: "location.circle.fill")
                                 .symbolRenderingMode(.hierarchical)
                         }
-
                     }
-
                 }
 
                 ToolbarItem(placement: .principal) {
                     VStack {
-                        Text(title)
+                        Text(comic.title)
                             .font(.headline)
                         HStack {
                             Text("章节")
@@ -109,7 +107,7 @@ struct ChapterListView: View {
                 }
             }
         }
-        .navigationTitle(title)
+        .navigationTitle(comic.title)
         .navigationBarTitleDisplayMode(.inline)
 
     }
@@ -122,8 +120,9 @@ struct ChapterListView: View {
 #Preview {
     NavigationStack {
         ChapterListView(
-            title: "秘密教学", chapters: NetworkManager.defaultChapters, focusedChapterIndex: 100,
+            comic: NetworkManager.defaultComics[2], chapters: NetworkManager.defaultChapters, focusedChapterIndex: 100,
             showContent: .constant(true))
     }
     .environment(ReadingState())
+    .modelContainer(SampleStoredComic.shared.modelContainer)
 }

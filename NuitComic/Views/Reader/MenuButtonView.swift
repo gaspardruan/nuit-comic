@@ -36,7 +36,7 @@ struct MenuButtonView: View {
         .sheet(isPresented: $showContent) {
             NavigationStack {
                 ChapterListView(
-                    title: reader.readingComic!.title, chapters: reader.readingComic!.chapters,
+                    comic: reader.readingComic!.comic, chapters: reader.readingComic!.chapters,
                     focusedChapterIndex: reader.readingChapterIndex!, showContent: $showContent)
             }
 
@@ -46,7 +46,7 @@ struct MenuButtonView: View {
 
 #Preview {
     let readingState = ReadingState()
-    readingState.readingComic = ReadingComic(title: "秘密教学", chapters: NetworkManager.defaultChapters)
+    readingState.readingComic = ReadingComic(comic: NetworkManager.defaultComics[2], chapters: NetworkManager.defaultChapters)
     readingState.startReadingFrom(chapterIndex: 3)
     return MenuButtonView(show: true)
         .environment(readingState)

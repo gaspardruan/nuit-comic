@@ -6,6 +6,7 @@
 //
 
 import Foundation
+import SwiftData
 
 @Observable
 class ReadingState {
@@ -17,15 +18,15 @@ class ReadingState {
 
     var imageList: [ImageItem]?
     var imageLoaded: [Bool]?
-    
+
     var reading: Bool {
         imageList != nil
     }
 
-    func read(comicID: Int, title: String) async {
+    func read(comic: Comic, title: String) async {
         var decoded: ChaptersWrapper
         do {
-            let data = try await NetworkManager.shared.get(relativeURL: "/chapter_list/tp/\(comicID)-1-1-1000")
+            let data = try await NetworkManager.shared.get(relativeURL: "/chapter_list/tp/\(comic.id)-1-1-1000")
             decoded = try JSONDecoder().decode(ChaptersWrapper.self, from: data)
         } catch {
             print(error.localizedDescription)
@@ -33,7 +34,7 @@ class ReadingState {
         }
 
         Task { @MainActor in
-            readingComic = ReadingComic(title: title, chapters: decoded.result.list)
+            readingComic = ReadingComic(comic: comic, chapters: decoded.result.list)
         }
     }
 
@@ -46,9 +47,11 @@ class ReadingState {
             chapterIndex: chapterIndex)
         imageLoaded = Array(repeating: false, count: imageList!.count)
     }
-    
+
     func loadNextChapter() {
-        let newImageList = generateImageItemList(from: readingComic!.chapters[nextChapterIndex!].imageList, chapterIndex: nextChapterIndex!, startIndexInList: imageList!.count)
+        let newImageList = generateImageItemList(
+            from: readingComic!.chapters[nextChapterIndex!].imageList, chapterIndex: nextChapterIndex!,
+            startIndexInList: imageList!.count)
         imageList!.append(contentsOf: newImageList)
         imageLoaded!.append(contentsOf: Array(repeating: false, count: newImageList.count))
         nextChapterIndex! += 1
@@ -62,9 +65,9 @@ class ReadingState {
         imageLoaded = nil
         readingImageIndexInChapter = 0
     }
-    
+
     func prefetchImagesFrom(indexInList: Int, count: Int = 5) async {
-        guard  indexInList < imageList!.count else { return }
+        guard indexInList < imageList!.count else { return }
 
         let end = min(indexInList + count, imageList!.count)
         var slice: [String] = []
@@ -75,5 +78,38 @@ class ReadingState {
             }
         }
         await NetworkManager.shared.prefetchImages(imageURLs: slice)
+    }
+
+    func syncStoredComics(context: ModelContext, chapterIndex: Int) {
+        let comicId = readingComic!.comic.id
+        let descriptor = FetchDescriptor<StoredComic>(
+            predicate: #Predicate { c in
+                c.id == comicId
+            })
+
+        if let comics = try? context.fetch(descriptor) {
+            let recentComics = comics.filter { c in
+                c.isCollected == false
+            }
+            if !recentComics.isEmpty {
+                context.delete(recentComics[0])
+            }
+
+            let collectedComics = comics.filter { c in
+                c.isCollected == true
+            }
+            if !collectedComics.isEmpty {
+                context.delete(collectedComics[0])
+                context.insert(
+                    StoredComic(
+                        from: readingComic!.comic, lastReadChapterIndex: chapterIndex,
+                        chapterCount: readingComic!.chapters.count,
+                        isCollected: true))
+            }
+        }
+        context.insert(
+            StoredComic(
+                from: readingComic!.comic, lastReadChapterIndex: chapterIndex,
+                chapterCount: readingComic!.chapters.count))
     }
 }

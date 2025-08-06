@@ -8,21 +8,47 @@
 import Foundation
 import SwiftData
 
-protocol StoredComic {
-    var id: Int { get }
-    var title: String { get set }
-    var image: String { get set }
-    var cover: String { get set }
-    var desc: String { get set }
-    var author: String { get set }
-    var keyword: String { get set }
-    var follow: Int { get set }
-    var view: Int64 { get set }
-    var updateTime: Date { get set }
-    var isOver: Bool { get set }
-    var score: Double { get set }
+@Model
+class StoredComic : Identifiable, Hashable {
+    var id: Int
+    var title: String
+    var image: String
+    var cover: String
+    var desc: String
+    var author: String
+    var keyword: String
+    var follow: Int
+    var view: Int64
+    var updateTime: Date
+    var isOver: Bool
+    var score: Double
 
-    var lastReadChapterIndex: Int { get set }
-    var chapterCount: Int { get set }
-    var storeTime: Date { get set }
+    var lastReadChapterIndex: Int
+    var chapterCount: Int
+    var storeTime: Date
+    
+    var isCollected: Bool
+
+    init(from comic: Comic, lastReadChapterIndex: Int, chapterCount: Int, isCollected: Bool = false, storeTime: Date = .now) {
+        self.id = comic.id
+        self.title = comic.title
+        self.image = comic.image
+        self.cover = comic.cover
+        self.desc = comic.description
+        self.author = comic.author
+        self.keyword = comic.keyword
+        self.follow = comic.follow
+        self.view = comic.view
+        self.updateTime = comic.updateTime
+        self.isOver = comic.isOver
+        self.score = comic.score
+        self.lastReadChapterIndex = lastReadChapterIndex
+        self.chapterCount = chapterCount
+        self.storeTime = storeTime
+        self.isCollected = isCollected
+    }
+
+    func toComic() -> Comic {
+        Comic(from: self)
+    }
 }

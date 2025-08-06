@@ -10,6 +10,7 @@ import SwiftUI
 struct ComicReaderView: View {
     @Environment(\.dismiss) private var dismiss
     @Environment(ReadingState.self) private var reader
+    @Environment(\.modelContext) private var context
 
     @State private var isLoading: Bool = true
 
@@ -97,6 +98,9 @@ struct ComicReaderView: View {
                             ForEach(imageList, id: \.self) { image in
                                 ReaderImgaeView(url: image.url)
                             }
+                            Text("已经到底了!")
+                                .font(.callout)
+                                .padding(.vertical, 40)
                         }
                         .scrollTargetLayout()
                         .scaleEffect(scale, anchor: anchor)
@@ -106,7 +110,8 @@ struct ComicReaderView: View {
                         .simultaneousGesture(drag)
                         .onTapGesture(count: 2, perform: autoScale)
                         .onTapGesture(perform: showToolbarTemporarily)
-
+                        
+                        
                     }
                     .ignoresSafeArea()
                     .background(.background)
@@ -177,6 +182,7 @@ struct ComicReaderView: View {
         reader.readingImageIndexInChapter = item.indexInChapter
         if reader.readingChapterIndex != item.chapterIndex {
             reader.readingChapterIndex = item.chapterIndex
+            reader.syncStoredComics(context: context, chapterIndex: item.chapterIndex)
             showToolbarTemporarily()
         }
         loadNextChapterIfPossible(currentIndexInList: item.indexInList)
@@ -199,9 +205,10 @@ struct ComicReaderView: View {
 
 #Preview {
     let readingState = ReadingState()
-    readingState.readingComic = ReadingComic(title: "秘密教学", chapters: NetworkManager.defaultChapters)
+    readingState.readingComic = ReadingComic(comic: NetworkManager.defaultComics[2], chapters: NetworkManager.defaultChapters)
     readingState.startReadingFrom(chapterIndex: 3)
     return ComicReaderView()
         .environment(readingState)
+        .modelContainer(SampleStoredComic.shared.modelContainer)
 
 }

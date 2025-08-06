@@ -8,31 +8,21 @@
 import SwiftUI
 
 struct ChapterListButtonView: View {
-    let comicID: Int
-    let title: String
-    let updateTime: Date
-    let isOver: Bool
+    let comic: Comic
 
     @State private var showContent = false
-    
+
     @State private var fullscreen = false
-    
+
     @Environment(ReadingState.self) private var reader
 
-    init(comicID: Int, title: String, updateTime: Date, isOver: Bool) {
-        self.comicID = comicID
-        self.title = title
-        self.updateTime = updateTime
-        self.isOver = isOver
-    }
-    
     var chapters: [Chapter] {
         reader.readingComic?.chapters ?? []
     }
 
     var updateInfo: String {
-        let d = Self.formatter.localizedString(for: updateTime, relativeTo: Date())
-        return isOver ? "\(chapters.count)章·完本" : "连载至\(chapters.count)章·\(d)"
+        let d = Self.formatter.localizedString(for: comic.updateTime, relativeTo: Date())
+        return comic.isOver ? "\(chapters.count)章·完本" : "连载至\(chapters.count)章·\(d)"
     }
 
     var body: some View {
@@ -66,15 +56,12 @@ struct ChapterListButtonView: View {
         .sheet(isPresented: $showContent) {
             NavigationStack {
                 ChapterListView(
-                    title: title, chapters: chapters,
+                    comic: comic, chapters: chapters,
                     focusedChapterIndex: chapters.count / 2, showContent: $showContent)
             }
 
         }
-        .task {
-            reader.readingComic = nil
-            await reader.read(comicID: comicID, title: title)
-        }
+
     }
 
     private static let formatter: RelativeDateTimeFormatter = {
@@ -86,10 +73,7 @@ struct ChapterListButtonView: View {
 }
 
 #Preview {
-    let now = Date()
-    let offsetComponents = DateComponents(year: -2, month: -9, day: -3)
-    let date = Calendar.current.date(byAdding: offsetComponents, to: now)!
-    ChapterListButtonView(comicID: 361, title: "秘密教学", updateTime: date, isOver: false)
+    ChapterListButtonView(comic: NetworkManager.defaultComics[0])
         .environment(ReadingState())
         .padding(.horizontal, 20)
 }
