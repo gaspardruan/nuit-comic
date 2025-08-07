@@ -30,7 +30,7 @@ struct ShelfGridItemView: View {
                             .aspectRatio(5 / 7, contentMode: .fill)
                     }
                 }
-
+                .shadow(radius: 8, y: 8)
                 Group {
                     if active {
                         if chosen {

@@ -95,11 +95,12 @@
 				};
 			};
 			buildConfigurationList = 1BCB4D2F2E0C70EE00BB61DE /* Build configuration list for PBXProject "NuitComic" */;
-			developmentRegion = en;
+			developmentRegion = "zh-Hans";
 			hasScannedForEncodings = 0;
 			knownRegions = (
 				en,
 				Base,
+				"zh-Hans",
 			);
 			mainGroup = 1BCB4D2B2E0C70EE00BB61DE;
 			minimizedProjectReferenceProxies = 1;

@@ -1,21 +1,21 @@
 //
-//  ShelfListItemView.swift
+//  SearchListItemView.swift
 //  NuitComic
 //
-//  Created by Zhongqiu Ruan on 2025/8/6.
+//  Created by Zhongqiu Ruan on 2025/8/7.
 //
 
 import SwiftUI
 
-struct ShelfListItemView: View {
-    let comic: StoredComic
-    
+struct SearchListItemView: View {
+    let comic: Comic
+
     var keywords: String {
-        comic.keyword.components(separatedBy: ",").prefix(2).joined(
+        comic.keyword.components(separatedBy: ",").prefix(4).joined(
             separator: " "
         )
     }
-    
+
     var body: some View {
         HStack {
             RemoteImage(url: URL(string: comic.image)!) {
@@ -23,13 +23,13 @@ struct ShelfListItemView: View {
                 if let image = phase.image {
                     image
                         .resizable()
-                        .frame(width: 65, height: 91)
+                        .frame(width: 55, height: 77)
                         .cornerRadius(4)
                         .aspectRatio(5 / 7, contentMode: .fit)
                 } else if phase.error != nil {
-                    Color.red.frame(width: 65, height: 91)
+                    Color.red.frame(width: 55, height: 77)
                 } else {
-                    Color.gray.frame(width: 65, height: 91)
+                    Color.gray.frame(width: 55, height: 77)
                 }
             }
             .shadow(radius: 4, y: 4)
@@ -37,10 +37,10 @@ struct ShelfListItemView: View {
                 Text(comic.title)
                     .font(.subheadline)
                     .lineLimit(1)
-                Text(keywords)
+                Text(comic.author)
                     .font(.footnote)
                     .foregroundColor(.secondary)
-                Text("\((comic.lastReadChapterIndex) + 1)/\(comic.chapterCount)章")
+                Text(keywords)
                     .font(.footnote)
                     .foregroundColor(.secondary)
             }
@@ -49,7 +49,5 @@ struct ShelfListItemView: View {
 }
 
 #Preview {
-    ShelfListItemView(comic: SampleStoredComic.defaultStoredComics[0])
-        .frame(maxHeight: 130)
-        .border(.black)
+    SearchListItemView(comic: NetworkManager.defaultComics[2])
 }

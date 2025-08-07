@@ -34,7 +34,7 @@ class HomeComicFetcher {
                 mostReadComics: mostReadComics,
                 mostFollowedComics: mostFollowedComics,
                 mostReadOverComics: mostReadOverComics,
-                mostSearchedComics:mostSearchedComics
+                mostSearchedComics: mostSearchedComics
             )
         }
     }
@@ -97,4 +97,3 @@ class HomeComicFetcher {
     }
 
 }
-

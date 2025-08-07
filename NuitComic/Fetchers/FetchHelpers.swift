@@ -59,4 +59,3 @@ func responseWithCache(from original: URLResponse, maxAge: Int = 300) -> HTTPURL
         headerFields: headers
     ) ?? httpResponse
 }
-

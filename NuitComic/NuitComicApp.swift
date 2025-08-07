@@ -13,7 +13,7 @@ struct NuitComicApp: App {
         WindowGroup {
             ContentView()
                 .environment(ReadingState())
-                .modelContainer(for: StoredComic.self)
+                .modelContainer(for: [StoredComic.self, SearchHistory.self])
         }
     }
 }

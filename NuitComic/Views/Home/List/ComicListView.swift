@@ -29,14 +29,9 @@ struct ComicListView: View {
                             )
                         }
                         .listRowSeparator(comic == fetcher.comics.first ? .hidden : .visible, edges: .top)
-                        .listRowSeparator(
-                            comic == fetcher.comics.last ? .hidden : .visible,
-                            edges: .bottom
-                        )
+                        .listRowSeparator(comic == fetcher.comics.last ? .hidden : .visible, edges: .bottom)
                         .onAppear {
-                            Task {
-                                await loadNextPage(currentIndex: index)
-                            }
+                            Task { await loadNextPage(currentIndex: index) }
                         }
                     }
                 }
@@ -48,7 +43,7 @@ struct ComicListView: View {
         .listStyle(.plain)
         .navigationTitle(section.rawValue)
         .navigationBarTitleDisplayMode(.inline)
-    
+
         .task {
             if fetcher.comics.count == 0 {
                 await fetcher.loadNextPage()
