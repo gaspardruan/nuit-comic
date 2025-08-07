@@ -2,7 +2,7 @@
 //  ShelfComicView.swift
 //  NuitComic
 //
-//  Created by Zhongqiu Ruan on 2025/8/4.
+//  Created by Gaspard Ruan on 2025/8/4.
 //
 
 import SwiftUI

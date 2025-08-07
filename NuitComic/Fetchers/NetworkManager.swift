@@ -2,7 +2,7 @@
 //  NetworkManager.swift
 //  NuitComic
 //
-//  Created by Zhongqiu Ruan on 2025/6/29.
+//  Created by Gaspard Ruan on 2025/6/29.
 //
 
 import Foundation

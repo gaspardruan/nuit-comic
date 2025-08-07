@@ -2,7 +2,7 @@
 //  StarRating.swift
 //  NuitComic
 //
-//  Created by Zhongqiu Ruan on 2025/6/28.
+//  Created by Gaspard Ruan on 2025/6/28.
 //
 
 import SwiftUI

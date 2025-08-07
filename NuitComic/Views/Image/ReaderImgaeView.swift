@@ -2,7 +2,7 @@
 //  ReaderImgaeView.swift
 //  NuitComic
 //
-//  Created by Zhongqiu Ruan on 2025/7/6.
+//  Created by Gaspard Ruan on 2025/7/6.
 //
 
 import SwiftUI

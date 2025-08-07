@@ -2,7 +2,7 @@
 //  RandomSectionView.swift
 //  NuitComic
 //
-//  Created by Zhongqiu Ruan on 2025/6/30.
+//  Created by Gaspard Ruan on 2025/6/30.
 //
 
 import SwiftUI

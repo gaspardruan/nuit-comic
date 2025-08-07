@@ -2,7 +2,7 @@
 //  Comic.swift
 //  NuitComic
 //
-//  Created by Zhongqiu Ruan on 2025/6/26.
+//  Created by Gaspard Ruan on 2025/6/26.
 //
 
 import Foundation

@@ -2,7 +2,7 @@
 //  ComicInfoView.swift
 //  NuitComic
 //
-//  Created by Zhongqiu Ruan on 2025/7/2.
+//  Created by Gaspard Ruan on 2025/7/2.
 //
 
 import SwiftUI
