@@ -11,6 +11,8 @@
 		1BCB4DCB2E11914A00BB61DE /* .swift-format in Resources */ = {isa = PBXBuildFile; fileRef = 1BCB4DCA2E11914200BB61DE /* .swift-format */; };
 		1BDDAE192E450FBF002C55B5 /* build.sh in Resources */ = {isa = PBXBuildFile; fileRef = 1BDDAE182E450FBF002C55B5 /* build.sh */; };
 		1BDDAE1B2E4512E8002C55B5 /* .gitignore in Resources */ = {isa = PBXBuildFile; fileRef = 1BDDAE1A2E4512DC002C55B5 /* .gitignore */; };
+		1BDDAE1D2E451453002C55B5 /* LICENCE in Resources */ = {isa = PBXBuildFile; fileRef = 1BDDAE1C2E45144C002C55B5 /* LICENCE */; };
+		1BDDAE1F2E451491002C55B5 /* README.md in Resources */ = {isa = PBXBuildFile; fileRef = 1BDDAE1E2E451491002C55B5 /* README.md */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -18,6 +20,8 @@
 		1BCB4DCA2E11914200BB61DE /* .swift-format */ = {isa = PBXFileReference; lastKnownFileType = text; path = ".swift-format"; sourceTree = "<group>"; };
 		1BDDAE182E450FBF002C55B5 /* build.sh */ = {isa = PBXFileReference; lastKnownFileType = text.script.sh; path = build.sh; sourceTree = "<group>"; };
 		1BDDAE1A2E4512DC002C55B5 /* .gitignore */ = {isa = PBXFileReference; lastKnownFileType = text; path = .gitignore; sourceTree = "<group>"; };
+		1BDDAE1C2E45144C002C55B5 /* LICENCE */ = {isa = PBXFileReference; lastKnownFileType = text; path = LICENCE; sourceTree = "<group>"; };
+		1BDDAE1E2E451491002C55B5 /* README.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedRootGroup section */
@@ -43,6 +47,8 @@
 		1BCB4D2B2E0C70EE00BB61DE = {
 			isa = PBXGroup;
 			children = (
+				1BDDAE1E2E451491002C55B5 /* README.md */,
+				1BDDAE1C2E45144C002C55B5 /* LICENCE */,
 				1BDDAE1A2E4512DC002C55B5 /* .gitignore */,
 				1BDDAE182E450FBF002C55B5 /* build.sh */,
 				1BCB4DCA2E11914200BB61DE /* .swift-format */,
@@ -128,8 +134,10 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				1BDDAE1D2E451453002C55B5 /* LICENCE in Resources */,
 				1BCB4DCB2E11914A00BB61DE /* .swift-format in Resources */,
 				1BDDAE1B2E4512E8002C55B5 /* .gitignore in Resources */,
+				1BDDAE1F2E451491002C55B5 /* README.md in Resources */,
 				1BDDAE192E450FBF002C55B5 /* build.sh in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
