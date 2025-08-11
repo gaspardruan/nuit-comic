@@ -20,6 +20,8 @@ struct SearchView: View {
     // MARK: Search History
     @Environment(\.modelContext) private var context
     @Query(sort: \SearchHistory.time, order: .reverse) private var histories: [SearchHistory]
+    
+    @State private var showInfo = false
 
     var showNoHistoryView: Bool {
         searcher.text.isEmpty && histories.isEmpty && !showSearchBar
@@ -42,6 +44,18 @@ struct SearchView: View {
             .searchable(text: $searcher.text, isPresented: $showSearchBar, prompt: "漫画标题、标签、简介")
             .onChange(of: searcher.text, handleTyping)
             .onSubmit(of: .search, handleSubmit)
+            .toolbar {
+                ToolbarItem {
+                    Button("关于", systemImage: "info.circle") {
+                        showInfo = true
+                    }
+                }
+            }
+            .sheet(isPresented: $showInfo) {
+                NavigationStack {
+                    AboutView()
+                }
+            }
             .overlay {
                 SearchHistoryView(searchText: searcher.text, onClick: handleClick)
             }

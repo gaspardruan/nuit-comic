@@ -159,8 +159,6 @@ struct ComicReaderView: View {
 
         withAnimation { showController = true }
 
-        hideTask?.cancel()
-
         hideTask = Task { @MainActor in
             try? await Task.sleep(for: .seconds(5))
             withAnimation { showController = false }
