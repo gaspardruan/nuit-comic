@@ -35,6 +35,7 @@ final class Cache {
             cache.removeObject(forKey: key)
             return nil
         }
+
         return entry.data
     }
 
@@ -58,7 +59,8 @@ final class WrappedRequest: NSObject {
 
     override func isEqual(_ object: Any?) -> Bool {
         guard let other = object as? WrappedRequest else { return false }
-        return request == other.request
+        return request.url == other.request.url && request.httpMethod == other.request.httpMethod
+            && request.httpBody == other.request.httpBody
     }
 
     override var hash: Int {
