@@ -36,11 +36,11 @@ class NetworkManager {
     func data(from request: URLRequest, noCache: Bool = false) async throws -> Data {
 
         if !noCache, let cachedData = Cache.shared.get(for: request) {
-            printRequest(request, label: "cache")
+//            printRequest(request, label: "cache")
             return cachedData
         }
 
-        printRequest(request, label: "request")
+//        printRequest(request, label: "request")
         let (data, _) = try await URLSession.shared.data(for: request)
         if !noCache {
             Cache.shared.set(data, for: request)
