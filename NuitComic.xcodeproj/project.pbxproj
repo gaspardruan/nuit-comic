@@ -8,11 +8,11 @@
 
 /* Begin PBXBuildFile section */
 		1BCB4DC32E1051EF00BB61DE /* ExpandableText in Frameworks */ = {isa = PBXBuildFile; productRef = 1BCB4DC22E1051EF00BB61DE /* ExpandableText */; };
-		1BCB4DCB2E11914A00BB61DE /* .swift-format in Resources */ = {isa = PBXBuildFile; fileRef = 1BCB4DCA2E11914200BB61DE /* .swift-format */; };
-		1BDDAE192E450FBF002C55B5 /* build.sh in Resources */ = {isa = PBXBuildFile; fileRef = 1BDDAE182E450FBF002C55B5 /* build.sh */; };
-		1BDDAE1B2E4512E8002C55B5 /* .gitignore in Resources */ = {isa = PBXBuildFile; fileRef = 1BDDAE1A2E4512DC002C55B5 /* .gitignore */; };
-		1BDDAE1D2E451453002C55B5 /* LICENCE in Resources */ = {isa = PBXBuildFile; fileRef = 1BDDAE1C2E45144C002C55B5 /* LICENCE */; };
-		1BDDAE1F2E451491002C55B5 /* README.md in Resources */ = {isa = PBXBuildFile; fileRef = 1BDDAE1E2E451491002C55B5 /* README.md */; };
+		1BDDAED42E4B6149002C55B5 /* README.md in Resources */ = {isa = PBXBuildFile; fileRef = 1BDDAE1E2E451491002C55B5 /* README.md */; };
+		1BDDAED52E4B6149002C55B5 /* LICENCE in Resources */ = {isa = PBXBuildFile; fileRef = 1BDDAE1C2E45144C002C55B5 /* LICENCE */; };
+		1BDDAED62E4B6149002C55B5 /* .gitignore in Resources */ = {isa = PBXBuildFile; fileRef = 1BDDAE1A2E4512DC002C55B5 /* .gitignore */; };
+		1BDDAED72E4B6149002C55B5 /* build.sh in Resources */ = {isa = PBXBuildFile; fileRef = 1BDDAE182E450FBF002C55B5 /* build.sh */; };
+		1BDDAED82E4B6149002C55B5 /* .swift-format in Resources */ = {isa = PBXBuildFile; fileRef = 1BCB4DCA2E11914200BB61DE /* .swift-format */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -28,11 +28,6 @@
 		1BCB4D362E0C70EE00BB61DE /* NuitComic */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
 			path = NuitComic;
-			sourceTree = "<group>";
-		};
-		1BDDAE262E4A4EF7002C55B5 /* .github */ = {
-			isa = PBXFileSystemSynchronizedRootGroup;
-			path = .github;
 			sourceTree = "<group>";
 		};
 /* End PBXFileSystemSynchronizedRootGroup section */
@@ -52,7 +47,6 @@
 		1BCB4D2B2E0C70EE00BB61DE = {
 			isa = PBXGroup;
 			children = (
-				1BDDAE262E4A4EF7002C55B5 /* .github */,
 				1BDDAE1E2E451491002C55B5 /* README.md */,
 				1BDDAE1C2E45144C002C55B5 /* LICENCE */,
 				1BDDAE1A2E4512DC002C55B5 /* .gitignore */,
@@ -88,7 +82,6 @@
 			);
 			fileSystemSynchronizedGroups = (
 				1BCB4D362E0C70EE00BB61DE /* NuitComic */,
-				1BDDAE262E4A4EF7002C55B5 /* .github */,
 			);
 			name = NuitComic;
 			packageProductDependencies = (
@@ -141,11 +134,11 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				1BDDAE1D2E451453002C55B5 /* LICENCE in Resources */,
-				1BCB4DCB2E11914A00BB61DE /* .swift-format in Resources */,
-				1BDDAE1B2E4512E8002C55B5 /* .gitignore in Resources */,
-				1BDDAE1F2E451491002C55B5 /* README.md in Resources */,
-				1BDDAE192E450FBF002C55B5 /* build.sh in Resources */,
+				1BDDAED42E4B6149002C55B5 /* README.md in Resources */,
+				1BDDAED52E4B6149002C55B5 /* LICENCE in Resources */,
+				1BDDAED62E4B6149002C55B5 /* .gitignore in Resources */,
+				1BDDAED72E4B6149002C55B5 /* build.sh in Resources */,
+				1BDDAED82E4B6149002C55B5 /* .swift-format in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
