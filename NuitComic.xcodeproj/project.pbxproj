@@ -30,6 +30,11 @@
 			path = NuitComic;
 			sourceTree = "<group>";
 		};
+		1BDDAE262E4A4EF7002C55B5 /* .github */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			path = .github;
+			sourceTree = "<group>";
+		};
 /* End PBXFileSystemSynchronizedRootGroup section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -47,6 +52,7 @@
 		1BCB4D2B2E0C70EE00BB61DE = {
 			isa = PBXGroup;
 			children = (
+				1BDDAE262E4A4EF7002C55B5 /* .github */,
 				1BDDAE1E2E451491002C55B5 /* README.md */,
 				1BDDAE1C2E45144C002C55B5 /* LICENCE */,
 				1BDDAE1A2E4512DC002C55B5 /* .gitignore */,
@@ -82,6 +88,7 @@
 			);
 			fileSystemSynchronizedGroups = (
 				1BCB4D362E0C70EE00BB61DE /* NuitComic */,
+				1BDDAE262E4A4EF7002C55B5 /* .github */,
 			);
 			name = NuitComic;
 			packageProductDependencies = (
@@ -295,7 +302,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 1.0;
+				MARKETING_VERSION = 1.0.0;
 				PRODUCT_BUNDLE_IDENTIFIER = name.gaspardruan.NuitComic;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_EMIT_LOC_STRINGS = YES;
@@ -323,7 +330,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 1.0;
+				MARKETING_VERSION = 1.0.0;
 				PRODUCT_BUNDLE_IDENTIFIER = name.gaspardruan.NuitComic;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_EMIT_LOC_STRINGS = YES;
