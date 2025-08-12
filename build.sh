@@ -43,6 +43,7 @@ xcodebuild -scheme "$SCHEME" \
   -configuration "$CONFIGURATION" \
   -archivePath "$ARCHIVE_PATH" \
   -destination "generic/platform=iOS" \
+  -allowProvisioningUpdates \
   clean archive
 
 # export ipa
