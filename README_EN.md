@@ -2,6 +2,10 @@
 
 An ios comic reader for the comics from the [YYMH](https://yymh.app/) website.
 
+## Supported Version
+
+iOS18
+
 ## Screen Shots
 
 > **Notice: Some images blur, because there is adult content.**
