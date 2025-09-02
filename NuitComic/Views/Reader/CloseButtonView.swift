@@ -10,14 +10,12 @@ import SwiftUI
 struct CloseButtonView: View {
     let show: Bool
     @Environment(ReadingState.self) private var reader
-    
+
     var body: some View {
         Group {
             if show {
                 Button(action: {
-                    withAnimation {
-                        reader.close()
-                    }
+                    reader.close()
                 }) {
                     Label("Close", systemImage: "xmark.circle.fill")
                         .labelStyle(.iconOnly)
