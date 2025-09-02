@@ -11,64 +11,69 @@ struct RemoteImagePhase {
     let image: Image?
     let error: Error?
 
-    static let empty = RemoteImagePhase(image: nil, error: nil)
-    static func success(_ image: Image) -> RemoteImagePhase {
-        RemoteImagePhase(image: image, error: nil)
+    static let empty = Self(image: nil, error: nil)
+    static func success(_ image: Image) -> Self { .init(image: image, error: nil) }
+    static func failure(_ error: Error?) -> Self { .init(image: nil, error: error) }
+}
+
+@Observable
+final class RemoteImageLoader {
+    var phase: RemoteImagePhase = .empty
+    private var task: Task<Void, Never>?
+    private let url: URL
+    private let fallback: URL?
+
+    init(url: URL, fallback: URL?) {
+        self.url = url
+        self.fallback = fallback
+        load(url: url, triedFallback: false)
     }
-    static func failure(_ error: Error?) -> RemoteImagePhase {
-        RemoteImagePhase(image: nil, error: error)
+
+    private func load(url: URL, triedFallback: Bool) {
+        task?.cancel()
+        task = Task {
+            var request = URLRequest(url: url)
+            request.setValue("https://yymh.app/", forHTTPHeaderField: "Referer")
+
+            do {
+                let (data, _) = try await NetworkManager.shared.imageSession.data(for: request)
+                guard !Task.isCancelled else { return }
+                if let uiImage = UIImage(data: data) {
+                    phase = .success(Image(uiImage: uiImage))
+                } else {
+                    phase = .failure(nil)
+                }
+            } catch {
+                guard !triedFallback, let fallback else {
+                    phase = .failure(error)
+                    return
+                }
+                load(url: fallback, triedFallback: true)
+            }
+        }
+    }
+
+    deinit {
+        task?.cancel()
+        phase = .empty
     }
 }
 
 struct RemoteImage<Content: View>: View {
-    let url: URL
-    let content: (RemoteImagePhase) -> Content
-    let fallback: URL?
-
-    @State private var triedFallback: Bool = false
-    @State private var phase = RemoteImagePhase.empty
+    @State private var loader: RemoteImageLoader
+    private let content: (RemoteImagePhase) -> Content
 
     init(
         url: URL,
         fallback: URL? = nil,
         @ViewBuilder content: @escaping (RemoteImagePhase) -> Content
     ) {
-        self.url = url
+        _loader = State(initialValue: RemoteImageLoader(url: url, fallback: fallback))
         self.content = content
-        self.fallback = fallback
     }
 
     var body: some View {
-        content(phase)
-            .task {
-                await loadImage(url)
-            }
-    }
-
-    func loadImage(_ url: URL) async {
-        var request = URLRequest(url: url)
-        request.setValue("https://yymh.app/", forHTTPHeaderField: "Referer")
-
-        do {
-            let (data, _) = try await NetworkManager.shared.imageSession.data(for: request)
-            if let uiImage = UIImage(data: data) {
-                let image = Image(uiImage: uiImage)
-                phase = .success(image)
-            } else {
-                phase = .failure(nil)
-            }
-        } catch {
-            guard triedFallback == false else {
-                phase = .failure(error)
-                return
-            }
-            if  let fallback = self.fallback {
-                triedFallback = true
-                await loadImage(fallback)
-            } else {
-                phase = .failure(error)
-            }
-        }
+        content(loader.phase)
     }
 }
 
