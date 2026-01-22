@@ -13,7 +13,7 @@ struct ComicImage: View {
 
     var body: some View {
         KFImage(URL(string: url))
-            .requestModifier(ComicImageConfig.requestModifier)
+            .requestModifier(ServerConfig.requestModifier)
             .cacheOriginalImage()
             .placeholder {
                 Image("placeholder")
@@ -28,5 +28,5 @@ struct ComicImage: View {
 }
 
 #Preview {
-    ComicImage(url: "https://icny.tengxun.click/public/bookimages/1497/d4e2b6a1-2426-49e0-a75a-ebd03cfb4f33.jpe")
+    ComicImage(url: "https://icny.tengxun.click/public/bookimages/1497/d4e2b6a1-2426-49e0-a75a-ebd03cfb4f33.jpeg")
 }

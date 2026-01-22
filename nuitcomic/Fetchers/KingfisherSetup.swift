@@ -7,10 +7,14 @@
 
 import Kingfisher
 
-enum ComicImageConfig {
+enum ServerConfig {
 
     // 漫画站点 Referer
     static let referer = "https://yymh.app/"
+    
+    static let apiBaseUrl = "https://yymh.app/home/api"
+    
+    static let imageBaseUrl = "https://icny.tengxun.click/public"
 
     // Kingfisher Request Modifier
     static let requestModifier = AnyModifier { request in
