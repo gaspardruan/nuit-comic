@@ -6,8 +6,13 @@
 	objectVersion = 77;
 	objects = {
 
+/* Begin PBXBuildFile section */
+		1B3A6DF42F22309D00ADC172 /* .gitignore in Resources */ = {isa = PBXBuildFile; fileRef = 1B3A6DF32F22309D00ADC172 /* .gitignore */; };
+/* End PBXBuildFile section */
+
 /* Begin PBXFileReference section */
-		1B3A6D5A2F222FD800ADC172 /* nuitcomic.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = nuitcomic.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		1B3A6D5A2F222FD800ADC172 /* nuitcomic.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; name = nuitcomic.app; path = "/Users/zq/coding/ios/nuitcomic/build/Debug-iphoneos/nuitcomic.app"; sourceTree = "<absolute>"; };
+		1B3A6DF32F22309D00ADC172 /* .gitignore */ = {isa = PBXFileReference; lastKnownFileType = text; path = .gitignore; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedRootGroup section */
@@ -32,17 +37,9 @@
 		1B3A6D512F222FD800ADC172 = {
 			isa = PBXGroup;
 			children = (
+				1B3A6DF32F22309D00ADC172 /* .gitignore */,
 				1B3A6D5C2F222FD800ADC172 /* nuitcomic */,
-				1B3A6D5B2F222FD800ADC172 /* Products */,
 			);
-			sourceTree = "<group>";
-		};
-		1B3A6D5B2F222FD800ADC172 /* Products */ = {
-			isa = PBXGroup;
-			children = (
-				1B3A6D5A2F222FD800ADC172 /* nuitcomic.app */,
-			);
-			name = Products;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -95,7 +92,7 @@
 			mainGroup = 1B3A6D512F222FD800ADC172;
 			minimizedProjectReferenceProxies = 1;
 			preferredProjectObjectVersion = 77;
-			productRefGroup = 1B3A6D5B2F222FD800ADC172 /* Products */;
+			productRefGroup = 1B3A6D512F222FD800ADC172;
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
@@ -109,6 +106,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				1B3A6DF42F22309D00ADC172 /* .gitignore in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
