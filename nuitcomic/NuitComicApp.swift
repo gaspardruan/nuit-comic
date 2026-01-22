@@ -9,11 +9,11 @@ import SwiftUI
 
 @main
 struct nuitcomicApp: App {
-    
-    init(){
+
+    init() {
         setupKingfisher()
     }
-    
+
     var body: some Scene {
         WindowGroup {
             ContentView()

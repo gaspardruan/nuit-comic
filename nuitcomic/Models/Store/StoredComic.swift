@@ -9,7 +9,7 @@ import Foundation
 import SwiftData
 
 @Model
-class StoredComic : Identifiable, Hashable {
+class StoredComic: Identifiable, Hashable {
     var id: Int
     var title: String
     var image: String
@@ -26,10 +26,16 @@ class StoredComic : Identifiable, Hashable {
     var lastReadChapterIndex: Int
     var chapterCount: Int
     var storeTime: Date
-    
+
     var isCollected: Bool
 
-    init(from comic: Comic, lastReadChapterIndex: Int, chapterCount: Int, isCollected: Bool = false, storeTime: Date = .now) {
+    init(
+        from comic: Comic,
+        lastReadChapterIndex: Int,
+        chapterCount: Int,
+        isCollected: Bool = false,
+        storeTime: Date = .now
+    ) {
         self.id = comic.id
         self.title = comic.title
         self.image = comic.image

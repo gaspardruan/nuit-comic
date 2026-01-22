@@ -16,7 +16,7 @@ struct SimpleGrid<T: Identifiable, Content: View>: View {
     var rowNum: Int {
         comics.count / columnNum
     }
-    
+
     var restNum: Int {
         comics.count % columnNum
     }
@@ -26,7 +26,12 @@ struct SimpleGrid<T: Identifiable, Content: View>: View {
             ForEach(0...rowNum, id: \.self) { rowIndex in
                 let rowCount = rowNum == rowIndex ? restNum : columnNum
                 GridRow {
-                    let rowComics = Array(comics[rowIndex * columnNum..<rowIndex * columnNum + rowCount].enumerated())
+                    let rowComics = Array(
+                        comics[
+                            rowIndex * columnNum..<rowIndex * columnNum
+                                + rowCount
+                        ].enumerated()
+                    )
                     ForEach(rowComics, id: \.element.id) { index, comic in
                         let globalIndex = rowIndex * columnNum + index
                         gridItem(comic, globalIndex)
@@ -39,7 +44,9 @@ struct SimpleGrid<T: Identifiable, Content: View>: View {
 
 #Preview {
     ScrollView {
-        SimpleGrid(comics: Array(LocalData.comics.prefix(6)), columnNum: 3) { comic, _ in
+        SimpleGrid(comics: Array(LocalData.comics.prefix(6)), columnNum: 3) {
+            comic,
+            _ in
             ComicImage(url: comic.image)
         }
         .padding(20)

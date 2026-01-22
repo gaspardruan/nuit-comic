@@ -5,8 +5,8 @@
 //  Created by Zhongqiu Ruan on 2026/1/22.
 //
 
-import SwiftUI
 import Kingfisher
+import SwiftUI
 
 struct ComicImage: View {
     let url: String
@@ -28,5 +28,8 @@ struct ComicImage: View {
 }
 
 #Preview {
-    ComicImage(url: "https://icny.tengxun.click/public/bookimages/1497/d4e2b6a1-2426-49e0-a75a-ebd03cfb4f33.jpeg")
+    ComicImage(
+        url:
+            "https://icny.tengxun.click/public/bookimages/1497/d4e2b6a1-2426-49e0-a75a-ebd03cfb4f33.jpeg"
+    )
 }

@@ -10,7 +10,7 @@ class LocalData {
         let decoded: Comics = load("comics.json")
         return decoded.data
     }
-    
+
     static var chapters: [Chapter] {
         let decoded: ChaptersWrapper = load("chapters.json")
         return decoded.result.list

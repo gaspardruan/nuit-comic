@@ -20,7 +20,7 @@ struct Comic: Identifiable, Decodable, Equatable, Hashable {
     let updateTime: Date
     let isOver: Bool
     let score: Double
-    
+
     enum CodingKeys: String, CodingKey {
         case id
         case title
@@ -35,7 +35,7 @@ struct Comic: Identifiable, Decodable, Equatable, Hashable {
         case isOver = "mhstatus"
         case score = "pingfen"
     }
-    
+
     init(from comic: StoredComic) {
         self.id = comic.id
         self.title = comic.title
@@ -50,25 +50,37 @@ struct Comic: Identifiable, Decodable, Equatable, Hashable {
         self.isOver = comic.isOver
         self.score = comic.score
     }
-    
+
     init(from decoder: any Decoder) throws {
         let container = try decoder.container(keyedBy: CodingKeys.self)
         self.id = Int(try container.decode(String.self, forKey: .id))!
         self.title = try container.decode(String.self, forKey: .title)
-        self.image = ServerConfig.imageBaseUrl + (try container.decode(String.self, forKey: .image))
-        self.cover = ServerConfig.imageBaseUrl + (try container.decode(String.self, forKey: .cover))
-        self.description = try container.decode(String.self, forKey: .description)
+        self.image =
+            ServerConfig.imageBaseUrl
+            + (try container.decode(String.self, forKey: .image))
+        self.cover =
+            ServerConfig.imageBaseUrl
+            + (try container.decode(String.self, forKey: .cover))
+        self.description = try container.decode(
+            String.self,
+            forKey: .description
+        )
         self.author = try container.decode(String.self, forKey: .author)
         self.keyword = try container.decode(String.self, forKey: .keyword)
-        self.follow = Int(try container.decode(String.self, forKey: .follow)) ?? 0
+        self.follow =
+            Int(try container.decode(String.self, forKey: .follow)) ?? 0
         self.view = Int64(try container.decode(String.self, forKey: .view)) ?? 0
         let dateString = try container.decode(String.self, forKey: .updateTime)
         self.updateTime = transTime(from: dateString)
         let isOver = try container.decode(String.self, forKey: .isOver)
         self.isOver = isOver == "1" ? true : false
-        self.score = Double(try container.decodeIfPresent(String.self, forKey: .score) ?? "9.0") ?? 9.0
+        self.score =
+            Double(
+                try container.decodeIfPresent(String.self, forKey: .score)
+                    ?? "9.0"
+            ) ?? 9.0
     }
-    
+
     static func == (lhs: Self, rhs: Self) -> Bool {
         lhs.id == rhs.id
     }

@@ -26,9 +26,14 @@ struct Chapter: Decodable, Identifiable {
         self.title = try container.decode(String.self, forKey: .title)
         let dateString = try container.decode(String.self, forKey: .createTime)
         self.createTime = transTime(from: dateString)
-        let imageListString = try container.decode(String.self, forKey: .imageList)
-        self.imageList = imageListString.split(separator: ",").map { $0.trimmingCharacters(in: .whitespaces) }
-            .filter { !$0.isEmpty }.map { "\(ServerConfig.imageBaseUrl)\($0)" }
+        let imageListString = try container.decode(
+            String.self,
+            forKey: .imageList
+        )
+        self.imageList = imageListString.split(separator: ",").map {
+            $0.trimmingCharacters(in: .whitespaces)
+        }
+        .filter { !$0.isEmpty }.map { "\(ServerConfig.imageBaseUrl)\($0)" }
     }
 }
 
