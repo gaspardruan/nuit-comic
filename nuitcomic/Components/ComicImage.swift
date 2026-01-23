@@ -23,7 +23,7 @@ struct ComicImage: View {
             .retry(maxCount: 2, interval: .seconds(2))
             .fade(duration: 0.2)
             .resizable()
-            .scaledToFit()
+//            .scaledToFit()
     }
 }
 

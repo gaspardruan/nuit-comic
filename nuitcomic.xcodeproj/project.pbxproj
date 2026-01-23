@@ -9,11 +9,13 @@
 /* Begin PBXBuildFile section */
 		1B3A6DF42F22309D00ADC172 /* .gitignore in Resources */ = {isa = PBXBuildFile; fileRef = 1B3A6DF32F22309D00ADC172 /* .gitignore */; };
 		1B3A6DF72F2232BE00ADC172 /* Kingfisher in Frameworks */ = {isa = PBXBuildFile; productRef = 1B3A6DF62F2232BE00ADC172 /* Kingfisher */; };
+		1B3A6E3A2F225D2500ADC172 /* Cache in Frameworks */ = {isa = PBXBuildFile; productRef = 1B3A6E392F225D2500ADC172 /* Cache */; };
+		1B3A6E3D2F225F3000ADC172 /* Alamofire in Frameworks */ = {isa = PBXBuildFile; productRef = 1B3A6E3C2F225F3000ADC172 /* Alamofire */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
-		1B3A6D5A2F222FD800ADC172 /* nuitcomic.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; name = nuitcomic.app; path = "/Users/zq/coding/ios/nuitcomic/build/Debug-iphoneos/nuitcomic.app"; sourceTree = "<absolute>"; };
 		1B3A6DF32F22309D00ADC172 /* .gitignore */ = {isa = PBXFileReference; lastKnownFileType = text; path = .gitignore; sourceTree = "<group>"; };
+		1B3A6E4C2F23973C00ADC172 /* nuitcomic.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = nuitcomic.app; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedRootGroup section */
@@ -29,7 +31,9 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				1B3A6E3D2F225F3000ADC172 /* Alamofire in Frameworks */,
 				1B3A6DF72F2232BE00ADC172 /* Kingfisher in Frameworks */,
+				1B3A6E3A2F225D2500ADC172 /* Cache in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -41,6 +45,7 @@
 			children = (
 				1B3A6DF32F22309D00ADC172 /* .gitignore */,
 				1B3A6D5C2F222FD800ADC172 /* nuitcomic */,
+				1B3A6E4C2F23973C00ADC172 /* nuitcomic.app */,
 			);
 			sourceTree = "<group>";
 		};
@@ -65,9 +70,11 @@
 			name = nuitcomic;
 			packageProductDependencies = (
 				1B3A6DF62F2232BE00ADC172 /* Kingfisher */,
+				1B3A6E392F225D2500ADC172 /* Cache */,
+				1B3A6E3C2F225F3000ADC172 /* Alamofire */,
 			);
 			productName = nuitcomic;
-			productReference = 1B3A6D5A2F222FD800ADC172 /* nuitcomic.app */;
+			productReference = 1B3A6E4C2F23973C00ADC172 /* nuitcomic.app */;
 			productType = "com.apple.product-type.application";
 		};
 /* End PBXNativeTarget section */
@@ -96,6 +103,8 @@
 			minimizedProjectReferenceProxies = 1;
 			packageReferences = (
 				1B3A6DF52F2232BE00ADC172 /* XCRemoteSwiftPackageReference "Kingfisher" */,
+				1B3A6E382F225D2500ADC172 /* XCRemoteSwiftPackageReference "Cache" */,
+				1B3A6E3B2F225F3000ADC172 /* XCRemoteSwiftPackageReference "Alamofire" */,
 			);
 			preferredProjectObjectVersion = 77;
 			productRefGroup = 1B3A6D512F222FD800ADC172;
@@ -338,6 +347,22 @@
 				minimumVersion = 8.6.2;
 			};
 		};
+		1B3A6E382F225D2500ADC172 /* XCRemoteSwiftPackageReference "Cache" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/hyperoslo/Cache.git";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 7.4.0;
+			};
+		};
+		1B3A6E3B2F225F3000ADC172 /* XCRemoteSwiftPackageReference "Alamofire" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/Alamofire/Alamofire.git";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 5.11.0;
+			};
+		};
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
@@ -345,6 +370,16 @@
 			isa = XCSwiftPackageProductDependency;
 			package = 1B3A6DF52F2232BE00ADC172 /* XCRemoteSwiftPackageReference "Kingfisher" */;
 			productName = Kingfisher;
+		};
+		1B3A6E392F225D2500ADC172 /* Cache */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 1B3A6E382F225D2500ADC172 /* XCRemoteSwiftPackageReference "Cache" */;
+			productName = Cache;
+		};
+		1B3A6E3C2F225F3000ADC172 /* Alamofire */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 1B3A6E3B2F225F3000ADC172 /* XCRemoteSwiftPackageReference "Alamofire" */;
+			productName = Alamofire;
 		};
 /* End XCSwiftPackageProductDependency section */
 	};

@@ -5,8 +5,6 @@
 //  Created by Zhongqiu Ruan on 2026/1/22.
 //
 
-import Foundation
-
 struct HomeComic {
     let newComics: [Comic]
     let updatedComics: [Comic]

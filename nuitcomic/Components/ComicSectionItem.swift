@@ -11,14 +11,18 @@ struct ComicSectionItem: View {
     let comic: Comic
 
     var keywords: String {
-        comic.keyword.components(separatedBy: ",").prefix(2).joined(
-            separator: " "
-        )
+        let result = comic.keyword
+            .components(separatedBy: ",")
+            .prefix(2)
+            .joined(separator: " ")
+
+        return result.isEmpty ? " " : result
     }
 
     var body: some View {
         VStack(alignment: .leading) {
             ComicImage(url: comic.image)
+                //                .resizable()
                 .aspectRatio(5 / 7, contentMode: .fill)
                 .cornerRadius(4)
             Text(comic.title)

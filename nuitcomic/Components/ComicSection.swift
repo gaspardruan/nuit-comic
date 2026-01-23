@@ -16,6 +16,7 @@ struct ComicSection<Content: View>: View {
     var body: some View {
         VStack(alignment: .leading) {
             header()
+                
             SimpleGrid(comics: comics, columnNum: columnNum) { comic, _ in
                 //                NavigationLink(
                 //                    destination: ComicDetailView(comic: comic)
@@ -24,7 +25,9 @@ struct ComicSection<Content: View>: View {
                 //                }
             }
         }
-        .padding(20)
+//        .padding(20)
+        .frame(maxWidth: .infinity, alignment: .leading)
+        .padding()
     }
 }
 

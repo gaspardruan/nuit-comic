@@ -38,5 +38,5 @@ func setupKingfisher() {
     // 下载配置
     ImageDownloader.default.downloadTimeout = 15
     ImageDownloader.default.sessionConfiguration.httpMaximumConnectionsPerHost =
-        4
+        9
 }
