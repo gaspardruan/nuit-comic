@@ -89,7 +89,7 @@ struct NavigableSectionView: View {
     var body: some View {
         ComicSection(comics: comics) {
             NavigationLink {
-                Text(section.rawValue)
+                SectionDetailView(section: section)
             } label: {
                 HStack {
                     Text(section.rawValue)

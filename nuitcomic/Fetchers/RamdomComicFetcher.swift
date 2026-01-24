@@ -15,9 +15,16 @@ class RandomComicFetcher {
     var isLoading = false
     var errorMessage: String? = nil
 
+    func firstRandom() async {
+        guard comics.isEmpty else { return }
+        await random()
+    }
+
+    @MainActor
     func random() async {
         isLoading = true
         errorMessage = nil
+        defer { isLoading = false }
 
         do {
             let decoded: Comics =
@@ -35,9 +42,6 @@ class RandomComicFetcher {
         } catch {
             errorMessage = error.localizedDescription
         }
-
-        isLoading = false
-
     }
 
 }

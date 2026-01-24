@@ -15,6 +15,7 @@ class HomeComicFetcher {
     var isLoading = false
     var errorMessage: String?
 
+    @MainActor
     func fetchAll() async {
         isLoading = true
         errorMessage = nil
@@ -42,17 +43,17 @@ class HomeComicFetcher {
                 mostReadOver,
                 mostSearched
             )
-            Task { @MainActor in
-                homeComic = HomeComic(
-                    newComics: newComics,
-                    updatedComics: updatedComics,
-                    recommendedComics: recommendedComics,
-                    mostReadComics: mostReadComics,
-                    mostFollowedComics: mostFollowedComics,
-                    mostReadOverComics: mostReadOverComics,
-                    mostSearchedComics: mostSearchedComics
-                )
-            }
+
+            homeComic = HomeComic(
+                newComics: newComics,
+                updatedComics: updatedComics,
+                recommendedComics: recommendedComics,
+                mostReadComics: mostReadComics,
+                mostFollowedComics: mostFollowedComics,
+                mostReadOverComics: mostReadOverComics,
+                mostSearchedComics: mostSearchedComics
+            )
+
         } catch {
             errorMessage = error.localizedDescription
         }
@@ -95,6 +96,7 @@ class HomeComicFetcher {
                 parameters: [
                     "start": 0,
                     "limit": 6,
+                    "type": 1,
                     "order": "update_time desc",
                 ]
             )
@@ -111,6 +113,7 @@ class HomeComicFetcher {
                 parameters: [
                     "start": 0,
                     "limit": 6,
+                    "type": 1,
                     "order": "view desc",
                 ]
             )
@@ -127,8 +130,9 @@ class HomeComicFetcher {
                 parameters: [
                     "start": 0,
                     "limit": 6,
+                    "type": 1,
                     "order": "view desc",
-                    "isOver": true,
+                    "mhstatus": 1,
                 ]
             )
 
@@ -144,6 +148,7 @@ class HomeComicFetcher {
                 parameters: [
                     "start": 0,
                     "limit": 6,
+                    "type": 1,
                     "order": "mark desc",
                 ]
             )

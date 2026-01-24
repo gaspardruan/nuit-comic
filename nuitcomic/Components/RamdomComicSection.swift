@@ -24,10 +24,10 @@ struct RandomComicSection: View {
                 .fontWeight(.semibold)
             }
         }.task {
-            await fetcher.random()
+            await fetcher.firstRandom()
         }
     }
-    
+
     private func handleTap() {
         Task {
             await fetcher.random()

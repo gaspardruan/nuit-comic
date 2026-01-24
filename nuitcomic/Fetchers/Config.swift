@@ -5,6 +5,9 @@
 //  Created by Zhongqiu Ruan on 2026/1/22.
 //
 
+import Alamofire
+import Cache
+import Foundation
 import Kingfisher
 
 enum ServerConfig {
@@ -16,6 +19,8 @@ enum ServerConfig {
 
     static let imageBaseUrl = "https://icny.tengxun.click/public"
 
+    static let pageSize = 20
+
     // Kingfisher Request Modifier
     static let requestModifier = AnyModifier { request in
         var r = request
@@ -24,11 +29,31 @@ enum ServerConfig {
     }
 }
 
+// 请求缓存
+let jsonStorage: Storage<String, Data> = {
+    let diskConfig = DiskConfig(
+        name: "json_cache"
+    )
+
+    let memoryConfig = MemoryConfig(
+        expiry: .seconds(180),  // 3 分钟
+        countLimit: 100
+    )
+
+    return try! Storage(
+        diskConfig: diskConfig,
+        memoryConfig: memoryConfig,
+        fileManager: .default,
+        transformer: TransformerFactory.forData()
+    )
+}()
+
+// 图片缓存
 func setupKingfisher() {
     let cache = ImageCache.default
 
     // 内存缓存（漫画建议大）
-    cache.memoryStorage.config.totalCostLimit = 300 * 1024 * 1024  // 300MB
+    cache.memoryStorage.config.totalCostLimit = 800 * 1024 * 1024  // 500MB
     cache.memoryStorage.config.expiration = .seconds(60 * 60)
 
     // 磁盘缓存
