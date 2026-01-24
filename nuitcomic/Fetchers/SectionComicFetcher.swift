@@ -99,9 +99,8 @@ final class SectionComicFetcher {
 
             fetchedComics = decoded.data
         } else {
-            let decoded: RecommendComicWrapper  = try await ApiClient.shared.request(
-                "/getpage/tp/1-recommend-\(pageNum)"
-            )
+            let decoded: RecommendComicWrapper = try await ApiClient.shared
+                .request("/getpage/tp/1-recommend-\(pageNum)")
             fetchedComics = decoded.result.list
         }
 
