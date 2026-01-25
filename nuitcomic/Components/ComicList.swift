@@ -14,15 +14,21 @@ struct ComicList: View {
 
     var body: some View {
         List {
-            ForEach(Array(comics.enumerated()), id: \.element.id) { index, comic in
-                ComicListItem(comic: comic)
-                    .listRowSeparator(.hidden, edges: .top)
-                    .listRowSeparator(.visible, edges: .bottom)
-                    .onAppear{
-                        if index == comics.count - threshold {
-                            onReachBottom()
+            ForEach(Array(comics.enumerated()), id: \.element.id) {
+                index,
+                comic in
+                NavigationLink(
+                    destination: ComicDetailView(comic: comic)
+                ) {
+                    ComicListItem(comic: comic)
+                        .listRowSeparator(.hidden, edges: .top)
+                        .listRowSeparator(.visible, edges: .bottom)
+                        .onAppear {
+                            if index == comics.count - threshold {
+                                onReachBottom()
+                            }
                         }
-                    }
+                }
 
             }
         }
@@ -32,6 +38,6 @@ struct ComicList: View {
 
 #Preview {
     NavigationStack {
-        ComicList(comics: LocalData.comics, onReachBottom: { print("hello")})
+        ComicList(comics: LocalData.comics, onReachBottom: { print("hello") })
     }
 }

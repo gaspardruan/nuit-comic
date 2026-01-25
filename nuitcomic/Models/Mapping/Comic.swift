@@ -36,6 +36,21 @@ struct Comic: Identifiable, Decodable, Equatable, Hashable {
         case score = "pingfen"
     }
 
+    init() {
+        self.id = 0
+        self.title = ""
+        self.image = ""
+        self.cover = ""
+        self.description = ""
+        self.author = ""
+        self.keyword = ""
+        self.follow = 0
+        self.view = 0
+        self.updateTime = .distantPast
+        self.isOver = false
+        self.score = 0.0
+    }
+
     init(from comic: StoredComic) {
         self.id = comic.id
         self.title = comic.title

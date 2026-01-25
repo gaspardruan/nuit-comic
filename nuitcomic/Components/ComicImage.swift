@@ -10,9 +10,19 @@ import SwiftUI
 
 struct ComicImage: View {
     let url: String
+    let fallbackUrl: String?
+
+    @State private var currentUrl: String
+    @State private var didFallback = false
+
+    init(url: String, fallbackUrl: String? = nil) {
+        self.url = url
+        self.fallbackUrl = fallbackUrl
+        _currentUrl = State(initialValue: url)
+    }
 
     var body: some View {
-        KFImage(URL(string: url))
+        KFImage(URL(string: currentUrl))
             .requestModifier(ServerConfig.requestModifier)
             .cacheOriginalImage()
             .placeholder {
@@ -23,7 +33,13 @@ struct ComicImage: View {
             .retry(maxCount: 2, interval: .seconds(2))
             .fade(duration: 0.2)
             .resizable()
-//            .scaledToFit()
+            .onFailure { _ in
+                guard !didFallback, let fallbackUrl, fallbackUrl != currentUrl
+                else { return }
+
+                didFallback = true
+                currentUrl = fallbackUrl
+            }
     }
 }
 

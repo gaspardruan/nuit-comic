@@ -12,29 +12,29 @@ struct ComicSection<Content: View>: View {
     let columnNum = 3
     let header: () -> Content
 
-
     var body: some View {
         VStack(alignment: .leading) {
             header()
-                
+
             SimpleGrid(comics: comics, columnNum: columnNum) { comic, _ in
-                //                NavigationLink(
-                //                    destination: ComicDetailView(comic: comic)
-                //                ) {
-                ComicSectionItem(comic: comic)
-                //                }
+                NavigationLink(
+                    destination: ComicDetailView(comic: comic)
+                ) {
+                    ComicSectionItem(comic: comic)
+                }
             }
         }
-//        .padding(20)
         .frame(maxWidth: .infinity, alignment: .leading)
-        .padding()
+        .padding(AppSpacing.standard)
     }
 }
 
 #Preview {
-    ScrollView {
-        ComicSection(comics: LocalData.comics) {
-            Text("Header")
+    NavigationStack {
+        ScrollView {
+            ComicSection(comics: LocalData.comics) {
+                Text("Header")
+            }
         }
     }
 }
