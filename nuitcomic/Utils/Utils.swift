@@ -49,3 +49,18 @@ let dateFormatter: RelativeDateTimeFormatter = {
     f.unitsStyle = .full
     return f
 }()
+
+func generateImageItemList(
+    from imageList: [String],
+    chapterIndex: Int,
+    startIndexInList: Int = 0
+) -> [ImageItem] {
+    imageList.enumerated().map { index, image in
+        ImageItem(
+            url: image,
+            indexInChapter: index,
+            chapterIndex: chapterIndex,
+            indexInList: index + startIndexInList
+        )
+    }
+}

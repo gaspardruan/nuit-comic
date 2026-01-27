@@ -9,10 +9,14 @@ import SwiftUI
 
 struct ChapterButton: View {
     let comic: Comic
-    let chapters: [Chapter]
     let lastReadChapterIndex: Int
 
     @State private var showContent = false
+    @Environment(AppState.self) private var reader
+    
+    var chapters: [Chapter] {
+        reader.readingComic?.ch ?? []
+    }
 
     var updateInfo: String {
         let d = dateFormatter.localizedString(
@@ -24,6 +28,7 @@ struct ChapterButton: View {
     }
 
     var body: some View {
+        let _ = Self._printChanges()
         Button {
             showContent = true
         } label: {
@@ -56,14 +61,17 @@ struct ChapterButton: View {
                 ChapterList(comic: comic, chapters: chapters, focusedChapterIndex: 100)
             }
         }
+        .task {
+            await reader.readCover(comic: comic)
+        }
     }
 }
 
 #Preview {
     ChapterButton(
         comic: LocalData.comics[0],
-        chapters: LocalData.chapters,
         lastReadChapterIndex: 3
     )
+    .environment(AppState())
     .padding()
 }

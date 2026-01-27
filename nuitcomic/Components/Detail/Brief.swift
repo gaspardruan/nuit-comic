@@ -29,6 +29,7 @@ struct Brief: View {
     }
 
     var body: some View {
+        let _ = Self._printChanges()
         VStack(spacing: AppSpacing.tight) {
             Text(comic.title)
                 .font(.title2)
@@ -51,7 +52,10 @@ struct Brief: View {
                 .foregroundColor(.secondary)
                 .multilineTextAlignment(.center)
         }
+        
+        
     }
+        
 }
 
 #Preview {

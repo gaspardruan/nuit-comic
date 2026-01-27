@@ -10,11 +10,14 @@ import SwiftUI
 struct ComicDetailView: View {
     let comic: Comic
 
+    //    @Environment(ReaderState.self) private var reader
+
     var coverHeight: CGFloat {
         (UIScreen.main.bounds.width - 2 * AppSpacing.standard) * 8 / 15
     }
 
     var body: some View {
+        let _ = Self._printChanges()
         ScrollView {
             VStack(spacing: AppSpacing.tight * 2) {
                 ComicImage(url: comic.cover, fallbackUrl: comic.image)
@@ -39,7 +42,6 @@ struct ComicDetailView: View {
 
                 ChapterButton(
                     comic: comic,
-                    chapters: LocalData.chapters,
                     lastReadChapterIndex: 3
                 )
 
@@ -57,5 +59,6 @@ struct ComicDetailView: View {
 #Preview {
     NavigationStack {
         ComicDetailView(comic: LocalData.comics[2])
+            .environment(AppState())
     }
 }

@@ -8,17 +8,28 @@
 import Kingfisher
 import SwiftUI
 
-struct ComicImage: View {
+struct ComicImage<Placeholder: View>: View {
     let url: String
     let fallbackUrl: String?
+    @ViewBuilder let placeholder: () -> Placeholder
 
     @State private var currentUrl: String
     @State private var didFallback = false
 
-    init(url: String, fallbackUrl: String? = nil) {
+    init(
+        url: String,
+        fallbackUrl: String? = nil,
+        @ViewBuilder placeholder: @escaping () -> Placeholder = {
+            Image("placeholder")
+                .resizable()
+                .scaledToFit()
+        }
+    ) {
         self.url = url
         self.fallbackUrl = fallbackUrl
+        self.placeholder = placeholder
         _currentUrl = State(initialValue: url)
+
     }
 
     var body: some View {
@@ -26,9 +37,7 @@ struct ComicImage: View {
             .requestModifier(ServerConfig.requestModifier)
             .cacheOriginalImage()
             .placeholder {
-                Image("placeholder")
-                    .resizable()
-                    .scaledToFit()
+                placeholder()
             }
             .retry(maxCount: 2, interval: .seconds(2))
             .fade(duration: 0.2)
@@ -40,12 +49,13 @@ struct ComicImage: View {
                 didFallback = true
                 currentUrl = fallbackUrl
             }
+
     }
 }
 
 #Preview {
     ComicImage(
         url:
-            "https://icny.tengxun.click/public/bookimages/1497/d4e2b6a1-2426-49e0-a75a-ebd03cfb4f33.jpeg"
+            "https://icny.tengxun.click/public/bookimages/1497/d4e2b6a1-2426-49e0-a75a-ebd03cfb4f3.jpeg"
     )
 }

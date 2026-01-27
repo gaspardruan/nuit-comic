@@ -7,6 +7,7 @@
 
 import Alamofire
 import Foundation
+import Kingfisher
 
 final class ApiClient {
     static let shared = ApiClient()
@@ -65,4 +66,21 @@ final class ApiClient {
         return try JSONDecoder().decode(T.self, from: data)
     }
 
+    func prefetch(urls: [String], onFinished: (() -> Void)? = nil) {
+        guard !urls.isEmpty else { return }
+
+        let wrappedUrls = urls.compactMap { URL(string: $0) }
+        let prefetcher = ImagePrefetcher(
+            urls: wrappedUrls,
+            options: [
+                .requestModifier(ServerConfig.requestModifier),
+                .cacheOriginalImage,
+            ],
+            completionHandler: { _, _, _ in
+                onFinished?()
+            }
+        )
+        prefetcher.maxConcurrentDownloads = 9
+        prefetcher.start()
+    }
 }

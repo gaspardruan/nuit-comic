@@ -22,7 +22,7 @@ struct HomeView: View {
 
     @ViewBuilder
     private var content: some View {
-
+        let _ = Self._printChanges()
         if let homeComic = fetcher.homeComic {
             ScrollView(.vertical) {
                 NavigableSectionView(
@@ -60,13 +60,6 @@ struct HomeView: View {
             }
 
         }
-
-        // Loading
-        else if fetcher.isLoading {
-            ProgressView("加载中...")
-        }
-
-        // Error
         else if let error = fetcher.errorMessage {
             VStack {
                 Text("加载失败")
@@ -79,6 +72,9 @@ struct HomeView: View {
                     Task { await fetcher.fetchAll() }
                 }
             }
+        }
+        else {
+            ProgressView("加载中...")
         }
     }
 }
@@ -108,4 +104,5 @@ struct NavigableSectionView: View {
 
 #Preview {
     HomeView()
+        .environment(AppState())
 }

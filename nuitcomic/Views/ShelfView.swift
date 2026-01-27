@@ -14,7 +14,13 @@ struct ShelfView: View {
                 .imageScale(.large)
                 .foregroundStyle(.tint)
             Text("Shelf View")
+            Text("已经到底了!")
+//                .font(.callout)
         }
         .padding()
     }
+}
+
+#Preview {
+    ShelfView()
 }
