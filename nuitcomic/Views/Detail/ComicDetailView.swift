@@ -11,6 +11,7 @@ struct ComicDetailView: View {
     let comic: Comic
 
     //    @Environment(ReaderState.self) private var reader
+    //    @Environment(AppState.self) private var appState
 
     var coverHeight: CGFloat {
         (UIScreen.main.bounds.width - 2 * AppSpacing.standard) * 8 / 15

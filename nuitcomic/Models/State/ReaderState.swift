@@ -5,13 +5,14 @@
 //  Created by Zhongqiu Ruan on 2026/1/26.
 //
 
-import Foundation
+import SwiftUI
 
 @Observable
 @MainActor
 final class ReaderState {
     let comic: Comic
     let chapters: [Chapter]
+    let onClose: (Int) -> Void
 
     var chapterIndex: Int
     // possibly greater than chapterIndex 1 or more when a chapter is too short
@@ -21,17 +22,35 @@ final class ReaderState {
     var imageList: [ImageItem]
     var imageLoaded: [Bool]
 
-    init(comic: Comic, chapters: [Chapter], startChapterIndex: Int) {
+    var showToolbar = false
+    private var hideTask: Task<Void, Never>?
+
+    var imageIndexInChapter: Int {
+        imageList[imageIndex].indexInChapter
+    }
+
+    var chapterImageCount: Int {
+        chapters[chapterIndex].imageList.count
+    }
+
+    init(
+        comic: Comic,
+        chapters: [Chapter],
+        startChapterIndex: Int,
+        onClose: @escaping (Int) -> Void
+    ) {
         self.comic = comic
         self.chapters = chapters
         self.chapterIndex = startChapterIndex
         self.nextChapterIndex = startChapterIndex + 1
+        self.onClose = onClose
         let imageList = generateImageItemList(
             from: chapters[startChapterIndex].imageList,
             chapterIndex: startChapterIndex
         )
         self.imageList = imageList
         self.imageLoaded = Array(repeating: false, count: imageList.count)
+
     }
 
     func prefetchImagesFrom(
@@ -53,9 +72,15 @@ final class ReaderState {
         ApiClient.shared.prefetch(urls: slice, onFinished: onFinished)
     }
 
+    func mayUpdateImageIndex(index: Int) {
+        guard imageIndex != index else { return }
+        imageIndex = index
+    }
+
     func mayUpdateChapterIndex(index: Int) {
         guard chapterIndex != index else { return }
         chapterIndex = index
+        showToolbarTemporarily()
     }
 
     func mayLoadNextChapter(imageIndex: Int) {
@@ -72,6 +97,27 @@ final class ReaderState {
             contentsOf: Array(repeating: false, count: newImageList.count)
         )
         nextChapterIndex += 1
+    }
+
+    func showToolbarTemporarily() {
+        if showToolbar {
+            withAnimation { showToolbar = false }
+            hideTask?.cancel()
+            hideTask = nil
+            return
+        }
+
+        withAnimation { showToolbar = true }
+
+        hideTask = Task { @MainActor in
+            try? await Task.sleep(for: .seconds(5))
+            withAnimation { showToolbar = false }
+            hideTask = nil
+        }
+    }
+
+    func close() {
+        onClose(chapterIndex)
     }
 
 }

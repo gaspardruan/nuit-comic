@@ -10,15 +10,7 @@ import Foundation
 @MainActor
 @Observable
 final class AppState {
-    // MARK: Comic State
-    var readingComic: ReadingComic?
-
-    func readCover(comic: Comic) async {
-        let chapters = await ChapterFetcher.fetch(comicId: comic.id)
-        readingComic = ReadingComic(c: comic, ch: chapters)
-    }
-
-    // MARK: Comic Content State
+    var showReader: Bool = false
 
 }
 
@@ -26,5 +18,3 @@ struct ReadingComic {
     let c: Comic
     let ch: [Chapter]
 }
-
-

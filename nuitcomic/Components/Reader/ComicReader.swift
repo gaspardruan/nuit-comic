@@ -8,8 +8,6 @@
 import SwiftUI
 
 struct ComicReader: View {
-    let onClose: (Int) -> Void
-
     @State private var state: ReaderState
     @State private var firstLoaded = false
 
@@ -19,22 +17,26 @@ struct ComicReader: View {
         startChapterIndex: Int,
         onClose: @escaping (Int) -> Void
     ) {
-        self.onClose = onClose
         state = ReaderState(
             comic: comic,
             chapters: chapters,
-            startChapterIndex: startChapterIndex
+            startChapterIndex: startChapterIndex,
+            onClose: onClose
         )
     }
 
     var body: some View {
         let _ = Self._printChanges()
         content
+            .environment(state)
             .task {
                 guard !firstLoaded else { return }
                 state.prefetchImagesFrom(
                     index: 0,
-                    onFinished: { firstLoaded = true }
+                    onFinished: {
+                        withAnimation { firstLoaded = true }
+                        state.showToolbarTemporarily()
+                    }
                 )
             }
     }
@@ -51,15 +53,21 @@ struct ComicReader: View {
                         .padding(.vertical, 40)
                 }
                 .scrollTargetLayout()
+                .onTapGesture {
+                    withAnimation {
+                        state.showToolbarTemporarily()
+                    }
+                }
             }
             .ignoresSafeArea()
             .scrollIndicators(.hidden)
             .onScrollTargetVisibilityChange(
                 idType: ImageItem.self,
                 threshold: 0.01
-            ) { items in
-                handlScrollTargetVisibilityChange(items: items)
-            }
+            ) { items in handlScrollTargetVisibilityChange(items: items) }
+            .overlay(alignment: .topTrailing) { CloseButton() }
+            .overlay(alignment: .top) { ChapterLabel() }
+            .overlay(alignment: .bottom) { PageLabel() }
         } else {
             ProgressView()
         }
@@ -72,6 +80,7 @@ struct ComicReader: View {
         let last = items[items.count - 1]
 
         state.mayLoadNextChapter(imageIndex: first.indexInList)
+        state.mayUpdateImageIndex(index: first.indexInList)
         state.mayUpdateChapterIndex(index: first.chapterIndex)
         state.prefetchImagesFrom(index: last.indexInList + 1)
     }
@@ -96,8 +105,8 @@ struct ReaderComicImage: View {
     ComicReader(
         comic: LocalData.comics[0],
         chapters: LocalData.chapters,
-        startChapterIndex: 83
+        startChapterIndex: 97
     ) { index in
-        print("Finish reading chapter \(index + 1)")
+        print("Finish reading chapter \(index)")
     }
 }

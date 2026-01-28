@@ -12,11 +12,9 @@ struct ChapterButton: View {
     let lastReadChapterIndex: Int
 
     @State private var showContent = false
-    @Environment(AppState.self) private var reader
-    
-    var chapters: [Chapter] {
-        reader.readingComic?.ch ?? []
-    }
+    @State private var fetcher = ChapterFetcher()
+//    @State private var loaded = false
+//    @Environment(AppState.self) private var appState
 
     var updateInfo: String {
         let d = dateFormatter.localizedString(
@@ -24,7 +22,7 @@ struct ChapterButton: View {
             relativeTo: Date()
         )
         return comic.isOver
-            ? "\(chapters.count)章·完本" : "连载至\(chapters.count)章·\(d)"
+        ? "\(fetcher.chapters.count)章·完本" : "连载至\(fetcher.chapters.count)章·\(d)"
     }
 
     var body: some View {
@@ -39,15 +37,17 @@ struct ChapterButton: View {
                 Spacer()
 
                 HStack {
-                    if chapters.count > 0 {
+                    if fetcher.chapters.count > 0 {
                         Text(updateInfo)
                             .font(.subheadline)
                             .transition(.opacity)
-                    } else {
+                    } else if fetcher.isLoading {
                         RoundedRectangle(cornerRadius: 4)
                             .fill(Color.gray.opacity(0.3))
                             .frame(width: 130, height: 20)
-
+                    } else {
+                        Text("加载失败")
+                            .font(.subheadline)
                     }
 
                     Image(systemName: "chevron.right")
@@ -57,12 +57,16 @@ struct ChapterButton: View {
             .foregroundStyle(Color.primary)
         }
         .sheet(isPresented: $showContent) {
-            NavigationStack{
-                ChapterList(comic: comic, chapters: chapters, focusedChapterIndex: 100)
+            NavigationStack {
+                ChapterList(
+                    comic: comic,
+                    chapters: fetcher.chapters,
+                    focusedChapterIndex: 100
+                )
             }
         }
         .task {
-            await reader.readCover(comic: comic)
+            await fetcher.fetch(comicId: comic.id)
         }
     }
 }

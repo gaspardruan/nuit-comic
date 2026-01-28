@@ -33,9 +33,15 @@ struct ChapterList: View {
                 ForEach(Array(actualChapters.enumerated()), id: \.element.id) {
                     index,
                     chapter in
-                    Button {
-                        // animation
-                        dismiss()
+                    NavigationLink {
+                        ComicReader(
+                            comic: comic,
+                            chapters: chapters,
+                            startChapterIndex: index
+                        ) { finishChapterIndex in
+                            print("stop at \(finishChapterIndex)")
+                            dismiss()
+                        }
                     } label: {
                         ChapterListItem(
                             title: chapter.title,
