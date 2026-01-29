@@ -14,6 +14,7 @@ struct ChapterList: View {
 
     @State private var reversed = false
     @Environment(\.dismiss) private var dismiss
+    @Environment(AppState.self) private var appState
 
     var actualChapters: [Chapter] {
         reversed ? Array(chapters.reversed()) : chapters
@@ -33,15 +34,13 @@ struct ChapterList: View {
                 ForEach(Array(actualChapters.enumerated()), id: \.element.id) {
                     index,
                     chapter in
-                    NavigationLink {
-                        ComicReader(
+                    Button {
+                        dismiss()
+                        appState.read(
                             comic: comic,
                             chapters: chapters,
-                            startChapterIndex: index
-                        ) { finishChapterIndex in
-                            print("stop at \(finishChapterIndex)")
-                            dismiss()
-                        }
+                            startChapterIndex: adaptiveIndex(index: index)
+                        )
                     } label: {
                         ChapterListItem(
                             title: chapter.title,
@@ -118,4 +117,5 @@ struct ChapterList: View {
             focusedChapterIndex: 100
         )
     }
+    .environment(AppState())
 }

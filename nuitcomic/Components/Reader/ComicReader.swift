@@ -34,7 +34,10 @@ struct ComicReader: View {
                 state.prefetchImagesFrom(
                     index: 0,
                     onFinished: {
-                        withAnimation { firstLoaded = true }
+                        withAnimation {
+                            firstLoaded = true
+                        }
+
                         state.showToolbarTemporarily()
                     }
                 )

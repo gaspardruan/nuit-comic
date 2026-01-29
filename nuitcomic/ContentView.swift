@@ -8,23 +8,30 @@
 import SwiftUI
 
 struct ContentView: View {
+    @Environment(AppState.self) private var appState
+
     var body: some View {
-        TabView {
-            Tab("主页", systemImage: "house.fill") {
-                HomeView()
+        ZStack {
+            TabView {
+                Tab("主页", systemImage: "house.fill") {
+                    HomeView()
+                }
+
+                Tab("书架", systemImage: "books.vertical.fill") {
+                    ShelfView()
+                }
+
+                Tab("搜索", systemImage: "magnifyingglass") {
+                    SearchView()
+                }
             }
 
-            Tab("书架", systemImage: "books.vertical.fill") {
-                ShelfView()
-            }
-
-            Tab("搜索", systemImage: "magnifyingglass") {
-                SearchView()
-            }
+            ReaderView()
         }
     }
 }
 
 #Preview {
     ContentView()
+        .environment(AppState())
 }
