@@ -13,8 +13,7 @@ struct ChapterButton: View {
 
     @State private var showContent = false
     @State private var fetcher = ChapterFetcher()
-//    @State private var loaded = false
-//    @Environment(AppState.self) private var appState
+    @Environment(AppState.self) private var appState
 
     var updateInfo: String {
         let d = dateFormatter.localizedString(
@@ -22,7 +21,8 @@ struct ChapterButton: View {
             relativeTo: Date()
         )
         return comic.isOver
-        ? "\(fetcher.chapters.count)章·完本" : "连载至\(fetcher.chapters.count)章·\(d)"
+            ? "\(fetcher.chapters.count)章·完本"
+            : "连载至\(fetcher.chapters.count)章·\(d)"
     }
 
     var body: some View {
@@ -62,7 +62,13 @@ struct ChapterButton: View {
                     comic: comic,
                     chapters: fetcher.chapters,
                     focusedChapterIndex: 100
-                )
+                ) { index in
+                    appState.read(
+                        comic: comic,
+                        chapters: fetcher.chapters,
+                        startChapterIndex: index
+                    )
+                }
             }
         }
         .task {

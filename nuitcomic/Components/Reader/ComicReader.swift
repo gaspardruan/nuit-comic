@@ -9,7 +9,6 @@ import SwiftUI
 
 struct ComicReader: View {
     @State private var state: ReaderState
-    @State private var firstLoaded = false
 
     init(
         comic: Comic,
@@ -30,23 +29,13 @@ struct ComicReader: View {
         content
             .environment(state)
             .task {
-                guard !firstLoaded else { return }
-                state.prefetchImagesFrom(
-                    index: 0,
-                    onFinished: {
-                        withAnimation {
-                            firstLoaded = true
-                        }
-
-                        state.showToolbarTemporarily()
-                    }
-                )
+                state.preload()
             }
     }
 
     @ViewBuilder
     private var content: some View {
-        if firstLoaded {
+        if state.preloaded {
             ScrollView {
                 LazyVStack(spacing: 0) {
                     ForEach(state.imageList, id: \.self) { image in
@@ -71,6 +60,7 @@ struct ComicReader: View {
             .overlay(alignment: .topTrailing) { CloseButton() }
             .overlay(alignment: .top) { ChapterLabel() }
             .overlay(alignment: .bottom) { PageLabel() }
+            .overlay(alignment: .bottomTrailing) { ContentButton() }
         } else {
             ProgressView()
         }

@@ -11,10 +11,10 @@ struct ChapterList: View {
     let comic: Comic
     let chapters: [Chapter]
     let focusedChapterIndex: Int
+    let onClick: (Int) -> Void
 
     @State private var reversed = false
     @Environment(\.dismiss) private var dismiss
-    @Environment(AppState.self) private var appState
 
     var actualChapters: [Chapter] {
         reversed ? Array(chapters.reversed()) : chapters
@@ -35,12 +35,12 @@ struct ChapterList: View {
                     index,
                     chapter in
                     Button {
+                        
+//                        DispatchQueue.main.async {
+//                                onClick(adaptiveIndex(index: index))
+//                            }
                         dismiss()
-                        appState.read(
-                            comic: comic,
-                            chapters: chapters,
-                            startChapterIndex: adaptiveIndex(index: index)
-                        )
+                        onClick(adaptiveIndex(index: index))
                     } label: {
                         ChapterListItem(
                             title: chapter.title,
@@ -114,8 +114,10 @@ struct ChapterList: View {
         ChapterList(
             comic: LocalData.comics[0],
             chapters: LocalData.chapters,
-            focusedChapterIndex: 100
+            focusedChapterIndex: 100,
+            onClick: { index in
+                print("click \(index)")
+            }
         )
     }
-    .environment(AppState())
 }

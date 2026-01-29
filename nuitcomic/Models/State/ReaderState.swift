@@ -8,7 +8,6 @@
 import SwiftUI
 
 @Observable
-@MainActor
 final class ReaderState {
     let comic: Comic
     let chapters: [Chapter]
@@ -21,6 +20,8 @@ final class ReaderState {
     var imageIndex = 0
     var imageList: [ImageItem]
     var imageLoaded: [Bool]
+
+    var preloaded: Bool = false
 
     var showToolbar = false
     private var hideTask: Task<Void, Never>?
@@ -50,7 +51,18 @@ final class ReaderState {
         )
         self.imageList = imageList
         self.imageLoaded = Array(repeating: false, count: imageList.count)
+    }
 
+    func preload() {
+        guard !preloaded else { return }
+        print("preload")
+        prefetchImagesFrom(
+            index: 0,
+            onFinished: {
+                withAnimation { self.preloaded = true }
+                self.showToolbarTemporarily()
+            }
+        )
     }
 
     func prefetchImagesFrom(
@@ -114,6 +126,23 @@ final class ReaderState {
             withAnimation { showToolbar = false }
             hideTask = nil
         }
+    }
+
+    func jumptToChapter(index: Int) {
+        guard chapterIndex != index else { return }
+        
+        chapterIndex = index
+        nextChapterIndex = index + 1
+        let imageList = generateImageItemList(
+            from: chapters[index].imageList,
+            chapterIndex: index
+        )
+        self.imageList = imageList
+        imageLoaded = Array(repeating: false, count: imageList.count)
+        
+    
+        preloaded = false
+        preload()
     }
 
     func close() {
