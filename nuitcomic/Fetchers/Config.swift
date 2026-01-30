@@ -53,7 +53,7 @@ func setupKingfisher() {
     let cache = ImageCache.default
 
     // 内存缓存（漫画建议大）
-    cache.memoryStorage.config.totalCostLimit = 800 * 1024 * 1024  // 500MB
+    cache.memoryStorage.config.totalCostLimit = 800 * 1024 * 1024  // 800MB
     cache.memoryStorage.config.expiration = .seconds(60 * 60)
 
     // 磁盘缓存

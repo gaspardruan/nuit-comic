@@ -5,7 +5,7 @@
 //  Created by Zhongqiu Ruan on 2026/1/26.
 //
 
-import Foundation
+import SwiftUI
 
 @MainActor
 @Observable
@@ -29,7 +29,9 @@ final class AppState {
     }
 
     func close() {
-        readingContext = nil
+        withAnimation {
+            readingContext = nil
+        }
     }
 
 }

@@ -11,23 +11,12 @@ struct ContentView: View {
     @Environment(AppState.self) private var appState
 
     var body: some View {
-        ZStack {
-            TabView {
-                Tab("主页", systemImage: "house.fill") {
-                    HomeView()
-                }
-
-                Tab("书架", systemImage: "books.vertical.fill") {
-                    ShelfView()
-                }
-
-                Tab("搜索", systemImage: "magnifyingglass") {
-                    SearchView()
-                }
-            }
-
-            ReaderView()
+        TabView {
+            Tab("主页", systemImage: "house.fill") { HomeView() }
+            Tab("书架", systemImage: "books.vertical.fill") { ShelfView() }
+            Tab("搜索", systemImage: "magnifyingglass") { SearchView() }
         }
+        .overlay { ReaderView() }
     }
 }
 
