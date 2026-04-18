@@ -107,12 +107,13 @@ struct ComicReaderView: View {
                         .offset(x: dragOffset.width)
                         .animation(.easeInOut, value: scale)
                         .gesture(magnify)
-                        .simultaneousGesture(drag)
+                        .simultaneousGesture(scale > 1 ? drag : nil)
                         .onTapGesture(count: 2, perform: autoScale)
                         .onTapGesture(perform: showToolbarTemporarily)
                         
                         
                     }
+                    .scrollDisabled(scale > 1)
                     .ignoresSafeArea()
                     .background(.background)
                     .scrollIndicators(.hidden)
@@ -167,12 +168,14 @@ struct ComicReaderView: View {
     }
 
     func autoScale(point: CGPoint) {
-        anchor = UnitPoint(x: point.x / size.width, y: point.y / size.height)
+        anchor = UnitPoint(x: point.x / max(size.width, 1), y: point.y / max(size.height, 1))
         if scale > 1.0 {
             scale = 1.0
             dragOffset = .zero
+            lastDragOffset = .zero
         } else {
             scale = 2
+            lastScale = 2
         }
     }
 
