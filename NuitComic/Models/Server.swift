@@ -9,5 +9,5 @@ import Foundation
 
 enum Server: String {
     case api = "https://yymh.app/home/api"
-    case image = "https://icny.tengxun.click/public"
+    case image = "https://icnyy.tengxun.best/public"
 }
