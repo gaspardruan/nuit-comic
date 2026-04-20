@@ -23,4 +23,5 @@ struct ContentView: View {
 #Preview {
     ContentView()
         .environment(AppState())
+        .modelContainer(SampleStoredComic.shared.modelContainer)
 }

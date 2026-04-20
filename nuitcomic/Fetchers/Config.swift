@@ -17,7 +17,7 @@ enum ServerConfig {
 
     static let apiBaseUrl = "https://yymh.app/home/api"
 
-    static let imageBaseUrl = "https://icny.tengxun.click/public"
+    static let imageBaseUrl = "https://icnyy.tengxun.best/public"
 
     static let pageSize = 20
 

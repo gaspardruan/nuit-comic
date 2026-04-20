@@ -24,6 +24,7 @@ struct ComicSectionItem: View {
             ComicImage(url: comic.image)
                 .aspectRatio(5 / 7, contentMode: .fill)
                 .cornerRadius(4)
+
             Text(comic.title)
                 .font(.subheadline)
                 .foregroundColor(.primary)

@@ -268,7 +268,7 @@
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_ASSET_PATHS = "nuitcomic/Resources .gitignore";
+				DEVELOPMENT_ASSET_PATHS = "nuitcomic/Models/Store/SampleStoredComic.swift nuitcomic/Resources .gitignore";
 				DEVELOPMENT_TEAM = 7NJYV4Z9VP;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
@@ -299,7 +299,7 @@
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_ASSET_PATHS = "nuitcomic/Resources .gitignore";
+				DEVELOPMENT_ASSET_PATHS = "nuitcomic/Models/Store/SampleStoredComic.swift nuitcomic/Resources .gitignore";
 				DEVELOPMENT_TEAM = 7NJYV4Z9VP;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;

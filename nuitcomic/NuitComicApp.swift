@@ -18,6 +18,7 @@ struct nuitcomicApp: App {
         WindowGroup {
             ContentView()
                 .environment(AppState())
+                .modelContainer(for: [StoredComic.self])
         }
     }
 }
