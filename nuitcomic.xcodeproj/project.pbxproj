@@ -11,11 +11,13 @@
 		1B3A6DF72F2232BE00ADC172 /* Kingfisher in Frameworks */ = {isa = PBXBuildFile; productRef = 1B3A6DF62F2232BE00ADC172 /* Kingfisher */; };
 		1B3A6E3A2F225D2500ADC172 /* Cache in Frameworks */ = {isa = PBXBuildFile; productRef = 1B3A6E392F225D2500ADC172 /* Cache */; };
 		1B3A6E3D2F225F3000ADC172 /* Alamofire in Frameworks */ = {isa = PBXBuildFile; productRef = 1B3A6E3C2F225F3000ADC172 /* Alamofire */; };
+		1BDBE7C22F9677F300A35CBF /* .swift-format in Resources */ = {isa = PBXBuildFile; fileRef = 1BDBE7C12F9677F300A35CBF /* .swift-format */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
 		1B3A6DF32F22309D00ADC172 /* .gitignore */ = {isa = PBXFileReference; lastKnownFileType = text; path = .gitignore; sourceTree = "<group>"; };
 		1B3A6E4C2F23973C00ADC172 /* nuitcomic.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = nuitcomic.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		1BDBE7C12F9677F300A35CBF /* .swift-format */ = {isa = PBXFileReference; lastKnownFileType = text; path = ".swift-format"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedRootGroup section */
@@ -44,6 +46,7 @@
 			isa = PBXGroup;
 			children = (
 				1B3A6DF32F22309D00ADC172 /* .gitignore */,
+				1BDBE7C12F9677F300A35CBF /* .swift-format */,
 				1B3A6D5C2F222FD800ADC172 /* nuitcomic */,
 				1B3A6E4C2F23973C00ADC172 /* nuitcomic.app */,
 			);
@@ -121,6 +124,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				1BDBE7C22F9677F300A35CBF /* .swift-format in Resources */,
 				1B3A6DF42F22309D00ADC172 /* .gitignore in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -268,7 +272,7 @@
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_ASSET_PATHS = "nuitcomic/Models/Store/SampleStoredComic.swift nuitcomic/Resources .gitignore";
+				DEVELOPMENT_ASSET_PATHS = "nuitcomic/Models/PreviewDep nuitcomic/Resources .gitignore";
 				DEVELOPMENT_TEAM = 7NJYV4Z9VP;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
@@ -299,7 +303,7 @@
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_ASSET_PATHS = "nuitcomic/Models/Store/SampleStoredComic.swift nuitcomic/Resources .gitignore";
+				DEVELOPMENT_ASSET_PATHS = "nuitcomic/Models/PreviewDep nuitcomic/Resources .gitignore";
 				DEVELOPMENT_TEAM = 7NJYV4Z9VP;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;

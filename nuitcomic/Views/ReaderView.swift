@@ -28,5 +28,5 @@ struct ReaderView: View {
 
 #Preview {
     ReaderView()
-        .environment(AppState())
+        .environment(AppState.defaultState)
 }

@@ -82,6 +82,6 @@ struct ChapterButton: View {
         comic: LocalData.comics[0],
         lastReadChapterIndex: 3
     )
-    .environment(AppState())
+    .environment(AppState.defaultState)
     .padding()
 }

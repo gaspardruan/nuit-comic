@@ -177,6 +177,6 @@ enum OrderType: String, CaseIterable, Identifiable {
 
 #Preview {
     ShelfView()
-        .environment(AppState())
+        .environment(AppState.defaultState)
         .modelContainer(SampleStoredComic.shared.modelContainer)
 }

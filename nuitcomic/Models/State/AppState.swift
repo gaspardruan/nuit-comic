@@ -10,6 +10,12 @@ import SwiftUI
 @MainActor
 @Observable
 final class AppState {
+    private let storedComicStore: StoredComicStore
+
+    init(storedComicStore: StoredComicStore) {
+        self.storedComicStore = storedComicStore
+    }
+
     var readingContext: ReadingContext?
 
     func read(
@@ -17,13 +23,24 @@ final class AppState {
         chapters: [Chapter],
         startChapterIndex: Int,
     ) {
+        storedComicStore.upsert(
+            comic: comic,
+            lastReadChapterIndex: startChapterIndex,
+            chapterCount: chapters.count
+        )
+
         readingContext = .init(
             comic: comic,
             chapters: chapters,
             startChapterIndex: startChapterIndex,
             onClose: { index in
-                print("stop at \(index)")
                 self.close()
+                
+                self.storedComicStore.upsert(
+                    comic: comic,
+                    lastReadChapterIndex: index,
+                    chapterCount: chapters.count
+                )
             }
         )
     }

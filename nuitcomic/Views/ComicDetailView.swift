@@ -60,6 +60,6 @@ struct ComicDetailView: View {
 #Preview {
     NavigationStack {
         ComicDetailView(comic: LocalData.comics[2])
-            .environment(AppState())
+            .environment(AppState.defaultState)
     }
 }

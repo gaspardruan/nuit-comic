@@ -104,5 +104,5 @@ struct NavigableSectionView: View {
 
 #Preview {
     HomeView()
-        .environment(AppState())
+        .environment(AppState.defaultState)
 }

@@ -35,10 +35,6 @@ struct ChapterList: View {
                     index,
                     chapter in
                     Button {
-                        
-//                        DispatchQueue.main.async {
-//                                onClick(adaptiveIndex(index: index))
-//                            }
                         dismiss()
                         onClick(adaptiveIndex(index: index))
                     } label: {
