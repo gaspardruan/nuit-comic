@@ -9,12 +9,12 @@ import SwiftUI
 
 struct ShelfSectionPicker: View {
     let diabled: Bool
-    @Binding var collectionSelected: Bool
+    @Binding var section: ShelfSection
     
     var body: some View {
-        Picker("选择类型", selection: $collectionSelected) {
-            Text("最近收藏").tag(true)
-            Text("最近阅读").tag(false)
+        Picker("选择类型", selection: $section) {
+            Text("最近收藏").tag(ShelfSection.collection)
+            Text("最近阅读").tag(ShelfSection.recent)
         }
         .pickerStyle(.segmented)
         .disabled(diabled)
@@ -22,5 +22,5 @@ struct ShelfSectionPicker: View {
 }
 
 #Preview {
-    ShelfSectionPicker(diabled: false, collectionSelected: Binding.constant(true))
+    ShelfSectionPicker(diabled: false, section: .constant(.collection))
 }

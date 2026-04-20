@@ -11,20 +11,18 @@ import SwiftUI
 struct ShelfView: View {
     @AppStorage("layout") private var isGridLayout: Bool = true
     @AppStorage("order") private var orderRaw: String = OrderType.time.rawValue
+    private var orderType: OrderType {
+        OrderType(rawValue: orderRaw) ?? .time
+    }
     private var orderBinding: Binding<OrderType> {
         Binding(
-            get: { OrderType(rawValue: orderRaw) ?? .time },
+            get: { orderType },
             set: { orderRaw = $0.rawValue }
         )
     }
 
-    // MARK: Editing Mode
-    @State private var isEditing = false
-    @State private var showTabBar = true
-    @State private var showBottomBar = false
-
-    // MARK: Data
-    @State private var isCollectionSection = true
+    @State private var mode: ShelfMode = .browsing
+    @State private var section: ShelfSection = .collection
 
     @Query(
         filter: #Predicate<StoredComic> { $0.isCollected == true },
@@ -40,18 +38,17 @@ struct ShelfView: View {
     private var recentComics: [StoredComic]
     @Environment(\.modelContext) private var context
 
-    var allChosen: Bool {
-        chosenComics.count == actualComics.count
+    private var isEditing: Bool {
+        mode == .editing
     }
 
-    var actualComics: [StoredComic] {
-        var comics: [StoredComic]
-        if isCollectionSection {
-            comics = collectedComics
-        } else {
-            comics = recentComics
-        }
-        if orderBinding.wrappedValue == .title {
+    private var allChosen: Bool {
+        !currentComics.isEmpty && chosenComicIDs.count == currentComics.count
+    }
+
+    private var currentComics: [StoredComic] {
+        var comics = section == .collection ? collectedComics : recentComics
+        if orderType == .title {
             comics.sort {
                 $0.title.localizedStandardCompare($1.title) == .orderedAscending
             }
@@ -59,23 +56,22 @@ struct ShelfView: View {
         return comics
     }
 
-    // MARK: Delete Data
-    @State private var chosenComics: Set<Int> = []
-    @State private var toDeleteComics: [StoredComic] = []
+    @State private var chosenComicIDs: Set<Int> = []
+    @State private var pendingDeleteIDs: Set<Int> = []
     @State private var showDeleteAlert = false
 
     var body: some View {
         NavigationStack {
             ShelfContent(
-                storedComics: actualComics,
+                storedComics: currentComics,
                 isEditing: isEditing,
                 isGridLayout: isGridLayout,
-                selection: $chosenComics
+                selection: $chosenComicIDs
             )
             .navigationTitle("书架")
-            .scrollDisabled(actualComics.isEmpty)
+            .scrollDisabled(currentComics.isEmpty)
             .overlay {
-                if actualComics.isEmpty {
+                if currentComics.isEmpty {
                     ContentUnavailableView("书架是空的，快去读漫画吧", systemImage: "book")
                 }
             }
@@ -83,12 +79,12 @@ struct ShelfView: View {
                 Button("删除", role: .destructive, action: deleteChosenComics)
                 Button("取消", role: .cancel) {}
             }
-            .toolbarVisibility(showTabBar ? .visible : .hidden, for: .tabBar)
+            .toolbarVisibility(isEditing ? .hidden : .visible, for: .tabBar)
             .toolbar {
                 ToolbarItem(placement: .primaryAction) {
                     ShelfSettingButton(
                         isEditing: isEditing,
-                        chooseDiabled: actualComics.isEmpty,
+                        chooseDiabled: currentComics.isEmpty,
                         onDoneClick: handleDoneClick,
                         onChooseClick: handleChooseClick,
                         isGridLayout: $isGridLayout,
@@ -99,15 +95,15 @@ struct ShelfView: View {
                 ToolbarItem(placement: .principal) {
                     ShelfSectionPicker(
                         diabled: isEditing,
-                        collectionSelected: $isCollectionSection
+                        section: $section
                     )
                 }
 
                 ToolbarItem(placement: .bottomBar) {
                     ShelfEditButtonGroup(
-                        show: showBottomBar,
+                        show: isEditing,
                         allChosen: allChosen,
-                        deleteDisabled: chosenComics.isEmpty,
+                        deleteDisabled: chosenComicIDs.isEmpty,
                         onDeleteClick: handleDeleteClick,
                         toggleAllChoose: toggleAllChoose
                     )
@@ -118,67 +114,58 @@ struct ShelfView: View {
 
     private func handleChooseClick() {
         withAnimation {
-            isEditing = true
-            chosenComics.removeAll()
-            showTabBar = false
-        }
-
-        Task { @MainActor in
-            showBottomBar = true
+            mode = .editing
+            chosenComicIDs.removeAll()
         }
     }
 
     private func toggleAllChoose() {
         withAnimation {
             if allChosen {
-                chosenComics.removeAll()
+                chosenComicIDs.removeAll()
             } else {
-                chosenComics.formUnion(actualComics.map { $0.id })
+                chosenComicIDs = Set(currentComics.map(\.id))
             }
         }
     }
 
     private func handleDoneClick() {
         withAnimation {
-            isEditing = false
-            showTabBar = true
-            showBottomBar = false
-            chosenComics.removeAll()
+            mode = .browsing
+            chosenComicIDs.removeAll()
         }
     }
 
     private func handleDeleteClick() {
-        toDeleteComics = actualComics.filter { comic in
-            chosenComics.contains(comic.id)
-        }
+        pendingDeleteIDs = chosenComicIDs
 
         withAnimation {
-            isEditing = false
-            showTabBar = true
-            showBottomBar = false
-
+            mode = .browsing
             showDeleteAlert = true
-            chosenComics.removeAll()
-        }
-    }
-
-    private func toggleSelection(for index: Int) {
-        if chosenComics.contains(index) {
-            chosenComics.remove(index)
-        } else {
-            chosenComics.insert(index)
+            chosenComicIDs.removeAll()
         }
     }
 
     private func deleteChosenComics() {
         withAnimation {
             try? context.transaction {
-                for c in toDeleteComics {
+                for c in currentComics where pendingDeleteIDs.contains(c.id) {
                     context.delete(c)
                 }
             }
+            pendingDeleteIDs.removeAll()
         }
     }
+}
+
+private enum ShelfMode {
+    case browsing
+    case editing
+}
+
+enum ShelfSection {
+    case collection
+    case recent
 }
 
 enum OrderType: String, CaseIterable, Identifiable {
