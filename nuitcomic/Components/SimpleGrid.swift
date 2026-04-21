@@ -10,7 +10,7 @@ import SwiftUI
 struct SimpleGrid<T: Identifiable, Content: View>: View {
     let comics: [T]
     let columnNum: Int
-//    var space: CGFloat = 12
+    //    var space: CGFloat = 12
     let gridItem: (T, Int) -> Content
 
     var rowNum: Int {

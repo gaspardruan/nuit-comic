@@ -7,7 +7,7 @@
 
 struct RankComicResponse: Decodable {
     let mostSearchComics: [Comic]
-    
+
     enum CodingKeys: String, CodingKey {
         case mostSearchComics = "most_search"
     }

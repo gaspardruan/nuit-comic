@@ -10,7 +10,7 @@ import SwiftUI
 struct ShelfSectionPicker: View {
     let diabled: Bool
     @Binding var section: ShelfSection
-    
+
     var body: some View {
         Picker("选择类型", selection: $section) {
             Text("最近收藏").tag(ShelfSection.collection)

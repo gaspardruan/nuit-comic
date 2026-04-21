@@ -21,8 +21,6 @@ struct ComicList: View {
                     destination: ComicDetailView(comic: comic)
                 ) {
                     ComicListItem(comic: comic)
-//                        .listRowSeparator(.hidden, edges: .top)
-//                        .listRowSeparator(.visible, edges: .bottom)
                         .onAppear {
                             if index == comics.count - threshold {
                                 onReachBottom()

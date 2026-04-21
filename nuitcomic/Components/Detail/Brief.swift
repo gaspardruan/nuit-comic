@@ -52,10 +52,9 @@ struct Brief: View {
                 .foregroundColor(.secondary)
                 .multilineTextAlignment(.center)
         }
-        
-        
+
     }
-        
+
 }
 
 #Preview {

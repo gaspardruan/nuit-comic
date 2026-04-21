@@ -9,7 +9,7 @@ import SwiftUI
 
 struct ChapterLabel: View {
     @Environment(ReaderState.self) private var state
-    
+
     var body: some View {
         if state.showToolbar {
             Text("\(state.chapterIndex + 1)/\(state.chapters.count)章")
@@ -21,4 +21,3 @@ struct ChapterLabel: View {
         }
     }
 }
-

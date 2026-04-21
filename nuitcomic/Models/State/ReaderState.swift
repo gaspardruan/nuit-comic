@@ -130,7 +130,7 @@ final class ReaderState {
 
     func jumptToChapter(index: Int) {
         guard chapterIndex != index else { return }
-        
+
         chapterIndex = index
         nextChapterIndex = index + 1
         let imageList = generateImageItemList(
@@ -139,8 +139,7 @@ final class ReaderState {
         )
         self.imageList = imageList
         imageLoaded = Array(repeating: false, count: imageList.count)
-        
-    
+
         preloaded = false
         preload()
     }

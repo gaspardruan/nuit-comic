@@ -59,8 +59,7 @@ struct HomeView: View {
                 RandomComicSection()
             }
 
-        }
-        else if let error = fetcher.errorMessage {
+        } else if let error = fetcher.errorMessage {
             VStack {
                 Text("加载失败")
                     .font(.headline)
@@ -72,8 +71,7 @@ struct HomeView: View {
                     Task { await fetcher.fetchAll() }
                 }
             }
-        }
-        else {
+        } else {
             ProgressView("加载中...")
         }
     }

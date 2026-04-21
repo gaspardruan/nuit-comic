@@ -15,7 +15,7 @@ final class ChapterFetcher {
 
     func fetch(comicID: Int) async {
         guard chapters.count == 0 else { return }
-        
+
         errorMessage = nil
         do {
             let decoded: ChaptersWrapper = try await ApiClient.shared.request(
