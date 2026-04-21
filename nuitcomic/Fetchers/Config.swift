@@ -54,11 +54,11 @@ func setupKingfisher() {
 
     // 内存缓存（漫画建议大）
     cache.memoryStorage.config.totalCostLimit = 800 * 1024 * 1024  // 800MB
-    cache.memoryStorage.config.expiration = .seconds(60 * 60)
+    cache.memoryStorage.config.expiration = .seconds(60)
 
     // 磁盘缓存
     cache.diskStorage.config.sizeLimit = 2 * 1024 * 1024 * 1024  // 2GB
-    cache.diskStorage.config.expiration = .days(7)
+    cache.diskStorage.config.expiration = .seconds(60 * 5)
 
     // 下载配置
     ImageDownloader.default.downloadTimeout = 15

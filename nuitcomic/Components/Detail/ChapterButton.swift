@@ -10,26 +10,12 @@ import SwiftUI
 
 struct ChapterButton: View {
     let comic: Comic
+    let chapters: [Chapter]
+    let lastReadChapterIndex: Int
+    let isLoading: Bool
 
     @State private var showContent = false
-    @State private var fetcher = ChapterFetcher()
     @Environment(AppState.self) private var appState
-
-    @Query private var sameIDComics: [StoredComic]
-
-    init(comic: Comic) {
-        self.comic = comic
-        let comicID = comic.id
-        _sameIDComics = Query(
-            filter: #Predicate<StoredComic> { item in item.id == comicID },
-            sort: \.storeTime,
-            order: .reverse
-        )
-    }
-
-    var lastReadChapterIndex: Int {
-        sameIDComics.count > 0 ? sameIDComics[0].lastReadChapterIndex : 0
-    }
 
     var updateInfo: String {
         let d = dateFormatter.localizedString(
@@ -37,8 +23,8 @@ struct ChapterButton: View {
             relativeTo: Date()
         )
         return comic.isOver
-            ? "\(fetcher.chapters.count)章·完本"
-            : "连载至\(fetcher.chapters.count)章·\(d)"
+            ? "\(chapters.count)章·完本"
+            : "连载至\(chapters.count)章·\(d)"
     }
 
     var body: some View {
@@ -53,11 +39,11 @@ struct ChapterButton: View {
                 Spacer()
 
                 HStack {
-                    if fetcher.chapters.count > 0 {
+                    if chapters.count > 0 {
                         Text(updateInfo)
                             .font(.subheadline)
                             .transition(.opacity)
-                    } else if fetcher.isLoading {
+                    } else if isLoading {
                         RoundedRectangle(cornerRadius: 4)
                             .fill(Color.gray.opacity(0.3))
                             .frame(width: 130, height: 20)
@@ -76,22 +62,21 @@ struct ChapterButton: View {
             NavigationStack {
                 ChapterList(
                     comic: comic,
-                    chapters: fetcher.chapters,
+                    chapters: chapters,
                     focusedChapterIndex: lastReadChapterIndex
                 ) { index in
-                    appState.read(startChapterIndex: index)
+                    appState.read(comic: comic, chapters: chapters, startChapterIndex: index)
                 }
             }
-        }
-        .task {
-            await fetcher.fetch(comicID: comic.id)
-            appState.willRead(comic: comic, chapters: fetcher.chapters)
         }
     }
 }
 
 #Preview {
-    ChapterButton(comic: LocalData.comics[0])
-        .environment(AppState.defaultState)
-        .padding()
+    ChapterButton(
+        comic: LocalData.comics[0], chapters: LocalData.chapters, lastReadChapterIndex: 3,
+        isLoading: false
+    )
+    .environment(AppState.defaultState)
+    .padding()
 }

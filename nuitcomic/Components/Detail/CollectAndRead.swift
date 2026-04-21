@@ -10,27 +10,11 @@ import SwiftUI
 
 struct CollectAndRead: View {
     let comic: Comic
+    let chapters: [Chapter]
+    let collectedComic: StoredComic?
+    let lastReadChapterIndex: Int
 
     @Environment(AppState.self) private var appState
-    @Query private var sameIDComics: [StoredComic]
-
-    init(comic: Comic) {
-        self.comic = comic
-        let comicID = comic.id
-        _sameIDComics = Query(
-            filter: #Predicate<StoredComic> { item in item.id == comicID },
-            sort: \.storeTime,
-            order: .reverse
-        )
-    }
-
-    var collectedComic: StoredComic? {
-        sameIDComics.filter { c in c.isCollected }.first
-    }
-
-    var lastReadChapterIndex: Int {
-        sameIDComics.count > 0 ? sameIDComics[0].lastReadChapterIndex : 0
-    }
 
     var readButtonText: String {
         lastReadChapterIndex == 0 ? "开始阅读" : "续读\(lastReadChapterIndex + 1)章"
@@ -59,7 +43,8 @@ struct CollectAndRead: View {
             }
 
             Button {
-                appState.read(startChapterIndex: lastReadChapterIndex)
+                appState.read(
+                    comic: comic, chapters: chapters, startChapterIndex: lastReadChapterIndex)
             } label: {
                 Label(readButtonText, systemImage: "play.fill")
                     .frame(maxWidth: .infinity)
@@ -74,11 +59,17 @@ struct CollectAndRead: View {
         if collected {
             appState.unCollectComic(collectedComic!)
         } else {
-            appState.collectComic(lastReadChapterIndex: lastReadChapterIndex)
+            appState.collectComic(
+                comic: comic, chapters: chapters, lastReadChapterIndex: lastReadChapterIndex)
         }
     }
 }
 
 #Preview {
-    CollectAndRead(comic: LocalData.comics[0])
+    CollectAndRead(
+        comic: LocalData.comics[0],
+        chapters: LocalData.chapters,
+        collectedComic: nil,
+        lastReadChapterIndex: 3
+    )
 }

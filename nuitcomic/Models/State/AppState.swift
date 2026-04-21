@@ -12,21 +12,12 @@ import SwiftUI
 final class AppState {
     private let storedComicStore: StoredComicStore
     var readingContext: ReadingContext?
-    var willReadContext: WillRead?
 
     init(storedComicStore: StoredComicStore) {
         self.storedComicStore = storedComicStore
     }
 
-    func willRead(comic: Comic, chapters: [Chapter]) {
-        willReadContext = .init(comic: comic, chapters: chapters)
-    }
-
-    func read(startChapterIndex: Int) {
-        guard willReadContext != nil else { return }
-        let comic = willReadContext!.comic
-        let chapters = willReadContext!.chapters
-
+    func read(comic: Comic, chapters: [Chapter], startChapterIndex: Int) {
         storedComicStore.upsert(
             comic: comic,
             lastReadChapterIndex: startChapterIndex,
@@ -49,14 +40,11 @@ final class AppState {
         )
     }
 
-    func collectComic(lastReadChapterIndex: Int) {
-        guard willReadContext != nil else { return }
-        let comic = willReadContext!.comic
-        let chapters = willReadContext!.chapters
-
+    func collectComic(comic: Comic, chapters: [Chapter], lastReadChapterIndex: Int) {
         storedComicStore.insert(
             StoredComic(
-                from: comic, lastReadChapterIndex: lastReadChapterIndex, chapterCount: chapters.count,
+                from: comic, lastReadChapterIndex: lastReadChapterIndex,
+                chapterCount: chapters.count,
                 isCollected: true
             ))
     }
@@ -65,21 +53,12 @@ final class AppState {
         storedComicStore.delete(comic)
     }
 
-    func willNotRead() {
-        willReadContext = nil
-    }
-
     func close() {
         withAnimation(.easeOut(duration: 0.22)) {
             readingContext = nil
         }
     }
 
-}
-
-struct WillRead {
-    let comic: Comic
-    let chapters: [Chapter]
 }
 
 struct ReadingContext {
