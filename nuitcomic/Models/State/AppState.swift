@@ -11,18 +11,22 @@ import SwiftUI
 @Observable
 final class AppState {
     private let storedComicStore: StoredComicStore
+    var readingContext: ReadingContext?
+    var willReadContext: WillRead?
 
     init(storedComicStore: StoredComicStore) {
         self.storedComicStore = storedComicStore
     }
 
-    var readingContext: ReadingContext?
+    func willRead(comic: Comic, chapters: [Chapter]) {
+        willReadContext = .init(comic: comic, chapters: chapters)
+    }
 
-    func read(
-        comic: Comic,
-        chapters: [Chapter],
-        startChapterIndex: Int,
-    ) {
+    func read(startChapterIndex: Int) {
+        guard willReadContext != nil else { return }
+        let comic = willReadContext!.comic
+        let chapters = willReadContext!.chapters
+
         storedComicStore.upsert(
             comic: comic,
             lastReadChapterIndex: startChapterIndex,
@@ -35,7 +39,7 @@ final class AppState {
             startChapterIndex: startChapterIndex,
             onClose: { index in
                 self.close()
-                
+
                 self.storedComicStore.upsert(
                     comic: comic,
                     lastReadChapterIndex: index,
@@ -45,12 +49,37 @@ final class AppState {
         )
     }
 
+    func collectComic(lastReadChapterIndex: Int) {
+        guard willReadContext != nil else { return }
+        let comic = willReadContext!.comic
+        let chapters = willReadContext!.chapters
+
+        storedComicStore.insert(
+            StoredComic(
+                from: comic, lastReadChapterIndex: lastReadChapterIndex, chapterCount: chapters.count,
+                isCollected: true
+            ))
+    }
+
+    func unCollectComic(_ comic: StoredComic) {
+        storedComicStore.delete(comic)
+    }
+
+    func willNotRead() {
+        willReadContext = nil
+    }
+
     func close() {
-        withAnimation {
+        withAnimation(.easeOut(duration: 0.22)) {
             readingContext = nil
         }
     }
 
+}
+
+struct WillRead {
+    let comic: Comic
+    let chapters: [Chapter]
 }
 
 struct ReadingContext {

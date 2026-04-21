@@ -60,4 +60,12 @@ final class StoredComicStore {
             )
         )
     }
+
+    func insert(_ comic: StoredComic) {
+        context.insert(comic)
+    }
+
+    func delete(_ comic: StoredComic) {
+        context.delete(comic)
+    }
 }

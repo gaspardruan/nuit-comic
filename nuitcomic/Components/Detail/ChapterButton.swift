@@ -5,15 +5,31 @@
 //  Created by Zhongqiu Ruan on 2026/1/25.
 //
 
+import SwiftData
 import SwiftUI
 
 struct ChapterButton: View {
     let comic: Comic
-    let lastReadChapterIndex: Int
 
     @State private var showContent = false
     @State private var fetcher = ChapterFetcher()
     @Environment(AppState.self) private var appState
+
+    @Query private var sameIDComics: [StoredComic]
+
+    init(comic: Comic) {
+        self.comic = comic
+        let comicID = comic.id
+        _sameIDComics = Query(
+            filter: #Predicate<StoredComic> { item in item.id == comicID },
+            sort: \.storeTime,
+            order: .reverse
+        )
+    }
+
+    var lastReadChapterIndex: Int {
+        sameIDComics.count > 0 ? sameIDComics[0].lastReadChapterIndex : 0
+    }
 
     var updateInfo: String {
         let d = dateFormatter.localizedString(
@@ -61,27 +77,21 @@ struct ChapterButton: View {
                 ChapterList(
                     comic: comic,
                     chapters: fetcher.chapters,
-                    focusedChapterIndex: 100
+                    focusedChapterIndex: lastReadChapterIndex
                 ) { index in
-                    appState.read(
-                        comic: comic,
-                        chapters: fetcher.chapters,
-                        startChapterIndex: index
-                    )
+                    appState.read(startChapterIndex: index)
                 }
             }
         }
         .task {
-            await fetcher.fetch(comicId: comic.id)
+            await fetcher.fetch(comicID: comic.id)
+            appState.willRead(comic: comic, chapters: fetcher.chapters)
         }
     }
 }
 
 #Preview {
-    ChapterButton(
-        comic: LocalData.comics[0],
-        lastReadChapterIndex: 3
-    )
-    .environment(AppState.defaultState)
-    .padding()
+    ChapterButton(comic: LocalData.comics[0])
+        .environment(AppState.defaultState)
+        .padding()
 }
