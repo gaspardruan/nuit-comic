@@ -86,7 +86,7 @@ final class SectionComicFetcher {
         if !order.isEmpty {
             var paramaters: Parameters = [
                 "start": start, "limit": limit, "type": 1,
-                "order": "view desc",
+                "order": order,
             ]
 
             if isOver { paramaters["mhstatus"] = 1 }
