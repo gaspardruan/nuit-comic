@@ -9,11 +9,11 @@ import SwiftUI
 
 struct SectionDetailView: View {
     let section: HomeSection
-    @State private var fetcher: SectionComicFetcher
+    @State private var fetcher: ConditionComicFetcher
 
     init(section: HomeSection) {
         self.section = section
-        self.fetcher = SectionComicFetcher(section: section)
+        self.fetcher = ConditionComicFetcher(section: section)
     }
 
     var body: some View {

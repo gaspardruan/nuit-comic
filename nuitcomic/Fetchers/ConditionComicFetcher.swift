@@ -9,7 +9,7 @@ import Alamofire
 import Foundation
 
 @Observable
-final class SectionComicFetcher {
+final class ConditionComicFetcher {
     private let section: HomeSection
     private let pageSize = ServerConfig.pageSize
     private var pageNum = 1
