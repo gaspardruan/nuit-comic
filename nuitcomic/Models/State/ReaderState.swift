@@ -112,12 +112,7 @@ final class ReaderState {
     }
 
     func showToolbarTemporarily() {
-        if showToolbar {
-            withAnimation { showToolbar = false }
-            hideTask?.cancel()
-            hideTask = nil
-            return
-        }
+        guard !showToolbar else { return }
 
         withAnimation { showToolbar = true }
 
@@ -126,6 +121,17 @@ final class ReaderState {
             withAnimation { showToolbar = false }
             hideTask = nil
         }
+    }
+
+    func toggleToolbar() {
+        if showToolbar {
+            withAnimation { showToolbar = false }
+            hideTask?.cancel()
+            hideTask = nil
+            return
+        }
+
+        showToolbarTemporarily()
     }
 
     func jumptToChapter(index: Int) {

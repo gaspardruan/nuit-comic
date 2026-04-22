@@ -46,9 +46,7 @@ struct ComicReader: View {
                 }
                 .scrollTargetLayout()
                 .onTapGesture {
-                    withAnimation {
-                        state.showToolbarTemporarily()
-                    }
+                    state.toggleToolbar()
                 }
             }
             .ignoresSafeArea()
