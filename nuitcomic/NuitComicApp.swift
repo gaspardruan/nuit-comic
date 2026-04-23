@@ -17,7 +17,7 @@ struct nuitcomicApp: App {
 
     init() {
         setupKingfisher()
-        modelContainer = try! ModelContainer(for: StoredComic.self)
+        modelContainer = try! ModelContainer(for: StoredComic.self, SearchHistory.self)
         let storedComicStore = StoredComicStore(context: modelContainer.mainContext)
         appState = AppState(storedComicStore: storedComicStore)
     }
