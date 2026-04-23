@@ -11,10 +11,12 @@ import SwiftUI
 @Observable
 final class AppState {
     private let storedComicStore: StoredComicStore
+    private let comicSearchStore: ComicSearchStore
     var readingContext: ReadingContext?
 
-    init(storedComicStore: StoredComicStore) {
+    init(storedComicStore: StoredComicStore, comicSearchStore: ComicSearchStore = .shared) {
         self.storedComicStore = storedComicStore
+        self.comicSearchStore = comicSearchStore
     }
 
     func read(comic: Comic, chapters: [Chapter], startChapterIndex: Int) {
@@ -57,6 +59,22 @@ final class AppState {
         withAnimation(.easeOut(duration: 0.22)) {
             readingContext = nil
         }
+    }
+
+    func prepareSearchIndexIfNeeded() async throws -> SearchStatus {
+        let status = try await comicSearchStore.status()
+        guard status.comicCount == 0 else { return status }
+
+        return try await refreshSearchIndex()
+    }
+
+    func refreshSearchIndex() async throws -> SearchStatus {
+        let comics = try await ComicClient.shared.fetchAllComics()
+        return try await comicSearchStore.replaceIndex(with: comics)
+    }
+
+    func searchComics(query: String, limit: Int? = nil) async throws -> [Comic] {
+        try await comicSearchStore.search(query: query, limit: limit)
     }
 
 }

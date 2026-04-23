@@ -51,6 +51,34 @@ struct Comic: Identifiable, Decodable, Equatable, Hashable {
         self.score = 0.0
     }
 
+    init(
+        id: Int,
+        title: String,
+        image: String,
+        cover: String,
+        description: String,
+        author: String,
+        keyword: String,
+        follow: Int,
+        view: Int64,
+        updateTime: Date,
+        isOver: Bool,
+        score: Double
+    ) {
+        self.id = id
+        self.title = title
+        self.image = image
+        self.cover = cover
+        self.description = description
+        self.author = author
+        self.keyword = keyword
+        self.follow = follow
+        self.view = view
+        self.updateTime = updateTime
+        self.isOver = isOver
+        self.score = score
+    }
+
     init(from comic: StoredComic) {
         self.id = comic.id
         self.title = comic.title
