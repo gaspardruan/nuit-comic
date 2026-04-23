@@ -10,8 +10,10 @@ import SwiftUI
 
 @main
 struct nuitcomicApp: App {
-    private let modelContainer: ModelContainer
+    @Environment(\.scenePhase) private var scenePhase
+
     private let appState: AppState
+    private let modelContainer: ModelContainer
 
     init() {
         setupKingfisher()
@@ -25,6 +27,16 @@ struct nuitcomicApp: App {
             ContentView()
                 .environment(appState)
                 .modelContainer(modelContainer)
+                .task {
+                    _ = try? await appState.refreshSearchIndexIfNeeded()
+                }
+                .onChange(of: scenePhase) { _, newPhase in
+                    guard newPhase == .active else { return }
+
+                    Task {
+                        _ = try? await appState.refreshSearchIndexIfNeeded()
+                    }
+                }
         }
     }
 }

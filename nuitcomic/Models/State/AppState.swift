@@ -61,9 +61,14 @@ final class AppState {
         }
     }
 
-    func prepareSearchIndexIfNeeded() async throws -> SearchStatus {
+    func refreshSearchIndexIfNeeded() async throws -> SearchStatus {
         let status = try await comicSearchStore.status()
-        guard status.comicCount == 0 else { return status }
+
+        if status.comicCount > 0, let lastSyncAt = status.lastSyncAt,
+            Date().timeIntervalSince(lastSyncAt) < 12 * 60 * 60
+        {
+            return status
+        }
 
         return try await refreshSearchIndex()
     }
