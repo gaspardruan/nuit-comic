@@ -34,7 +34,7 @@ struct SearchView: View {
             List {
                 ForEach(showComics) { comic in
                     NavigationLink(destination: ComicDetailView(comic: comic)) {
-                        ComicListItem(comic: comic)
+                        ComicListItem(comic: comic, highlightQuery: query)
                     }
                 }
                 if searchFocused && results.count > 10 {
