@@ -61,6 +61,10 @@ final class AppState {
         }
     }
 
+    func searchIndexStatus() async throws -> SearchStatus {
+        return try await comicSearchStore.status()
+    }
+
     func refreshSearchIndexIfNeeded() async throws -> SearchStatus {
         let status = try await comicSearchStore.status()
 

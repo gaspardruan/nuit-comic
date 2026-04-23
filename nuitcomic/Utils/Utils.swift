@@ -43,6 +43,15 @@ func transTime(from timeString: String) -> Date {
     return formatter.date(from: timeString)!
 }
 
+func formatTime(from date: Date) -> String {
+    let formatter = DateFormatter()
+    formatter.locale = Locale(identifier: "en_US_POSIX")
+    formatter.timeZone = .current
+    formatter.dateFormat = "yyyy-MM-dd HH:mm:ss"
+
+    return formatter.string(from: Date())
+}
+
 let dateFormatter: RelativeDateTimeFormatter = {
     let f = RelativeDateTimeFormatter()
     f.locale = Locale(identifier: "zh_CN")

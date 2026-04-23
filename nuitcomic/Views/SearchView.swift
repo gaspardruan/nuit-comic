@@ -21,6 +21,8 @@ struct SearchView: View {
     @State private var errorMessage: String?
     @State private var results: [Comic] = []
 
+    @State private var showInfoModal = false
+
     private var submitted: Bool {
         isPresented && !searchFocused
     }
@@ -55,6 +57,16 @@ struct SearchView: View {
                     SearchHistoryList(onClick: handleHistoryClick)
                 }
 
+            }
+            .toolbar {
+                ToolbarItem {
+                    Button("关于", systemImage: "info.circle") {
+                        showInfoModal = true
+                    }
+                }
+            }
+            .sheet(isPresented: $showInfoModal) {
+                AboutView()
             }
         }
     }
