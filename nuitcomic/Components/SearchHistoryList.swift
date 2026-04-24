@@ -40,9 +40,15 @@ struct SearchHistoryList: View {
                 }
             }
             .listStyle(.plain)
-            .confirmationDialog(Text("要删除近期搜索记录吗？"), isPresented: $showConfirmDeletion) {
-                Button("清除搜索历史记录", role: .destructive, action: clearHistory)
+            .confirmationDialog(
+                "清除搜素历史记录", isPresented: $showConfirmDeletion,
+                actions: {
+                    Button("清除搜索历史记录", role: .destructive, action: clearHistory)
+                }
+            ) {
+                Text("将会删除近期搜索记录")
             }
+
         } else {
             ContentUnavailableView("搜索漫画", systemImage: "magnifyingglass")
         }

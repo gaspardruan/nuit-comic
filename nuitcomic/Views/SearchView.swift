@@ -18,7 +18,8 @@ struct SearchView: View {
     @State private var query = ""
     @FocusState private var searchFocused: Bool
     @State private var isPresented: Bool = false
-    @State private var errorMessage: String?
+    @State private var errMessage: String?
+    @State private var showErrorAlert: Bool = false
     @State private var results: [Comic] = []
 
     @State private var showInfoModal = false
@@ -56,7 +57,12 @@ struct SearchView: View {
                 if !isPresented {
                     SearchHistoryList(onClick: handleHistoryClick)
                 }
-
+            }
+            .alert(
+                "错误", isPresented: $showErrorAlert,
+                actions: { Button("确认") {} }
+            ) {
+                Text(errMessage ?? "未知错误")
             }
             .toolbar {
                 ToolbarItem {
@@ -90,7 +96,7 @@ struct SearchView: View {
             return
         }
 
-        errorMessage = nil
+        errMessage = nil
         do {
             try await Task.sleep(for: Self.debouceDuration)
 
@@ -100,10 +106,9 @@ struct SearchView: View {
             return
         } catch {
             results = []
-            errorMessage = error.localizedDescription
-            print(errorMessage?.description ?? "")
+            errMessage = error.localizedDescription
+            showErrorAlert = true
         }
-
     }
 
     private func addSearchHistory() {
