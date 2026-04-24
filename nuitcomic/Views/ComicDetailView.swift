@@ -44,6 +44,10 @@ struct ComicDetailView: View {
 
     var body: some View {
         let _ = Self._printChanges()
+        let readingContext = Binding(
+            get: { appState.readingContext },
+            set: { appState.readingContext = $0 }
+        )
         ScrollView {
             VStack(spacing: AppSpacing.tight * 2) {
                 ComicImage(url: comic.cover, fallbackUrl: comic.image)
@@ -90,6 +94,11 @@ struct ComicDetailView: View {
                 .frame(maxWidth: .infinity)
                 .background(.bar)
         }
+        .fullScreenCover(item: readingContext) { context in
+            NavigationStack {
+                ReaderView(context: context)
+            }
+        }
         .task {
             await fetcher.fetch(comicID: comic.id)
         }
@@ -100,5 +109,6 @@ struct ComicDetailView: View {
     NavigationStack {
         ComicDetailView(comic: LocalData.comics[2])
             .environment(AppState.defaultState)
+            .modelContainer(SampleStoredComic.shared.modelContainer)
     }
 }

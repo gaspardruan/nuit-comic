@@ -13,16 +13,13 @@ struct CloseButton: View {
     var body: some View {
         if state.showToolbar {
             Button(action: state.close) {
-                Label("Close", systemImage: "xmark.circle.fill")
-                    .labelStyle(.iconOnly)
-                    .font(.title)
-                    .foregroundStyle(.mint, .ultraThinMaterial)
-                    .symbolRenderingMode(.palette)
-                    .padding(.horizontal, AppSpacing.standard)
-                    .padding(.bottom, AppSpacing.standard)
-
+                Image(systemName: "xmark")
+                    .fontWeight(.semibold)
+                    .frame(width: 2 * AppSpacing.loose, height: 2 * AppSpacing.loose)
+                    .background(.ultraThinMaterial, in: Circle())
             }
-            .padding(.trailing, AppSpacing.standard)
+            .buttonStyle(.plain)
+            .padding(.horizontal, AppSpacing.loose)
         }
     }
 }

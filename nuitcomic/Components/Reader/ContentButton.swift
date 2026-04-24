@@ -14,23 +14,16 @@ struct ContentButton: View {
     var body: some View {
         ZStack {
             if state.showToolbar {
-                Button(action: {
+                Button {
                     showContent = true
-                }) {
-                    Label(
-                        "Content",
-                        systemImage: "line.3.horizontal.circle.fill"
-                    )
-                    .labelStyle(.iconOnly)
-                    .font(.title)
-                    .foregroundStyle(.mint, .ultraThinMaterial)
-                    .symbolRenderingMode(.palette)
-                    .padding(.horizontal, AppSpacing.standard)
-                    .padding(.top, AppSpacing.standard)
-
+                } label: {
+                    Image(systemName: "line.3.horizontal")
+                        .fontWeight(.semibold)
+                        .frame(width: 2 * AppSpacing.loose, height: 2 * AppSpacing.loose)
+                        .background(.ultraThinMaterial, in: Circle())
                 }
-                .padding(.trailing, AppSpacing.standard)
-
+                .buttonStyle(.plain)
+                .padding(.horizontal, AppSpacing.loose)
             }
         }
         .sheet(isPresented: $showContent) {

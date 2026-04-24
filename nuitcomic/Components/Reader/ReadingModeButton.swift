@@ -13,24 +13,23 @@ struct ReadingModeButton: View {
     private var iconName: String {
         switch state.readingMode {
         case .vertical:
-            "rectangle.split.1x2"
+            "arrow.up.and.down.text.horizontal"
         case .horizontal:
-            "rectangle.split.2x1"
+            "arrow.left.and.right.text.vertical"
         }
     }
 
     var body: some View {
         if state.showToolbar {
             Button(action: state.toggleReadingMode) {
-                Label("Reading Mode", systemImage: iconName)
-                    .labelStyle(.iconOnly)
-                    .font(.title2)
-                    .foregroundStyle(.mint, .ultraThinMaterial)
-                    .symbolRenderingMode(.palette)
-                    .padding(.horizontal, AppSpacing.standard)
-                    .padding(.top, AppSpacing.standard)
+                Image(systemName: iconName)
+                    .fontWeight(.semibold)
+                    .frame(width: 2 * AppSpacing.loose, height: 2 * AppSpacing.loose)
+                    .background(.ultraThinMaterial, in: Circle())
             }
-            .padding(.leading, AppSpacing.standard)
+            .buttonStyle(.plain)
+            .padding(.horizontal, AppSpacing.loose)
+            
         }
     }
 }

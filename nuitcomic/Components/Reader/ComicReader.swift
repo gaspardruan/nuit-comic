@@ -124,21 +124,25 @@ struct ReaderComicImage: View {
 }
 
 #Preview {
-    ComicReader(
-        comic: LocalData.comics[0],
-        chapters: LocalData.chapters,
-        startChapterIndex: 97
-    ) { index in
-        print("Finish reading chapter \(index)")
+    NavigationStack {
+        ComicReader(
+            comic: LocalData.comics[0],
+            chapters: LocalData.chapters,
+            startChapterIndex: 97
+        ) { index in
+            print("Finish reading chapter \(index)")
+        }
     }
 }
 
 #Preview("horizontal") {
-    ComicReader(
-        comic: LocalData.comics.last!,
-        chapters: LocalData.chapters2,
-        startChapterIndex: 1
-    ) { index in
-        print("Finish reading chapter \(index)")
+    NavigationStack {
+        ComicReader(
+            comic: LocalData.comics.last!,
+            chapters: LocalData.chapters2,
+            startChapterIndex: 1
+        ) { index in
+            print("Finish reading chapter \(index)")
+        }
     }
 }
