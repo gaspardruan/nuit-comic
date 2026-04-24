@@ -26,7 +26,6 @@ struct ComicReader: View {
     }
 
     var body: some View {
-        let _ = Self._printChanges()
         content
             .environment(state)
             .task {
@@ -61,37 +60,58 @@ struct ComicReader: View {
     }
 
     private var verticalReader: some View {
-        ScrollView {
-            LazyVStack(spacing: 0) {
-                ForEach(state.imageList, id: \.self) { image in
-                    ReaderComicImage(url: image.url)
+        ScrollViewReader { proxy in
+            ScrollView {
+                LazyVStack(spacing: 0) {
+                    ForEach(state.imageList, id: \.self) { image in
+                        ReaderComicImage(url: image.url)
+                            .id(image)
+                    }
+                    Text("已经到底了!")
+                        .padding(.vertical, 40)
                 }
-                Text("已经到底了!")
-                    .padding(.vertical, 40)
+                .scrollTargetLayout()
             }
-            .scrollTargetLayout()
-        }
-        .scrollIndicators(.hidden)
-        .onScrollTargetVisibilityChange(idType: ImageItem.self, threshold: 0.01) { items in
-            handlScrollTargetVisibilityChange(items: items)
+            .scrollIndicators(.hidden)
+            .task(id: state.readingMode) {
+                scrollToCurrentImage(with: proxy, anchor: .top)
+            }
+            .onScrollTargetVisibilityChange(idType: ImageItem.self, threshold: 0.01) { items in
+                handlScrollTargetVisibilityChange(items: items)
+            }
         }
     }
 
     private var horizontalReader: some View {
-        ScrollView(.horizontal) {
-            LazyHStack(spacing: 0) {
-                ForEach(state.imageList, id: \.self) { image in
-                    ReaderComicImage(url: image.url)
-                        .frame(width: screenWidth)
+        ScrollViewReader { proxy in
+            ScrollView(.horizontal) {
+                LazyHStack(spacing: 0) {
+                    ForEach(state.imageList, id: \.self) { image in
+                        ReaderComicImage(url: image.url)
+                            .frame(width: screenWidth)
+                            .id(image)
+                    }
+                    Text("已经到底了!")
                 }
-                Text("已经到底了!")
+                .scrollTargetLayout()
             }
-            .scrollTargetLayout()
+            .scrollIndicators(.hidden)
+            .scrollTargetBehavior(.paging)
+            .task(id: state.readingMode) {
+                scrollToCurrentImage(with: proxy, anchor: .leading)
+            }
+            .onScrollTargetVisibilityChange(idType: ImageItem.self, threshold: 0.5) { items in
+                handlScrollTargetVisibilityChange(items: items)
+            }
         }
-        .scrollIndicators(.hidden)
-        .scrollTargetBehavior(.paging)
-        .onScrollTargetVisibilityChange(idType: ImageItem.self, threshold: 0.5) { items in
-            handlScrollTargetVisibilityChange(items: items)
+    }
+
+    private func scrollToCurrentImage(with proxy: ScrollViewProxy, anchor: UnitPoint) {
+        guard state.imageList.indices.contains(state.imageIndex) else { return }
+        let currentImage = state.imageList[state.imageIndex]
+
+        Task { @MainActor in
+            proxy.scrollTo(currentImage, anchor: anchor)
         }
     }
 
