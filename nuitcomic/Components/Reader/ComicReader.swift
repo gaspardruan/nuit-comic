@@ -9,6 +9,7 @@ import SwiftUI
 
 struct ComicReader: View {
     @State private var state: ReaderState
+    let screenWidth = UIScreen.main.bounds.width
 
     init(
         comic: Comic,
@@ -36,31 +37,61 @@ struct ComicReader: View {
     @ViewBuilder
     private var content: some View {
         if state.preloaded {
-            ScrollView {
-                LazyVStack(spacing: 0) {
-                    ForEach(state.imageList, id: \.self) { image in
-                        ReaderComicImage(url: image.url)
-                    }
-                    Text("已经到底了!")
-                        .padding(.vertical, 40)
-                }
-                .scrollTargetLayout()
-                .onTapGesture {
-                    state.toggleToolbar()
-                }
-            }
-            .ignoresSafeArea()
-            .scrollIndicators(.hidden)
-            .onScrollTargetVisibilityChange(
-                idType: ImageItem.self,
-                threshold: 0.01
-            ) { items in handlScrollTargetVisibilityChange(items: items) }
-            .overlay(alignment: .topTrailing) { CloseButton() }
-            .overlay(alignment: .top) { ChapterLabel() }
-            .overlay(alignment: .bottom) { PageLabel() }
-            .overlay(alignment: .bottomTrailing) { ContentButton() }
+            readerContent
+                .ignoresSafeArea()
+                .onTapGesture(perform: state.toggleToolbar)
+                .overlay(alignment: .topTrailing) { CloseButton() }
+                .overlay(alignment: .top) { ChapterLabel() }
+                .overlay(alignment: .bottom) { PageLabel() }
+                .overlay(alignment: .bottomLeading) { ReadingModeButton() }
+                .overlay(alignment: .bottomTrailing) { ContentButton() }
         } else {
             ProgressView()
+        }
+    }
+
+    @ViewBuilder
+    private var readerContent: some View {
+        switch state.readingMode {
+        case .vertical:
+            verticalReader
+        case .horizontal:
+            horizontalReader
+        }
+    }
+
+    private var verticalReader: some View {
+        ScrollView {
+            LazyVStack(spacing: 0) {
+                ForEach(state.imageList, id: \.self) { image in
+                    ReaderComicImage(url: image.url)
+                }
+                Text("已经到底了!")
+                    .padding(.vertical, 40)
+            }
+            .scrollTargetLayout()
+        }
+        .scrollIndicators(.hidden)
+        .onScrollTargetVisibilityChange(idType: ImageItem.self, threshold: 0.01) { items in
+            handlScrollTargetVisibilityChange(items: items)
+        }
+    }
+
+    private var horizontalReader: some View {
+        ScrollView(.horizontal) {
+            LazyHStack(spacing: 0) {
+                ForEach(state.imageList, id: \.self) { image in
+                    ReaderComicImage(url: image.url)
+                        .frame(width: screenWidth)
+                }
+                Text("已经到底了!")
+            }
+            .scrollTargetLayout()
+        }
+        .scrollIndicators(.hidden)
+        .scrollTargetBehavior(.paging)
+        .onScrollTargetVisibilityChange(idType: ImageItem.self, threshold: 0.5) { items in
+            handlScrollTargetVisibilityChange(items: items)
         }
     }
 
@@ -97,6 +128,16 @@ struct ReaderComicImage: View {
         comic: LocalData.comics[0],
         chapters: LocalData.chapters,
         startChapterIndex: 97
+    ) { index in
+        print("Finish reading chapter \(index)")
+    }
+}
+
+#Preview("horizontal") {
+    ComicReader(
+        comic: LocalData.comics.last!,
+        chapters: LocalData.chapters2,
+        startChapterIndex: 1
     ) { index in
         print("Finish reading chapter \(index)")
     }

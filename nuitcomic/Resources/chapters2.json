@@ -1,0 +1,254 @@
+{
+    "code": 1,
+    "result": {
+        "lastPage": true,
+        "pageNumber": "1",
+        "pageSize": "1000",
+        "totalRow": "11",
+        "totalPage": 1,
+        "list": [
+            {
+                "id": "60600",
+                "title": "第1章",
+                "image":
+                    "/bookimages/3090/488020/91902a31-3e37-42f3-b6df-e2a9bcb5a6c9.jpeg",
+                "create_time": "2023-09-26 01:10:43",
+                "update_time": "2023-09-26 01:10:43",
+                "manhua_id": "2123",
+                "sort": "1",
+                "isvip": "0",
+                "score": "0",
+                "view": null,
+                "type": "1",
+                "content": null,
+                "imagelist":
+                    "/bookimages/3090/488020/1.webp,/bookimages/3090/488020/2.webp,/bookimages/3090/488020/3.webp,/bookimages/3090/488020/4.webp,/bookimages/3090/488020/5.webp,/bookimages/3090/488020/6.webp,/bookimages/3090/488020/7.webp,/bookimages/3090/488020/8.webp,/bookimages/3090/488020/9.webp,/bookimages/3090/488020/10.webp,/bookimages/3090/488020/11.webp,/bookimages/3090/488020/12.webp,/bookimages/3090/488020/13.webp,/bookimages/3090/488020/14.webp,/bookimages/3090/488020/15.webp,/bookimages/3090/488020/16.webp,/bookimages/3090/488020/17.webp,/bookimages/3090/488020/18.webp,/bookimages/3090/488020/19.webp,/bookimages/3090/488020/20.webp",
+                "cjid": "488020",
+                "cjname": "yymh",
+                "switch": "1",
+                "cjstatus": "0"
+            },
+            {
+                "id": "60601",
+                "title": "第2章",
+                "image":
+                    "/bookimages/3090/488021/91902a31-3e37-42f3-b6df-e2a9bcb5a6c9.jpeg",
+                "create_time": "2023-09-26 01:10:46",
+                "update_time": "2023-09-26 01:10:46",
+                "manhua_id": "2123",
+                "sort": "2",
+                "isvip": "0",
+                "score": "0",
+                "view": null,
+                "type": "1",
+                "content": null,
+                "imagelist":
+                    "/bookimages/3090/488021/1.webp,/bookimages/3090/488021/2.webp,/bookimages/3090/488021/3.webp,/bookimages/3090/488021/4.webp,/bookimages/3090/488021/5.webp,/bookimages/3090/488021/6.webp,/bookimages/3090/488021/7.webp,/bookimages/3090/488021/8.webp,/bookimages/3090/488021/9.webp,/bookimages/3090/488021/10.webp,/bookimages/3090/488021/11.webp,/bookimages/3090/488021/12.webp,/bookimages/3090/488021/13.webp,/bookimages/3090/488021/14.webp,/bookimages/3090/488021/15.webp,/bookimages/3090/488021/16.webp,/bookimages/3090/488021/17.webp,/bookimages/3090/488021/18.webp,/bookimages/3090/488021/19.webp,/bookimages/3090/488021/20.webp",
+                "cjid": "488021",
+                "cjname": "yymh",
+                "switch": "1",
+                "cjstatus": "0"
+            },
+            {
+                "id": "60602",
+                "title": "第3章",
+                "image":
+                    "/bookimages/3090/488022/91902a31-3e37-42f3-b6df-e2a9bcb5a6c9.jpeg",
+                "create_time": "2023-09-26 01:10:49",
+                "update_time": "2023-09-26 01:10:49",
+                "manhua_id": "2123",
+                "sort": "3",
+                "isvip": "1",
+                "score": "58",
+                "view": null,
+                "type": "1",
+                "content": null,
+                "imagelist":
+                    "/bookimages/3090/488022/1.webp,/bookimages/3090/488022/2.webp,/bookimages/3090/488022/3.webp,/bookimages/3090/488022/4.webp,/bookimages/3090/488022/5.webp,/bookimages/3090/488022/6.webp,/bookimages/3090/488022/7.webp,/bookimages/3090/488022/8.webp,/bookimages/3090/488022/9.webp,/bookimages/3090/488022/10.webp,/bookimages/3090/488022/11.webp,/bookimages/3090/488022/12.webp,/bookimages/3090/488022/13.webp,/bookimages/3090/488022/14.webp,/bookimages/3090/488022/15.webp,/bookimages/3090/488022/16.webp,/bookimages/3090/488022/17.webp,/bookimages/3090/488022/18.webp,/bookimages/3090/488022/19.webp,/bookimages/3090/488022/20.webp",
+                "cjid": "488022",
+                "cjname": "yymh",
+                "switch": "1",
+                "cjstatus": "0",
+                "buy": 0
+            },
+            {
+                "id": "60603",
+                "title": "第4章",
+                "image":
+                    "/bookimages/3090/488023/91902a31-3e37-42f3-b6df-e2a9bcb5a6c9.jpeg",
+                "create_time": "2023-09-26 01:10:53",
+                "update_time": "2023-09-26 01:10:53",
+                "manhua_id": "2123",
+                "sort": "4",
+                "isvip": "1",
+                "score": "58",
+                "view": null,
+                "type": "1",
+                "content": null,
+                "imagelist":
+                    "/bookimages/3090/488023/1.webp,/bookimages/3090/488023/2.webp,/bookimages/3090/488023/3.webp,/bookimages/3090/488023/4.webp,/bookimages/3090/488023/5.webp,/bookimages/3090/488023/6.webp,/bookimages/3090/488023/7.webp,/bookimages/3090/488023/8.webp,/bookimages/3090/488023/9.webp,/bookimages/3090/488023/10.webp,/bookimages/3090/488023/11.webp,/bookimages/3090/488023/12.webp,/bookimages/3090/488023/13.webp,/bookimages/3090/488023/14.webp,/bookimages/3090/488023/15.webp,/bookimages/3090/488023/16.webp,/bookimages/3090/488023/17.webp,/bookimages/3090/488023/18.webp,/bookimages/3090/488023/19.webp,/bookimages/3090/488023/20.webp",
+                "cjid": "488023",
+                "cjname": "yymh",
+                "switch": "1",
+                "cjstatus": "0",
+                "buy": 0
+            },
+            {
+                "id": "60604",
+                "title": "第5章",
+                "image":
+                    "/bookimages/3090/488024/91902a31-3e37-42f3-b6df-e2a9bcb5a6c9.jpeg",
+                "create_time": "2023-09-26 01:10:59",
+                "update_time": "2023-09-26 01:10:59",
+                "manhua_id": "2123",
+                "sort": "5",
+                "isvip": "1",
+                "score": "58",
+                "view": null,
+                "type": "1",
+                "content": null,
+                "imagelist":
+                    "/bookimages/3090/488024/1.webp,/bookimages/3090/488024/2.webp,/bookimages/3090/488024/3.webp,/bookimages/3090/488024/4.webp,/bookimages/3090/488024/5.webp,/bookimages/3090/488024/6.webp,/bookimages/3090/488024/7.webp,/bookimages/3090/488024/8.webp,/bookimages/3090/488024/9.webp,/bookimages/3090/488024/10.webp,/bookimages/3090/488024/11.webp,/bookimages/3090/488024/12.webp,/bookimages/3090/488024/13.webp,/bookimages/3090/488024/14.webp,/bookimages/3090/488024/15.webp,/bookimages/3090/488024/16.webp,/bookimages/3090/488024/17.webp,/bookimages/3090/488024/18.webp,/bookimages/3090/488024/19.webp,/bookimages/3090/488024/20.webp",
+                "cjid": "488024",
+                "cjname": "yymh",
+                "switch": "1",
+                "cjstatus": "0",
+                "buy": 0
+            },
+            {
+                "id": "60605",
+                "title": "第6章",
+                "image":
+                    "/bookimages/3090/488025/91902a31-3e37-42f3-b6df-e2a9bcb5a6c9.jpeg",
+                "create_time": "2023-09-26 01:11:04",
+                "update_time": "2023-09-26 01:11:04",
+                "manhua_id": "2123",
+                "sort": "6",
+                "isvip": "1",
+                "score": "58",
+                "view": null,
+                "type": "1",
+                "content": null,
+                "imagelist":
+                    "/bookimages/3090/488025/1.webp,/bookimages/3090/488025/2.webp,/bookimages/3090/488025/3.webp,/bookimages/3090/488025/4.webp,/bookimages/3090/488025/5.webp,/bookimages/3090/488025/6.webp,/bookimages/3090/488025/7.webp,/bookimages/3090/488025/8.webp,/bookimages/3090/488025/9.webp,/bookimages/3090/488025/10.webp,/bookimages/3090/488025/11.webp,/bookimages/3090/488025/12.webp,/bookimages/3090/488025/13.webp,/bookimages/3090/488025/14.webp,/bookimages/3090/488025/15.webp,/bookimages/3090/488025/16.webp,/bookimages/3090/488025/17.webp,/bookimages/3090/488025/18.webp,/bookimages/3090/488025/19.webp,/bookimages/3090/488025/20.webp",
+                "cjid": "488025",
+                "cjname": "yymh",
+                "switch": "1",
+                "cjstatus": "0",
+                "buy": 0
+            },
+            {
+                "id": "60606",
+                "title": "第7章",
+                "image":
+                    "/bookimages/3090/488026/91902a31-3e37-42f3-b6df-e2a9bcb5a6c9.jpeg",
+                "create_time": "2023-09-26 01:11:31",
+                "update_time": "2023-09-26 01:11:31",
+                "manhua_id": "2123",
+                "sort": "7",
+                "isvip": "1",
+                "score": "58",
+                "view": null,
+                "type": "1",
+                "content": null,
+                "imagelist":
+                    "/bookimages/3090/488026/1.webp,/bookimages/3090/488026/2.webp,/bookimages/3090/488026/3.webp,/bookimages/3090/488026/4.webp,/bookimages/3090/488026/5.webp,/bookimages/3090/488026/6.webp,/bookimages/3090/488026/7.webp,/bookimages/3090/488026/8.webp,/bookimages/3090/488026/9.webp,/bookimages/3090/488026/10.webp,/bookimages/3090/488026/11.webp,/bookimages/3090/488026/12.webp,/bookimages/3090/488026/13.webp,/bookimages/3090/488026/14.webp,/bookimages/3090/488026/15.webp,/bookimages/3090/488026/16.webp,/bookimages/3090/488026/17.webp,/bookimages/3090/488026/18.webp,/bookimages/3090/488026/19.webp,/bookimages/3090/488026/20.webp",
+                "cjid": "488026",
+                "cjname": "yymh",
+                "switch": "1",
+                "cjstatus": "0",
+                "buy": 0
+            },
+            {
+                "id": "60607",
+                "title": "第8章",
+                "image":
+                    "/bookimages/3090/488027/91902a31-3e37-42f3-b6df-e2a9bcb5a6c9.jpeg",
+                "create_time": "2023-09-26 01:11:35",
+                "update_time": "2023-09-26 01:11:35",
+                "manhua_id": "2123",
+                "sort": "8",
+                "isvip": "1",
+                "score": "58",
+                "view": null,
+                "type": "1",
+                "content": null,
+                "imagelist":
+                    "/bookimages/3090/488027/1.webp,/bookimages/3090/488027/2.webp,/bookimages/3090/488027/3.webp,/bookimages/3090/488027/4.webp,/bookimages/3090/488027/5.webp,/bookimages/3090/488027/6.webp,/bookimages/3090/488027/7.webp,/bookimages/3090/488027/8.webp,/bookimages/3090/488027/9.webp,/bookimages/3090/488027/10.webp,/bookimages/3090/488027/11.webp,/bookimages/3090/488027/12.webp,/bookimages/3090/488027/13.webp,/bookimages/3090/488027/14.webp,/bookimages/3090/488027/15.webp,/bookimages/3090/488027/16.webp,/bookimages/3090/488027/17.webp,/bookimages/3090/488027/18.webp,/bookimages/3090/488027/19.webp,/bookimages/3090/488027/20.webp",
+                "cjid": "488027",
+                "cjname": "yymh",
+                "switch": "1",
+                "cjstatus": "0",
+                "buy": 0
+            },
+            {
+                "id": "60608",
+                "title": "第9章",
+                "image":
+                    "/bookimages/3090/488028/91902a31-3e37-42f3-b6df-e2a9bcb5a6c9.jpeg",
+                "create_time": "2023-09-26 01:11:42",
+                "update_time": "2023-09-26 01:11:42",
+                "manhua_id": "2123",
+                "sort": "9",
+                "isvip": "1",
+                "score": "58",
+                "view": null,
+                "type": "1",
+                "content": null,
+                "imagelist":
+                    "/bookimages/3090/488028/1.webp,/bookimages/3090/488028/2.webp,/bookimages/3090/488028/3.webp,/bookimages/3090/488028/4.webp,/bookimages/3090/488028/5.webp,/bookimages/3090/488028/6.webp,/bookimages/3090/488028/7.webp,/bookimages/3090/488028/8.webp,/bookimages/3090/488028/9.webp,/bookimages/3090/488028/10.webp,/bookimages/3090/488028/11.webp,/bookimages/3090/488028/12.webp,/bookimages/3090/488028/13.webp,/bookimages/3090/488028/14.webp,/bookimages/3090/488028/15.webp,/bookimages/3090/488028/16.webp,/bookimages/3090/488028/17.webp,/bookimages/3090/488028/18.webp,/bookimages/3090/488028/19.webp,/bookimages/3090/488028/20.webp",
+                "cjid": "488028",
+                "cjname": "yymh",
+                "switch": "1",
+                "cjstatus": "0",
+                "buy": 0
+            },
+            {
+                "id": "60609",
+                "title": "第10章",
+                "image":
+                    "/bookimages/3090/488018/91902a31-3e37-42f3-b6df-e2a9bcb5a6c9.jpeg",
+                "create_time": "2023-09-26 01:11:49",
+                "update_time": "2023-09-26 01:11:49",
+                "manhua_id": "2123",
+                "sort": "10",
+                "isvip": "1",
+                "score": "58",
+                "view": null,
+                "type": "1",
+                "content": null,
+                "imagelist":
+                    "/bookimages/3090/488018/1.webp,/bookimages/3090/488018/2.webp,/bookimages/3090/488018/3.webp,/bookimages/3090/488018/4.webp,/bookimages/3090/488018/5.webp,/bookimages/3090/488018/6.webp,/bookimages/3090/488018/7.webp,/bookimages/3090/488018/8.webp,/bookimages/3090/488018/9.webp,/bookimages/3090/488018/10.webp,/bookimages/3090/488018/11.webp,/bookimages/3090/488018/12.webp,/bookimages/3090/488018/13.webp,/bookimages/3090/488018/14.webp,/bookimages/3090/488018/15.webp,/bookimages/3090/488018/16.webp,/bookimages/3090/488018/17.webp,/bookimages/3090/488018/18.webp,/bookimages/3090/488018/19.webp,/bookimages/3090/488018/20.webp",
+                "cjid": "488018",
+                "cjname": "yymh",
+                "switch": "1",
+                "cjstatus": "0",
+                "buy": 0
+            },
+            {
+                "id": "60610",
+                "title": "第11章",
+                "image":
+                    "/bookimages/3090/488019/91902a31-3e37-42f3-b6df-e2a9bcb5a6c9.jpeg",
+                "create_time": "2023-09-26 01:11:54",
+                "update_time": "2023-09-26 01:11:54",
+                "manhua_id": "2123",
+                "sort": "11",
+                "isvip": "1",
+                "score": "58",
+                "view": null,
+                "type": "1",
+                "content": null,
+                "imagelist":
+                    "/bookimages/3090/488019/1.webp,/bookimages/3090/488019/2.webp,/bookimages/3090/488019/3.webp,/bookimages/3090/488019/4.webp,/bookimages/3090/488019/5.webp,/bookimages/3090/488019/6.webp,/bookimages/3090/488019/7.webp,/bookimages/3090/488019/8.webp,/bookimages/3090/488019/9.webp,/bookimages/3090/488019/10.webp,/bookimages/3090/488019/11.webp,/bookimages/3090/488019/12.webp,/bookimages/3090/488019/13.webp,/bookimages/3090/488019/14.webp,/bookimages/3090/488019/15.webp,/bookimages/3090/488019/16.webp,/bookimages/3090/488019/17.webp,/bookimages/3090/488019/18.webp",
+                "cjid": "488019",
+                "cjname": "yymh",
+                "switch": "1",
+                "cjstatus": "0",
+                "buy": 0
+            }
+        ]
+    },
+    "msg": "ok",
+    "succ": true
+}

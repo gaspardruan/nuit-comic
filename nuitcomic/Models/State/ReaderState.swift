@@ -7,6 +7,11 @@
 
 import SwiftUI
 
+enum ReadingMode {
+    case vertical
+    case horizontal
+}
+
 @Observable
 final class ReaderState {
     let comic: Comic
@@ -24,6 +29,7 @@ final class ReaderState {
     var preloaded: Bool = false
 
     var showToolbar = false
+    var readingMode: ReadingMode = .vertical
     private var hideTask: Task<Void, Never>?
 
     var imageIndexInChapter: Int {
@@ -85,6 +91,7 @@ final class ReaderState {
     }
 
     func mayUpdateImageIndex(index: Int) {
+        guard imageList.indices.contains(index) else { return }
         guard imageIndex != index else { return }
         imageIndex = index
     }
@@ -112,12 +119,15 @@ final class ReaderState {
     }
 
     func showToolbarTemporarily() {
-        guard !showToolbar else { return }
+        hideTask?.cancel()
 
-        withAnimation { showToolbar = true }
+        if !showToolbar {
+            withAnimation { showToolbar = true }
+        }
 
         hideTask = Task { @MainActor in
             try? await Task.sleep(for: .seconds(5))
+            guard !Task.isCancelled else { return }
             withAnimation { showToolbar = false }
             hideTask = nil
         }
@@ -152,6 +162,11 @@ final class ReaderState {
 
     func close() {
         onClose(chapterIndex)
+    }
+
+    func toggleReadingMode() {
+        readingMode = readingMode == .vertical ? .horizontal : .vertical
+        showToolbarTemporarily()
     }
 
 }

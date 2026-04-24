@@ -15,4 +15,9 @@ class LocalData {
         let decoded: ChaptersWrapper = load("chapters.json")
         return decoded.result.list
     }
+    
+    static var chapters2: [Chapter] {
+        let decoded: ChaptersWrapper = load("chapters2.json")
+        return decoded.result.list
+    }
 }
