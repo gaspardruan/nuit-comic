@@ -13,6 +13,7 @@ struct ChapterButton: View {
     let chapters: [Chapter]
     let lastReadChapterIndex: Int
     let isLoading: Bool
+    let transition: ReaderTransition?
 
     @State private var showContent = false
     @Environment(AppState.self) private var appState
@@ -65,7 +66,12 @@ struct ChapterButton: View {
                     chapters: chapters,
                     focusedChapterIndex: lastReadChapterIndex
                 ) { index in
-                    appState.read(comic: comic, chapters: chapters, startChapterIndex: index)
+                    appState.read(
+                        comic: comic,
+                        chapters: chapters,
+                        startChapterIndex: index,
+                        transition: transition
+                    )
                 }
             }
         }
@@ -75,7 +81,8 @@ struct ChapterButton: View {
 #Preview {
     ChapterButton(
         comic: LocalData.comics[0], chapters: LocalData.chapters, lastReadChapterIndex: 3,
-        isLoading: false
+        isLoading: false,
+        transition: nil
     )
     .environment(AppState.defaultState)
     .padding()

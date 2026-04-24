@@ -19,7 +19,12 @@ final class AppState {
         self.comicSearchStore = comicSearchStore
     }
 
-    func read(comic: Comic, chapters: [Chapter], startChapterIndex: Int) {
+    func read(
+        comic: Comic,
+        chapters: [Chapter],
+        startChapterIndex: Int,
+        transition: ReaderTransition? = nil
+    ) {
         storedComicStore.upsert(
             comic: comic,
             lastReadChapterIndex: startChapterIndex,
@@ -30,6 +35,7 @@ final class AppState {
             comic: comic,
             chapters: chapters,
             startChapterIndex: startChapterIndex,
+            transition: transition,
             onClose: { index in
                 self.close()
 
@@ -88,9 +94,16 @@ final class AppState {
 
 }
 
-struct ReadingContext {
+struct ReadingContext: Identifiable {
+    let id = UUID()
     let comic: Comic
     let chapters: [Chapter]
     let startChapterIndex: Int
+    let transition: ReaderTransition?
     let onClose: (Int) -> Void
+}
+
+struct ReaderTransition {
+    let sourceID: String
+    let namespace: Namespace.ID
 }

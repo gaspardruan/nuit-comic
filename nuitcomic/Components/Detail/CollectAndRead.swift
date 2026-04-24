@@ -13,6 +13,7 @@ struct CollectAndRead: View {
     let chapters: [Chapter]
     let collectedComic: StoredComic?
     let lastReadChapterIndex: Int
+    let transition: ReaderTransition?
 
     @Environment(AppState.self) private var appState
 
@@ -44,7 +45,11 @@ struct CollectAndRead: View {
 
             Button {
                 appState.read(
-                    comic: comic, chapters: chapters, startChapterIndex: lastReadChapterIndex)
+                    comic: comic,
+                    chapters: chapters,
+                    startChapterIndex: lastReadChapterIndex,
+                    transition: transition
+                )
             } label: {
                 Label(readButtonText, systemImage: "play.fill")
                     .frame(maxWidth: .infinity)
@@ -70,6 +75,7 @@ struct CollectAndRead: View {
         comic: LocalData.comics[0],
         chapters: LocalData.chapters,
         collectedComic: nil,
-        lastReadChapterIndex: 3
+        lastReadChapterIndex: 3,
+        transition: nil
     )
 }

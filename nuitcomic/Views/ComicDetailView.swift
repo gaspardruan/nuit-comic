@@ -12,6 +12,7 @@ struct ComicDetailView: View {
     let comic: Comic
 
     @Environment(AppState.self) private var appState
+    @Namespace private var readerTransition
     @State private var fetcher = ChapterFetcher()
     @Query private var sameIDComics: [StoredComic]
 
@@ -37,6 +38,10 @@ struct ComicDetailView: View {
         (UIScreen.main.bounds.width - 2 * AppSpacing.standard) * 8 / 15
     }
 
+    var readerTransitionSourceID: String {
+        "reader-cover-\(comic.id)"
+    }
+
     var body: some View {
         let _ = Self._printChanges()
         ScrollView {
@@ -46,6 +51,7 @@ struct ComicDetailView: View {
                     .cornerRadius(6)
                     .frame(height: coverHeight)
                     .shadow(radius: 4, y: 4)
+                    .matchedTransitionSource(id: readerTransitionSourceID, in: readerTransition)
 
                 Brief(comic: comic)
 
@@ -54,6 +60,10 @@ struct ComicDetailView: View {
                     chapters: fetcher.chapters,
                     collectedComic: collectedComic,
                     lastReadChapterIndex: lastReadChapterIndex,
+                    transition: .init(
+                        sourceID: readerTransitionSourceID,
+                        namespace: readerTransition
+                    )
                 )
 
                 ExpandableDescription(
@@ -65,7 +75,11 @@ struct ComicDetailView: View {
                     comic: comic,
                     chapters: fetcher.chapters,
                     lastReadChapterIndex: lastReadChapterIndex,
-                    isLoading: fetcher.isLoading
+                    isLoading: fetcher.isLoading,
+                    transition: .init(
+                        sourceID: readerTransitionSourceID,
+                        namespace: readerTransition
+                    )
                 )
 
             }

@@ -8,25 +8,42 @@
 import SwiftUI
 
 struct ReaderView: View {
-    @Environment(AppState.self) private var appState
+    let context: ReadingContext
 
     var body: some View {
-        if let context = appState.readingContext {
-            ZStack {
-                Color(.systemBackground)
-                    .ignoresSafeArea()
-                ComicReader(
-                    comic: context.comic,
-                    chapters: context.chapters,
-                    startChapterIndex: context.startChapterIndex,
-                    onClose: context.onClose
-                )
-            }
+        ComicReader(
+            comic: context.comic,
+            chapters: context.chapters,
+            startChapterIndex: context.startChapterIndex,
+            onClose: context.onClose
+        )
+        .interactiveDismissDisabled()
+        .modifier(ReaderTransitionModifier(transition: context.transition))
+    }
+}
+
+private struct ReaderTransitionModifier: ViewModifier {
+    let transition: ReaderTransition?
+
+    @ViewBuilder
+    func body(content: Content) -> some View {
+        if let transition {
+            content.navigationTransition(
+                .zoom(sourceID: transition.sourceID, in: transition.namespace)
+            )
+        } else {
+            content
         }
     }
 }
 
 #Preview {
-    ReaderView()
-        .environment(AppState.defaultState)
+    ReaderView(
+        context: ReadingContext(
+            comic: LocalData.comics[0],
+            chapters: LocalData.chapters,
+            startChapterIndex: 0,
+            transition: nil
+        ) { _ in }
+    )
 }
