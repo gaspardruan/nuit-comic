@@ -26,7 +26,10 @@ final class ReaderState {
 
     var imageIndex = 0
     var imageList: [ImageItem]
+    @ObservationIgnored
     var imageLoaded: [Bool]
+    @ObservationIgnored
+    var imageSizes: [String: CGSize] = [:]
 
     var preloaded: Bool = false
 
@@ -65,6 +68,7 @@ final class ReaderState {
         print("preload")
         prefetchImagesFrom(
             index: 0,
+            count: 15,
             onFinished: {
                 withAnimation { self.preloaded = true }
                 self.showToolbarTemporarily()
@@ -88,7 +92,15 @@ final class ReaderState {
             }
         }
 
-        ApiClient.shared.prefetch(urls: slice, onFinished: onFinished)
+        guard !slice.isEmpty else { return }
+
+        ApiClient.shared.prefetch(
+            urls: slice,
+            onImageLoaded: { [weak self] url, size in
+                self?.updateImageSize(url: url, size: size)
+            },
+            onFinished: onFinished
+        )
     }
 
     func mayUpdateImageIndex(index: Int) {
@@ -163,6 +175,12 @@ final class ReaderState {
 
     func close() {
         onClose(chapterIndex)
+    }
+
+    private func updateImageSize(url: String, size: CGSize) {
+        guard size.width > 0, size.height > 0 else { return }
+        guard imageSizes[url] == nil else { return }
+        imageSizes[url] = size
     }
 
 }

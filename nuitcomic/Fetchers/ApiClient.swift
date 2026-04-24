@@ -68,19 +68,40 @@ final class ApiClient {
 
     func prefetch(urls: [String], onFinished: (() -> Void)? = nil) {
         guard !urls.isEmpty else { return }
+        prefetch(urls: urls, onImageLoaded: nil, onFinished: onFinished)
+    }
 
-        let wrappedUrls = urls.compactMap { URL(string: $0) }
-        let prefetcher = ImagePrefetcher(
-            urls: wrappedUrls,
-            options: [
-                .requestModifier(ServerConfig.requestModifier),
-                .cacheOriginalImage,
-            ],
-            completionHandler: { _, _, _ in
-                onFinished?()
+    func prefetch(
+        urls: [String],
+        onImageLoaded: ((String, CGSize) -> Void)? = nil,
+        onFinished: (() -> Void)? = nil
+    ) {
+        guard !urls.isEmpty else { return }
+
+        let options: KingfisherOptionsInfo = [
+            .requestModifier(ServerConfig.requestModifier),
+            .cacheOriginalImage,
+        ]
+
+        let group = DispatchGroup()
+
+        for urlString in urls {
+            guard let url = URL(string: urlString) else { continue }
+
+            group.enter()
+            KingfisherManager.shared.retrieveImage(with: url, options: options) {
+                result in
+                if case let .success(value) = result {
+                    DispatchQueue.main.async {
+                        onImageLoaded?(urlString, value.image.size)
+                    }
+                }
+                group.leave()
             }
-        )
-        prefetcher.maxConcurrentDownloads = 9
-        prefetcher.start()
+        }
+
+        group.notify(queue: .main) {
+            onFinished?()
+        }
     }
 }

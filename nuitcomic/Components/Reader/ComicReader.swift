@@ -76,7 +76,10 @@ struct ComicReader: View {
             ScrollView {
                 LazyVStack(spacing: 0) {
                     ForEach(state.imageList, id: \.self) { image in
-                        ReaderComicImage(url: image.url)
+                        ReaderComicImage(
+                            url: image.url,
+                            imageSize: state.imageSizes[image.url]
+                        )
                             .id(image)
                     }
                     Text("已经到底了!")
@@ -88,7 +91,7 @@ struct ComicReader: View {
             .task(id: readingMode) {
                 scrollToCurrentImage(with: proxy, anchor: .top)
             }
-            .onScrollTargetVisibilityChange(idType: ImageItem.self, threshold: 0.01) { items in
+            .onScrollTargetVisibilityChange(idType: ImageItem.self, threshold: 0.3) { items in
                 handlScrollTargetVisibilityChange(items: items)
             }
         }
@@ -99,7 +102,10 @@ struct ComicReader: View {
             ScrollView(.horizontal) {
                 LazyHStack(spacing: 0) {
                     ForEach(state.imageList, id: \.self) { image in
-                        ReaderComicImage(url: image.url)
+                        ReaderComicImage(
+                            url: image.url,
+                            imageSize: state.imageSizes[image.url]
+                        )
                             .frame(width: screenWidth)
                             .id(image)
                     }
@@ -136,22 +142,36 @@ struct ComicReader: View {
         state.mayLoadNextChapter(imageIndex: first.indexInList)
         state.mayUpdateImageIndex(index: first.indexInList)
         state.mayUpdateChapterIndex(index: first.chapterIndex)
-        state.prefetchImagesFrom(index: last.indexInList + 1)
+        state.prefetchImagesFrom(index: last.indexInList + 1, count: 15)
     }
 }
 
 struct ReaderComicImage: View {
     let url: String
+    let imageSize: CGSize?
+
     var body: some View {
-        ComicImage(url: url) {
+        ComicImage(
+            url: url,
+            placeholder: {
             Image("placeholder")
                 .resizable()
                 .scaledToFit()
                 .padding(100)
-                .frame(height: UIScreen.main.bounds.width / 0.618)
-        }
-        .scaledToFit()
+                .frame(height: placeholderHeight)
+        })
+        .aspectRatio(imageAspectRatio, contentMode: .fit)
+    }
 
+    private var imageAspectRatio: CGFloat {
+        guard let imageSize, imageSize.width > 0, imageSize.height > 0 else {
+            return 0.618
+        }
+        return imageSize.width / imageSize.height
+    }
+
+    private var placeholderHeight: CGFloat {
+        UIScreen.main.bounds.width / imageAspectRatio
     }
 }
 
