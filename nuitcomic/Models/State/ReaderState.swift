@@ -7,9 +7,11 @@
 
 import SwiftUI
 
-enum ReadingMode {
-    case vertical
-    case horizontal
+enum ReadingMode: String, CaseIterable, Identifiable {
+    case vertical = "vertical"
+    case horizontal = "horizontal"
+
+    var id: Self { self }
 }
 
 @Observable
@@ -29,7 +31,6 @@ final class ReaderState {
     var preloaded: Bool = false
 
     var showToolbar = false
-    var readingMode: ReadingMode = .vertical
     private var hideTask: Task<Void, Never>?
 
     var imageIndexInChapter: Int {
@@ -162,11 +163,6 @@ final class ReaderState {
 
     func close() {
         onClose(chapterIndex)
-    }
-
-    func toggleReadingMode() {
-        readingMode = readingMode == .vertical ? .horizontal : .vertical
-        showToolbarTemporarily()
     }
 
 }

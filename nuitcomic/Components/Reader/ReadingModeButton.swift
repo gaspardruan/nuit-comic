@@ -10,8 +10,10 @@ import SwiftUI
 struct ReadingModeButton: View {
     @Environment(ReaderState.self) private var state
 
+    @Binding var readingMode: ReadingMode
+
     private var iconName: String {
-        switch state.readingMode {
+        switch readingMode {
         case .vertical:
             "arrow.up.and.down.text.horizontal"
         case .horizontal:
@@ -21,7 +23,7 @@ struct ReadingModeButton: View {
 
     var body: some View {
         if state.showToolbar {
-            Button(action: state.toggleReadingMode) {
+            Button(action: toggleReadingMode) {
                 Image(systemName: iconName)
                     .fontWeight(.semibold)
                     .frame(width: 2 * AppSpacing.loose, height: 2 * AppSpacing.loose)
@@ -29,7 +31,12 @@ struct ReadingModeButton: View {
             }
             .buttonStyle(.plain)
             .padding(.horizontal, AppSpacing.loose)
-            
+
         }
+    }
+
+    private func toggleReadingMode() {
+        readingMode = readingMode == .vertical ? .horizontal : .vertical
+        state.showToolbarTemporarily()
     }
 }

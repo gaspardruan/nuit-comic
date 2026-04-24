@@ -5,11 +5,21 @@
 //  Created by Zhongqiu Ruan on 2026/1/26.
 //
 
+import SwiftData
 import SwiftUI
 
 struct ComicReader: View {
     @State private var state: ReaderState
     let screenWidth = UIScreen.main.bounds.width
+
+    @AppStorage("readerMode") private var readingModeRaw: String = ReadingMode.vertical.rawValue
+    private var readingMode: ReadingMode {
+        ReadingMode(rawValue: readingModeRaw) ?? .horizontal
+    }
+
+    private var readingModeBinding: Binding<ReadingMode> {
+        Binding(get: { readingMode }, set: { readingModeRaw = $0.rawValue })
+    }
 
     init(
         comic: Comic,
@@ -42,7 +52,9 @@ struct ComicReader: View {
                 .overlay(alignment: .topTrailing) { CloseButton() }
                 .overlay(alignment: .top) { ChapterLabel() }
                 .overlay(alignment: .bottom) { PageLabel() }
-                .overlay(alignment: .bottomLeading) { ReadingModeButton() }
+                .overlay(alignment: .bottomLeading) {
+                    ReadingModeButton(readingMode: readingModeBinding)
+                }
                 .overlay(alignment: .bottomTrailing) { ContentButton() }
         } else {
             ProgressView()
@@ -51,7 +63,7 @@ struct ComicReader: View {
 
     @ViewBuilder
     private var readerContent: some View {
-        switch state.readingMode {
+        switch readingMode {
         case .vertical:
             verticalReader
         case .horizontal:
@@ -73,7 +85,7 @@ struct ComicReader: View {
                 .scrollTargetLayout()
             }
             .scrollIndicators(.hidden)
-            .task(id: state.readingMode) {
+            .task(id: readingMode) {
                 scrollToCurrentImage(with: proxy, anchor: .top)
             }
             .onScrollTargetVisibilityChange(idType: ImageItem.self, threshold: 0.01) { items in
@@ -97,7 +109,7 @@ struct ComicReader: View {
             }
             .scrollIndicators(.hidden)
             .scrollTargetBehavior(.paging)
-            .task(id: state.readingMode) {
+            .task(id: readingMode) {
                 scrollToCurrentImage(with: proxy, anchor: .leading)
             }
             .onScrollTargetVisibilityChange(idType: ImageItem.self, threshold: 0.5) { items in
