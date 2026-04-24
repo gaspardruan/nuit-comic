@@ -19,7 +19,7 @@ struct ExpandableDescription: View {
             .lineLimit(3)
             .overlay(alignment: .bottomTrailing) {
                 if description.count > 75 {
-                    Button("更多") {
+                    Button("detail.more") {
                         showFull = true
                     }
                     .font(.footnote)

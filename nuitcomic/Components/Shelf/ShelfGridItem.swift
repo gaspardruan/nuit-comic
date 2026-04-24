@@ -44,7 +44,13 @@ struct ShelfGridItem: View {
                 .foregroundStyle(Color.primary)
                 .lineLimit(1)
 
-            Text("\((comic.lastReadChapterIndex) + 1)/\(comic.chapterCount)章")
+            Text(
+                localizedFormat(
+                    "shelf.progress",
+                    comic.lastReadChapterIndex + 1,
+                    comic.chapterCount
+                )
+            )
                 .font(.footnote)
                 .foregroundStyle(Color.secondary)
                 .lineLimit(1)

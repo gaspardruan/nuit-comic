@@ -5,6 +5,8 @@
 //  Created by Zhongqiu Ruan on 2026/1/22.
 //
 
+import SwiftUI
+
 struct HomeComic {
     let newComics: [Comic]
     let updatedComics: [Comic]
@@ -15,14 +17,33 @@ struct HomeComic {
     let mostSearchedComics: [Comic]
 }
 
-enum HomeSection: String {
-    case newComics = "新作"
-    case updatedComics = "更新"
-    case recommendedComics = "推荐"
-    case mostReadComics = "最多阅读"
-    case mostFollowedComics = "最多收藏"
-    case mostReadOverComics = "最多阅读（完结）"
-    case mostSearchedComics = "最多搜索"
+enum HomeSection {
+    case newComics
+    case updatedComics
+    case recommendedComics
+    case mostReadComics
+    case mostFollowedComics
+    case mostReadOverComics
+    case mostSearchedComics
+
+    var localizedTitleKey: LocalizedStringKey {
+        switch self {
+        case .newComics:
+            "home.section.new"
+        case .updatedComics:
+            "home.section.updated"
+        case .recommendedComics:
+            "home.section.recommended"
+        case .mostReadComics:
+            "home.section.mostRead"
+        case .mostFollowedComics:
+            "home.section.mostFollowed"
+        case .mostReadOverComics:
+            "home.section.mostReadOver"
+        case .mostSearchedComics:
+            "home.section.mostSearched"
+        }
+    }
 }
 
 struct Comics: Decodable {

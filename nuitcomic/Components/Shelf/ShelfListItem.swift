@@ -32,7 +32,11 @@ struct ShelfListItem: View {
                     .font(.footnote)
                     .foregroundColor(.secondary)
                 Text(
-                    "\((comic.lastReadChapterIndex) + 1)/\(comic.chapterCount)章"
+                    localizedFormat(
+                        "shelf.progress",
+                        comic.lastReadChapterIndex + 1,
+                        comic.chapterCount
+                    )
                 )
                 .font(.footnote)
                 .foregroundColor(.secondary)

@@ -12,7 +12,13 @@ struct ChapterLabel: View {
 
     var body: some View {
         if state.showToolbar {
-            Text("\(state.chapterIndex + 1)/\(state.chapters.count)章")
+            Text(
+                localizedFormat(
+                    "reader.chapterPosition",
+                    state.chapterIndex + 1,
+                    state.chapters.count
+                )
+            )
                 .font(.footnote)
                 .padding(.horizontal, AppSpacing.tight)
                 .padding(.vertical, AppSpacing.tight)

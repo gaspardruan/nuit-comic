@@ -30,14 +30,14 @@ struct AboutView: View {
             List {
                 Section {
                     VStack(alignment: .leading) {
-                        Text("简介")
+                        Text("about.intro.title")
                             .font(.title3).bold()
-                        Text("一个为了学习做的APP，没有什么其他的。")
+                        Text("about.intro.body")
                             .foregroundStyle(.secondary)
                     }
                 }
                 
-                Section("相关链接") {
+                Section("about.links") {
                     Link(destination: Self.githubURL) {
                         Label {
                             Text("Github")
@@ -61,34 +61,34 @@ struct AboutView: View {
                     }
                 }
 
-                Section("APP数据") {
+                Section("about.appData") {
                     HStack {
-                        Text("漫画数量")
+                        Text("about.comicCount")
                         Spacer()
-                        Text("\(String(status?.comicCount ?? 0)) 部")
+                        Text(localizedFormat("about.comicCountValue", status?.comicCount ?? 0))
                             .foregroundStyle(.secondary)
                     }
 
                     HStack {
-                        Text("搜索同步时间")
+                        Text("about.lastSync")
                         Spacer()
                         Text(lastSyncTimeStr)
                             .foregroundStyle(.secondary)
                     }
                     
                     HStack {
-                        Text("版本号")
+                        Text("about.version")
                         Spacer()
                         Text(version)
                             .foregroundStyle(.secondary)
                     }
                 }
             }
-            .navigationTitle("关于")
+            .navigationTitle("about.title")
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
                 ToolbarItem(placement: .confirmationAction) {
-                    Button("完成") { dismiss() }
+                    Button("common.done") { dismiss() }
                 }
             }
             .task {

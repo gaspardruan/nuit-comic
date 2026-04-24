@@ -19,7 +19,7 @@ struct SectionDetailView: View {
     var body: some View {
         let _ = Self._printChanges()
         content
-            .navigationTitle(section.rawValue)
+            .navigationTitle(section.localizedTitleKey)
             .navigationBarTitleDisplayMode(.inline)
             .task {
                 await fetcher.firstLoad()
@@ -36,18 +36,18 @@ struct SectionDetailView: View {
             }
         } else if let error = fetcher.errorMessage {
             VStack {
-                Text("加载失败")
+                Text("home.loadFailed")
                     .font(.headline)
                 Text(error)
                     .font(.caption)
                     .foregroundColor(.gray)
 
-                Button("重试") {
+                Button("common.retry") {
                     Task { await fetcher.loadMore() }
                 }
             }
         } else {
-            ProgressView("加载中...")
+            ProgressView("home.loading")
         }
     }
 }

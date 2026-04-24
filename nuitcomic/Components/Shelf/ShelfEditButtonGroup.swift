@@ -17,10 +17,10 @@ struct ShelfEditButtonGroup: View {
     var body: some View {
         if show {
             HStack {
-                Button("删除", action: onDeleteClick)
+                Button("common.delete", action: onDeleteClick)
                     .disabled(deleteDisabled)
                 Spacer()
-                Button(allChosen ? "取消全选" : "全选", action: toggleAllChoose)
+                Button(allChosen ? "shelf.deselectAll" : "shelf.selectAll", action: toggleAllChoose)
             }
         }
     }

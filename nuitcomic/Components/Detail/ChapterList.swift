@@ -84,11 +84,15 @@ struct ChapterList: View {
                         Text(comic.title)
                             .font(.headline)
                         HStack {
-                            Text("章节")
+                            Text("detail.chapterList.title")
                                 .foregroundStyle(Color.secondary)
 
                             Text(
-                                "第\(focusedChapterIndex + 1)章，共\(actualChapters.count)章"
+                                localizedFormat(
+                                    "detail.chapterList.focus",
+                                    focusedChapterIndex + 1,
+                                    actualChapters.count
+                                )
                             )
                         }
                         .font(.footnote)

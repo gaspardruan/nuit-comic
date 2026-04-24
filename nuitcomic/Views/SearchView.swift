@@ -41,14 +41,14 @@ struct SearchView: View {
                     }
                 }
                 if searchFocused && results.count > 10 {
-                    Text("点击搜索显示所有结果")
+                    Text("search.previewHint")
                 } else if submitted && results.count > 5 {
-                    Text("到底了")
+                    Text("search.end")
                 }
             }
             .listStyle(.plain)
-            .navigationTitle("搜索")
-            .searchable(text: $query, isPresented: $isPresented, prompt: "漫画名、简介、关键词、作者")
+            .navigationTitle("search.title")
+            .searchable(text: $query, isPresented: $isPresented, prompt: "search.prompt")
             .searchFocused($searchFocused)
             .onSubmit(of: .search, handleSubmit)
             .task { _ = try? await appState.refreshSearchIndexIfNeeded() }
@@ -59,14 +59,14 @@ struct SearchView: View {
                 }
             }
             .alert(
-                "错误", isPresented: $showErrorAlert,
-                actions: { Button("确认") {} }
+                "common.error", isPresented: $showErrorAlert,
+                actions: { Button("common.ok") {} }
             ) {
-                Text(errMessage ?? "未知错误")
+                Text(errMessage ?? String(localized: "common.unknownError"))
             }
             .toolbar {
                 ToolbarItem {
-                    Button("关于", systemImage: "info.circle") {
+                    Button("search.about", systemImage: "info.circle") {
                         showInfoModal = true
                     }
                 }

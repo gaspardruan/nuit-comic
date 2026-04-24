@@ -18,27 +18,27 @@ struct ShelfSettingButton: View {
 
     var body: some View {
         if isEditing {
-            Button("完成", action: onDoneClick)
+            Button("common.done", action: onDoneClick)
         } else {
             Menu {
                 Button(
-                    "选择",
+                    "common.select",
                     systemImage: "checkmark.circle",
                     action: onChooseClick
                 )
                 .disabled(chooseDiabled)
 
-                Section("布局") {
-                    Picker("Layout", selection: $isGridLayout) {
-                        Label("网格", systemImage: "square.grid.2x2").tag(true)
-                        Label("列表", systemImage: "list.bullet").tag(false)
+                Section("shelf.layout") {
+                    Picker("shelf.layout", selection: $isGridLayout) {
+                        Label("shelf.layout.grid", systemImage: "square.grid.2x2").tag(true)
+                        Label("shelf.layout.list", systemImage: "list.bullet").tag(false)
                     }
                 }
 
-                Section("排序方式...") {
-                    Picker("Order", selection: $orderType) {
+                Section("shelf.order") {
+                    Picker("shelf.order", selection: $orderType) {
                         ForEach(OrderType.allCases) { type in
-                            Text(type.rawValue).tag(type)
+                            Text(type.localizedTitleKey).tag(type)
                         }
                     }
                 }

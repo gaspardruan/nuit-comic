@@ -425,15 +425,15 @@ private enum SearchDatabaseError: LocalizedError {
     var errorDescription: String? {
         switch self {
         case .open(let message):
-            return "打开搜索数据库失败：\(message)"
+            return localizedFormat("search.database.open", message)
         case .execute(let message):
-            return "执行搜索数据库语句失败：\(message)"
+            return localizedFormat("search.database.execute", message)
         case .prepare(let message):
-            return "准备搜索数据库语句失败：\(message)"
+            return localizedFormat("search.database.prepare", message)
         case .bind(let message):
-            return "绑定搜索参数失败：\(message)"
+            return localizedFormat("search.database.bind", message)
         case .step(let message):
-            return "读取搜索结果失败：\(message)"
+            return localizedFormat("search.database.step", message)
         }
     }
 }

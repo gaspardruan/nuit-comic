@@ -11,12 +11,13 @@ struct Brief: View {
     let comic: Comic
 
     var formattedViewNumber: String {
-        if comic.view >= 10_000 {
+        if prefersChineseLocalization, comic.view >= 10_000 {
             let value = Double(comic.view) / 10_000
-            return String(format: "%.1f万", value)
+            return String(format: "%.1f万", locale: Locale.current, value)
         } else if comic.view >= 1_000 {
             let value = Double(comic.view) / 1_000
-            return String(format: "%.1f千", value)
+            let suffix = prefersChineseLocalization ? "千" : "K"
+            return String(format: "%.1f%@", locale: Locale.current, value, suffix)
         } else {
             return "\(comic.view)"
         }
@@ -42,7 +43,7 @@ struct Brief: View {
                 Text("\(comic.score.formatted())")
                 StarRating(score: comic.score / 2)
                 Spacer().frame(width: 20)
-                Text("阅读指数 \(formattedViewNumber)")
+                Text(localizedFormat("detail.readIndex", formattedViewNumber))
             }
             .font(.footnote)
             .foregroundColor(.secondary)

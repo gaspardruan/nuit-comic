@@ -9,7 +9,6 @@ import SwiftUI
 
 struct RandomComicSection: View {
     @State private var fetcher: RandomComicFetcher
-    private let title = "猜你喜欢"
 
     init(comics: [Comic]? = nil) {
         fetcher = RandomComicFetcher(comics: comics)
@@ -19,7 +18,7 @@ struct RandomComicSection: View {
         ComicSection(comics: fetcher.comics) {
             Button(action: handleTap) {
                 HStack {
-                    Text(title)
+                    Text("random.recommend")
                         .font(.title3)
                         .foregroundColor(.primary)
                     Image(systemName: "arrow.trianglehead.2.clockwise")

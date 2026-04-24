@@ -13,7 +13,7 @@ struct HomeView: View {
     var body: some View {
         NavigationStack {
             content
-                .navigationTitle("主页")
+                .navigationTitle("home.title")
         }
         .task {
             await fetcher.fetchAll()
@@ -51,7 +51,7 @@ struct HomeView: View {
                 )
 
                 ComicSection(comics: homeComic.mostSearchedComics) {
-                    Text(HomeSection.mostSearchedComics.rawValue)
+                    Text(HomeSection.mostSearchedComics.localizedTitleKey)
                         .font(.title3)
                         .fontWeight(.semibold)
                 }
@@ -61,18 +61,18 @@ struct HomeView: View {
 
         } else if let error = fetcher.errorMessage {
             VStack {
-                Text("加载失败")
+                Text("home.loadFailed")
                     .font(.headline)
                 Text(error)
                     .font(.caption)
                     .foregroundColor(.gray)
 
-                Button("重试") {
+                Button("common.retry") {
                     Task { await fetcher.fetchAll() }
                 }
             }
         } else {
-            ProgressView("加载中...")
+            ProgressView("home.loading")
         }
     }
 }
@@ -86,7 +86,7 @@ struct NavigableSectionView: View {
                 SectionDetailView(section: section)
             } label: {
                 HStack {
-                    Text(section.rawValue)
+                    Text(section.localizedTitleKey)
                         .font(.title2)
                         .foregroundColor(.primary)
                     Image(systemName: "chevron.right")

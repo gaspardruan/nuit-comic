@@ -10,9 +10,9 @@ import SwiftUI
 struct ContentView: View {
     var body: some View {
         TabView {
-            Tab("主页", systemImage: "house.fill") { HomeView() }
-            Tab("书架", systemImage: "books.vertical.fill") { ShelfView() }
-            Tab("搜索", systemImage: "magnifyingglass") { SearchView() }
+            Tab("tab.home", systemImage: "house.fill") { HomeView() }
+            Tab("tab.shelf", systemImage: "books.vertical.fill") { ShelfView() }
+            Tab("tab.search", systemImage: "magnifyingglass") { SearchView() }
         }
     }
 }

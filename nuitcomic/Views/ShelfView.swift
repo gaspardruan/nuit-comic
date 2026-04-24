@@ -68,16 +68,16 @@ struct ShelfView: View {
                 isGridLayout: isGridLayout,
                 selection: $chosenComicIDs
             )
-            .navigationTitle("书架")
+            .navigationTitle("shelf.title")
             .scrollDisabled(currentComics.isEmpty)
             .overlay {
                 if currentComics.isEmpty {
-                    ContentUnavailableView("书架是空的，快去读漫画吧", systemImage: "book")
+                    ContentUnavailableView("shelf.empty", systemImage: "book")
                 }
             }
-            .alert("确定要删除选中的漫画？", isPresented: $showDeleteAlert) {
-                Button("删除", role: .destructive, action: deleteChosenComics)
-                Button("取消", role: .cancel) {}
+            .alert("shelf.deleteSelected", isPresented: $showDeleteAlert) {
+                Button("common.delete", role: .destructive, action: deleteChosenComics)
+                Button("common.cancel", role: .cancel) {}
             }
             .toolbarVisibility(isEditing ? .hidden : .visible, for: .tabBar)
             .toolbar {
@@ -168,9 +168,38 @@ enum ShelfSection {
     case recent
 }
 
-enum OrderType: String, CaseIterable, Identifiable {
-    case time = "最近阅读"
-    case title = "漫画名"
+enum OrderType: CaseIterable, Identifiable, RawRepresentable {
+    case time
+    case title
+
+    init?(rawValue: String) {
+        switch rawValue {
+        case "time", "最近阅读":
+            self = .time
+        case "title", "漫画名":
+            self = .title
+        default:
+            return nil
+        }
+    }
+
+    var rawValue: String {
+        switch self {
+        case .time:
+            "time"
+        case .title:
+            "title"
+        }
+    }
+
+    var localizedTitleKey: LocalizedStringKey {
+        switch self {
+        case .time:
+            "order.time"
+        case .title:
+            "order.title"
+        }
+    }
 
     var id: Self { self }
 }

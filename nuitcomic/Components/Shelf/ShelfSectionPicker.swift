@@ -12,9 +12,9 @@ struct ShelfSectionPicker: View {
     @Binding var section: ShelfSection
 
     var body: some View {
-        Picker("选择类型", selection: $section) {
-            Text("最近收藏").tag(ShelfSection.collection)
-            Text("最近阅读").tag(ShelfSection.recent)
+        Picker("shelf.sectionPicker", selection: $section) {
+            Text("shelf.section.collection").tag(ShelfSection.collection)
+            Text("shelf.section.recent").tag(ShelfSection.recent)
         }
         .pickerStyle(.segmented)
         .disabled(diabled)

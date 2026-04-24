@@ -24,8 +24,8 @@ struct ChapterButton: View {
             relativeTo: Date()
         )
         return comic.isOver
-            ? "\(chapters.count)章·完本"
-            : "连载至\(chapters.count)章·\(d)"
+            ? localizedFormat("detail.chapterSummary.completed", chapters.count)
+            : localizedFormat("detail.chapterSummary.updating", chapters.count, d)
     }
 
     var body: some View {
@@ -34,7 +34,7 @@ struct ChapterButton: View {
             showContent = true
         } label: {
             HStack {
-                Text("目录")
+                Text("detail.directory")
                     .font(.title3)
                     .fontWeight(.semibold)
                 Spacer()
@@ -49,7 +49,7 @@ struct ChapterButton: View {
                             .fill(Color.gray.opacity(0.3))
                             .frame(width: 130, height: 20)
                     } else {
-                        Text("加载失败")
+                        Text("detail.loadFailed")
                             .font(.subheadline)
                     }
 

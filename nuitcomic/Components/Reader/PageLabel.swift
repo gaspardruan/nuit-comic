@@ -12,7 +12,13 @@ struct PageLabel: View {
 
     var body: some View {
         if state.showToolbar {
-            Text("\(state.imageIndexInChapter + 1)/\(state.chapterImageCount)页")
+            Text(
+                localizedFormat(
+                    "reader.pagePosition",
+                    state.imageIndexInChapter + 1,
+                    state.chapterImageCount
+                )
+            )
                 .font(.footnote)
                 .fontWeight(.semibold)
                 .padding(.horizontal, AppSpacing.tight)

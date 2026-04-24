@@ -20,12 +20,12 @@ struct SearchHistoryList: View {
         if histories.count > 0 {
             List {
                 HStack {
-                    Text("近期搜索记录")
+                    Text("search.history.title")
                         .font(.title3)
                         .fontWeight(.semibold)
                     Spacer()
 
-                    Button("清除") {
+                    Button("search.history.clear") {
                         showConfirmDeletion = true
                     }
                     .buttonStyle(.plain)
@@ -41,16 +41,16 @@ struct SearchHistoryList: View {
             }
             .listStyle(.plain)
             .confirmationDialog(
-                "清除搜素历史记录", isPresented: $showConfirmDeletion,
+                "search.history.confirmTitle", isPresented: $showConfirmDeletion,
                 actions: {
-                    Button("清除搜索历史记录", role: .destructive, action: clearHistory)
+                    Button("search.history.confirmAction", role: .destructive, action: clearHistory)
                 }
             ) {
-                Text("将会删除近期搜索记录")
+                Text("search.history.confirmMessage")
             }
 
         } else {
-            ContentUnavailableView("搜索漫画", systemImage: "magnifyingglass")
+            ContentUnavailableView("search.history.empty", systemImage: "magnifyingglass")
         }
     }
 

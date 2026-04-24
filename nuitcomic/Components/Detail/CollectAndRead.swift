@@ -18,7 +18,9 @@ struct CollectAndRead: View {
     @Environment(AppState.self) private var appState
 
     var readButtonText: String {
-        lastReadChapterIndex == 0 ? "开始阅读" : "续读\(lastReadChapterIndex + 1)章"
+        lastReadChapterIndex == 0
+            ? String(localized: "detail.read.start")
+            : localizedFormat("detail.read.continue", lastReadChapterIndex + 1)
     }
 
     var collected: Bool {
@@ -26,7 +28,7 @@ struct CollectAndRead: View {
     }
 
     var collectButtonText: String {
-        collected ? "取消收藏" : "收藏"
+        collected ? String(localized: "detail.uncollect") : String(localized: "detail.collect")
     }
 
     var collectButtonIcon: String {

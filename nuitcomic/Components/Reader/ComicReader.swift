@@ -82,7 +82,7 @@ struct ComicReader: View {
                         )
                             .id(image)
                     }
-                    Text("已经到底了!")
+                    Text("reader.reachedEnd")
                         .padding(.vertical, 40)
                 }
                 .scrollTargetLayout()
@@ -109,7 +109,7 @@ struct ComicReader: View {
                             .frame(width: screenWidth)
                             .id(image)
                     }
-                    Text("已经到底了!")
+                    Text("reader.reachedEnd")
                 }
                 .scrollTargetLayout()
             }
