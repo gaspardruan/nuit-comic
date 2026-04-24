@@ -21,9 +21,8 @@ struct AboutView: View {
         }
         return "-"
     }
-    
-    var version = Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String ?? ""
 
+    var version = appVersion()
 
     var body: some View {
         NavigationStack {
@@ -36,7 +35,7 @@ struct AboutView: View {
                             .foregroundStyle(.secondary)
                     }
                 }
-                
+
                 Section("about.links") {
                     Link(destination: Self.githubURL) {
                         Label {
@@ -75,12 +74,35 @@ struct AboutView: View {
                         Text(lastSyncTimeStr)
                             .foregroundStyle(.secondary)
                     }
-                    
+
                     HStack {
                         Text("about.version")
                         Spacer()
                         Text(version)
                             .foregroundStyle(.secondary)
+                    }
+                }
+
+                if let update = appState.availableUpdate {
+                    Section("about.update") {
+                        HStack {
+                            Text("about.latestVersion")
+                            Spacer()
+                            Text(update.version)
+                                .foregroundStyle(.secondary)
+                        }
+
+                        if !update.trimmedMessage.isEmpty {
+                            VStack(alignment: .leading, spacing: AppSpacing.tight) {
+                                Text("about.updateMessage")
+                                Text(update.trimmedMessage)
+                                    .foregroundStyle(.secondary)
+                            }
+                        }
+
+                        Link(destination: appState.updateInstallURL) {
+                            Label("update.alert.install", systemImage: "arrow.down.circle")
+                        }
                     }
                 }
             }

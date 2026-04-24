@@ -62,6 +62,9 @@
 "about.comicCountValue" = "%lld titles";
 "about.lastSync" = "Search Sync Time";
 "about.version" = "Version";
+"about.update" = "Update";
+"about.latestVersion" = "Latest Version";
+"about.updateMessage" = "Message";
 "home.section.new" = "New";
 "home.section.updated" = "Updated";
 "home.section.recommended" = "Recommended";
@@ -75,3 +78,6 @@
 "search.database.prepare" = "Failed to prepare search database statement: %@";
 "search.database.bind" = "Failed to bind search parameter: %@";
 "search.database.step" = "Failed to read search result: %@";
+"update.alert.title" = "Update Available";
+"update.alert.message" = "Version %@ is available.";
+"update.alert.install" = "Install Update";

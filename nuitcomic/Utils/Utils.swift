@@ -7,6 +7,10 @@
 
 import Foundation
 
+func appVersion() -> String {
+    Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String ?? ""
+}
+
 /// Load file from the file system.
 ///
 /// `load` expects a JSON file. Use the method to load the example data.
@@ -49,7 +53,11 @@ func formatTime(from date: Date) -> String {
     formatter.timeZone = .current
     formatter.dateFormat = "yyyy-MM-dd HH:mm:ss"
 
-    return formatter.string(from: Date())
+    return formatter.string(from: date)
+}
+
+func isVersion(_ lhs: String, newerThan rhs: String) -> Bool {
+    lhs.compare(rhs, options: .numeric) == .orderedDescending
 }
 
 let dateFormatter: RelativeDateTimeFormatter = {

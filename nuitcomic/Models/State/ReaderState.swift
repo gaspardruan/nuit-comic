@@ -139,7 +139,7 @@ final class ReaderState {
         }
 
         hideTask = Task { @MainActor in
-            try? await Task.sleep(for: .seconds(5))
+            try? await Task.sleep(for: .seconds(3))
             guard !Task.isCancelled else { return }
             withAnimation { showToolbar = false }
             hideTask = nil
