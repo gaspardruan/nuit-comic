@@ -95,13 +95,9 @@ struct ComicDetailView: View {
                 .background(.bar)
         }
         .fullScreenCover(item: readingContext) { context in
-            NavigationStack {
-                ReaderView(context: context)
-            }
+            ReaderView(context: context)
         }
-        .task {
-            await fetcher.fetch(comicID: comic.id)
-        }
+        .task { await fetcher.fetch(comicID: comic.id) }
     }
 }
 

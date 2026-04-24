@@ -31,7 +31,7 @@ struct ContentButton: View {
                 ChapterList(
                     comic: state.comic,
                     chapters: state.chapters,
-                    focusedChapterIndex: 100
+                    focusedChapterIndex: state.chapterIndex
                 ) { index in
                     Task { @MainActor in
                         state.jumptToChapter(index: index)
