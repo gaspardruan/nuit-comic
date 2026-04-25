@@ -58,9 +58,9 @@ func isVersion(_ lhs: String, newerThan rhs: String) -> Bool {
     lhs.compare(rhs, options: .numeric) == .orderedDescending
 }
 
-let dateFormatter: RelativeDateTimeFormatter = {
+let relDateFormatter: RelativeDateTimeFormatter = {
     let f = RelativeDateTimeFormatter()
-    f.locale = Locale(identifier: "zh_CN")
+    f.locale = .autoupdatingCurrent
     f.unitsStyle = .full
     return f
 }()

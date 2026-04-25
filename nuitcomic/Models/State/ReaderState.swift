@@ -65,7 +65,6 @@ final class ReaderState {
 
     func preload() {
         guard !preloaded else { return }
-        print("preload")
         prefetchImagesFrom(
             index: 0,
             count: 15,

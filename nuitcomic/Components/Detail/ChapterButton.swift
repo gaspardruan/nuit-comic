@@ -19,7 +19,7 @@ struct ChapterButton: View {
     @Environment(AppState.self) private var appState
 
     var updateInfo: String {
-        let d = dateFormatter.localizedString(
+        let d = relDateFormatter.localizedString(
             for: comic.updateTime,
             relativeTo: Date()
         )

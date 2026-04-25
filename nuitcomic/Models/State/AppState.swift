@@ -144,7 +144,6 @@ final class AppState {
             let update = try JSONDecoder().decode(AppUpdateInfo.self, from: data)
             handleUpdateManifest(update)
         } catch {
-            print(error.localizedDescription)
             return
         }
     }

@@ -51,7 +51,6 @@ struct SearchView: View {
             .searchable(text: $query, isPresented: $isPresented, prompt: "search.prompt")
             .searchFocused($searchFocused)
             .onSubmit(of: .search, handleSubmit)
-            .task { _ = try? await appState.refreshSearchIndexIfNeeded() }
             .task(id: query) { await search() }
             .overlay {
                 if !isPresented {
@@ -133,14 +132,9 @@ struct SearchView: View {
     }
 }
 
-private enum SearchState {
-    case idle
-    case typing
-    case submitted
-}
-
 #Preview {
     SearchView()
         .environment(AppState.defaultState)
         .modelContainer(for: SearchHistory.self)
+        .task { _ = try? await AppState.defaultState.refreshSearchIndexIfNeeded() }
 }

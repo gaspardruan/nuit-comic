@@ -21,9 +21,15 @@ struct SimpleGrid<T: Identifiable, Content: View>: View {
         comics.count % columnNum
     }
 
+    var rowIndices: Range<Int> {
+        guard !comics.isEmpty else { return 0..<0 }
+        let rowCount = (comics.count + columnNum - 1) / columnNum
+        return 0..<rowCount
+    }
+
     var body: some View {
         Grid {
-            ForEach(0...rowNum, id: \.self) { rowIndex in
+            ForEach(rowIndices, id: \.self) { rowIndex in
                 let rowCount = rowNum == rowIndex ? restNum : columnNum
                 GridRow {
                     let rowComics = Array(
