@@ -2,7 +2,7 @@
 //  ComicReader.swift
 //  nuitcomic
 //
-//  Created by Zhongqiu Ruan on 2026/1/26.
+//  Created by Gaspard Ruan on 2026/1/26.
 //
 
 import SwiftData

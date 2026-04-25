@@ -2,7 +2,7 @@
 //  ComicSearchStore.swift
 //  nuitcomic
 //
-//  Created by Zhongqiu Ruan on 2026/4/22.
+//  Created by Gaspard Ruan on 2026/4/22.
 //
 
 import Foundation

@@ -2,7 +2,7 @@
 //  ShelfSectionPicker.swift
 //  nuitcomic
 //
-//  Created by Zhongqiu Ruan on 2026/1/30.
+//  Created by Gaspard Ruan on 2026/1/30.
 //
 
 import SwiftUI

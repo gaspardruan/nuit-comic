@@ -2,7 +2,7 @@
 //  ChapterListItem.swift
 //  nuitcomic
 //
-//  Created by Zhongqiu Ruan on 2026/1/25.
+//  Created by Gaspard Ruan on 2026/1/25.
 //
 
 import SwiftUI

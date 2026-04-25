@@ -2,7 +2,7 @@
 //  PageLable.swift
 //  nuitcomic
 //
-//  Created by Zhongqiu Ruan on 2026/1/28.
+//  Created by Gaspard Ruan on 2026/1/28.
 //
 
 import SwiftUI

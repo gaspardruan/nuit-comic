@@ -2,7 +2,7 @@
 //  RamdomComicFetcher.swift
 //  nuitcomic
 //
-//  Created by Zhongqiu Ruan on 2026/1/23.
+//  Created by Gaspard Ruan on 2026/1/23.
 //
 
 import Foundation

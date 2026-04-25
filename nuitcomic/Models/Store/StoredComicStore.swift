@@ -2,7 +2,7 @@
 //  StoredComicStore.swift
 //  nuitcomic
 //
-//  Created by Zhongqiu Ruan on 2026/4/20.
+//  Created by Gaspard Ruan on 2026/4/20.
 //
 
 import Foundation

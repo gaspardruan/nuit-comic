@@ -2,7 +2,7 @@
 //  KingfisherSetup.swift
 //  nuitcomic
 //
-//  Created by Zhongqiu Ruan on 2026/1/22.
+//  Created by Gaspard Ruan on 2026/1/22.
 //
 
 import Alamofire
