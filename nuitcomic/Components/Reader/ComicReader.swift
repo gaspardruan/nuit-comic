@@ -16,7 +16,6 @@ struct ComicReader: View {
     private var readingMode: ReadingMode {
         ReadingMode(rawValue: readingModeRaw) ?? .horizontal
     }
-
     private var readingModeBinding: Binding<ReadingMode> {
         Binding(get: { readingMode }, set: { readingModeRaw = $0.rawValue })
     }
@@ -38,9 +37,7 @@ struct ComicReader: View {
     var body: some View {
         content
             .environment(state)
-            .task {
-                state.preload()
-            }
+            .task { state.preload() }
     }
 
     @ViewBuilder
@@ -80,7 +77,7 @@ struct ComicReader: View {
                             url: image.url,
                             imageSize: state.imageSizes[image.url]
                         )
-                            .id(image)
+                        .id(image)
                     }
                     Text("reader.reachedEnd")
                         .padding(.vertical, 40)
@@ -106,8 +103,8 @@ struct ComicReader: View {
                             url: image.url,
                             imageSize: state.imageSizes[image.url]
                         )
-                            .frame(width: screenWidth)
-                            .id(image)
+                        .frame(width: screenWidth)
+                        .id(image)
                     }
                     Text("reader.reachedEnd")
                 }
@@ -154,12 +151,13 @@ struct ReaderComicImage: View {
         ComicImage(
             url: url,
             placeholder: {
-            Image("placeholder")
-                .resizable()
-                .scaledToFit()
-                .padding(100)
-                .frame(height: placeholderHeight)
-        })
+                Image("placeholder")
+                    .resizable()
+                    .scaledToFit()
+                    .padding(100)
+                    .frame(height: placeholderHeight)
+            }
+        )
         .aspectRatio(imageAspectRatio, contentMode: .fit)
     }
 

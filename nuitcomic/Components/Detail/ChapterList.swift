@@ -21,11 +21,7 @@ struct ChapterList: View {
     }
 
     var focusedChapterID: Int {
-        if focusedChapterIndex < chapters.count {
-            chapters[focusedChapterIndex].id
-        } else {
-            0
-        }
+        focusedChapterIndex < chapters.count ? chapters[focusedChapterIndex].id : 0
     }
 
     var body: some View {
@@ -49,10 +45,8 @@ struct ChapterList: View {
             .listStyle(.plain)
             .toolbar {
                 ToolbarItem(placement: .topBarLeading) {
-                    Button {
+                    Button("Close", systemImage: "xmark") {
                         dismiss()
-                    } label: {
-                        Image(systemName: "xmark")
                     }
                 }
 
@@ -67,14 +61,10 @@ struct ChapterList: View {
 
                         Button {
                             withAnimation {
-                                proxy.scrollTo(
-                                    focusedChapterID,
-                                    anchor: .center
-                                )
+                                proxy.scrollTo(focusedChapterID, anchor: .center)
                             }
                         } label: {
                             Image(systemName: "location")
-
                         }
                     }
                 }
@@ -96,7 +86,6 @@ struct ChapterList: View {
                             )
                         }
                         .font(.footnote)
-
                     }
                 }
             }

@@ -32,9 +32,7 @@ struct RandomComicSection: View {
     }
 
     private func handleTap() {
-        Task {
-            await fetcher.random()
-        }
+        Task { await fetcher.random() }
     }
 }
 

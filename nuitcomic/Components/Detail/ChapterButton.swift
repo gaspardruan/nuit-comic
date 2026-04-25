@@ -29,7 +29,6 @@ struct ChapterButton: View {
     }
 
     var body: some View {
-        let _ = Self._printChanges()
         Button {
             showContent = true
         } label: {
@@ -37,6 +36,7 @@ struct ChapterButton: View {
                 Text("detail.directory")
                     .font(.title3)
                     .fontWeight(.semibold)
+                
                 Spacer()
 
                 HStack {

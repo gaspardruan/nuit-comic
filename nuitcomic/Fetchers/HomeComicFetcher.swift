@@ -53,7 +53,6 @@ class HomeComicFetcher {
                 mostReadOverComics: mostReadOverComics,
                 mostSearchedComics: mostSearchedComics
             )
-
         } catch {
             errorMessage = error.localizedDescription
         }
@@ -66,7 +65,6 @@ class HomeComicFetcher {
     private func getNewAndRecommend() async throws -> (
         newComics: [Comic], recommendedComics: [Comic]
     ) {
-
         let decoded: HomeComicResponseWrapper =
             try await ApiClient.shared.request(
                 "/yymhindex.html"
@@ -88,7 +86,6 @@ class HomeComicFetcher {
     }
 
     private func getUpdatedComics() async throws -> [Comic] {
-
         let decoded: Comics =
             try await ApiClient.shared.request(
                 "/getbook.html",
@@ -105,7 +102,6 @@ class HomeComicFetcher {
     }
 
     private func getMostReadComics() async throws -> [Comic] {
-
         let decoded: Comics =
             try await ApiClient.shared.request(
                 "/getbook.html",
@@ -122,7 +118,6 @@ class HomeComicFetcher {
     }
 
     private func getMostReadOverComics() async throws -> [Comic] {
-
         let decoded: Comics =
             try await ApiClient.shared.request(
                 "/getbook.html",
@@ -140,7 +135,6 @@ class HomeComicFetcher {
     }
 
     private func getMostFollowedComics() async throws -> [Comic] {
-
         let decoded: Comics =
             try await ApiClient.shared.request(
                 "/getbook.html",
@@ -157,7 +151,6 @@ class HomeComicFetcher {
     }
 
     private func getMostSearchedComics() async throws -> [Comic] {
-
         let decoded: RankComicResponseWrapper =
             try await ApiClient.shared.request(
                 "/rank/type/1"

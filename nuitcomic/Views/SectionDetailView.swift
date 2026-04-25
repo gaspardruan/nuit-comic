@@ -17,38 +17,29 @@ struct SectionDetailView: View {
     }
 
     var body: some View {
-        let _ = Self._printChanges()
         content
             .navigationTitle(section.localizedTitleKey)
             .navigationBarTitleDisplayMode(.inline)
-            .task {
-                await fetcher.firstLoad()
-            }
+            .task { await fetcher.firstLoad() }
     }
 
     @ViewBuilder
     private var content: some View {
         if !fetcher.comics.isEmpty {
-            ComicList(comics: fetcher.comics) {
-                Task {
-                    await fetcher.loadMore()
-                }
-            }
+            ComicList(comics: fetcher.comics, onReachBottom: loadMore)
         } else if let error = fetcher.errorMessage {
-            VStack {
-                Text("home.loadFailed")
-                    .font(.headline)
-                Text(error)
-                    .font(.caption)
-                    .foregroundColor(.gray)
-
-                Button("common.retry") {
-                    Task { await fetcher.loadMore() }
-                }
-            }
+            ContentUnavailableView(
+                label: { Text("home.loadFailed") },
+                description: { Text(error) },
+                actions: { Button("common.retry", action: loadMore) }
+            )
         } else {
             ProgressView("home.loading")
         }
+    }
+
+    private func loadMore() {
+        Task { await fetcher.loadMore() }
     }
 }
 

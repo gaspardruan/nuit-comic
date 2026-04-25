@@ -41,7 +41,8 @@ struct SearchHistoryList: View {
             }
             .listStyle(.plain)
             .confirmationDialog(
-                "search.history.confirmTitle", isPresented: $showConfirmDeletion,
+                "search.history.confirmTitle",
+                isPresented: $showConfirmDeletion,
                 actions: {
                     Button("search.history.confirmAction", role: .destructive, action: clearHistory)
                 }

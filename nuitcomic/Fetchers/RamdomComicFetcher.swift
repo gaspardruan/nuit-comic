@@ -10,7 +10,6 @@ import Observation
 
 @Observable
 class RandomComicFetcher {
-
     var comics: [Comic]
     var firstLoaded = false
     var isLoading = false

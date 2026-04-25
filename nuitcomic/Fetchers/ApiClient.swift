@@ -91,7 +91,7 @@ final class ApiClient {
             group.enter()
             KingfisherManager.shared.retrieveImage(with: url, options: options) {
                 result in
-                if case let .success(value) = result {
+                if case .success(let value) = result {
                     DispatchQueue.main.async {
                         onImageLoaded?(urlString, value.image.size)
                     }

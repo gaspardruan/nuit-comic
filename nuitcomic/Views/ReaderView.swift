@@ -29,8 +29,7 @@ private struct ReaderTransitionModifier: ViewModifier {
     func body(content: Content) -> some View {
         if let transition {
             content.navigationTransition(
-                .zoom(sourceID: transition.sourceID, in: transition.namespace)
-            )
+                .zoom(sourceID: transition.sourceID, in: transition.namespace))
         } else {
             content
         }

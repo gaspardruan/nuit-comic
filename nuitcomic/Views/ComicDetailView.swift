@@ -43,7 +43,6 @@ struct ComicDetailView: View {
     }
 
     var body: some View {
-        let _ = Self._printChanges()
         let readingContext = Binding(
             get: { appState.readingContext },
             set: { appState.readingContext = $0 }

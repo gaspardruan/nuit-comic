@@ -19,11 +19,11 @@ struct PageLabel: View {
                     state.chapterImageCount
                 )
             )
-                .font(.footnote)
-                .fontWeight(.semibold)
-                .padding(.horizontal, AppSpacing.tight)
-                .padding(.vertical, AppSpacing.tight)
-                .background(Capsule().fill(.ultraThinMaterial))
+            .font(.footnote)
+            .fontWeight(.semibold)
+            .padding(.horizontal, AppSpacing.tight)
+            .padding(.vertical, AppSpacing.tight)
+            .background(Capsule().fill(.ultraThinMaterial))
         }
     }
 }

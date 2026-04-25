@@ -20,7 +20,7 @@ struct ShelfSettingButton: View {
         if isEditing {
             Button("common.done", action: onDoneClick)
         } else {
-            Menu {
+            Menu("Settings", systemImage: "ellipsis") {
                 Button(
                     "common.select",
                     systemImage: "checkmark.circle",
@@ -42,12 +42,7 @@ struct ShelfSettingButton: View {
                         }
                     }
                 }
-
-            } label: {
-                Image(systemName: "ellipsis")
-                    .imageScale(.large)
             }
-
         }
     }
 }

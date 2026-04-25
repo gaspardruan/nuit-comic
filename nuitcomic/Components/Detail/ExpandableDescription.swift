@@ -19,23 +19,21 @@ struct ExpandableDescription: View {
             .lineLimit(3)
             .overlay(alignment: .bottomTrailing) {
                 if description.count > 75 {
-                    Button("detail.more") {
-                        showFull = true
-                    }
-                    .font(.footnote)
-                    .foregroundStyle(Color.primary)
-                    .background(
-                        LinearGradient(
-                            colors: [
-                                Color.clear,
-                                Color(.systemBackground),
-                            ],
-                            startPoint: .topLeading,
-                            endPoint: .bottomTrailing
+                    Button("detail.more") { showFull = true }
+                        .font(.footnote)
+                        .foregroundStyle(Color.primary)
+                        .background(
+                            LinearGradient(
+                                colors: [
+                                    Color.clear,
+                                    Color(.systemBackground),
+                                ],
+                                startPoint: .topLeading,
+                                endPoint: .bottomTrailing
+                            )
+                            .frame(width: 60, height: 20)
+                            .allowsHitTesting(false)
                         )
-                        .frame(width: 60, height: 20)
-                        .allowsHitTesting(false)
-                    )
                 }
 
             }

@@ -15,14 +15,11 @@ struct HomeView: View {
             content
                 .navigationTitle("home.title")
         }
-        .task {
-            await fetcher.fetchAll()
-        }
+        .task { await fetcher.fetchAll() }
     }
 
     @ViewBuilder
     private var content: some View {
-        let _ = Self._printChanges()
         if let homeComic = fetcher.homeComic {
             ScrollView(.vertical) {
                 NavigableSectionView(
@@ -60,20 +57,18 @@ struct HomeView: View {
             }
 
         } else if let error = fetcher.errorMessage {
-            VStack {
-                Text("home.loadFailed")
-                    .font(.headline)
-                Text(error)
-                    .font(.caption)
-                    .foregroundColor(.gray)
-
-                Button("common.retry") {
-                    Task { await fetcher.fetchAll() }
-                }
-            }
+            ContentUnavailableView(
+                label: { Text("home.loadFailed") },
+                description: { Text(error) },
+                actions: { Button("common.retry", action: fetchAll) }
+            )
         } else {
             ProgressView("home.loading")
         }
+    }
+
+    private func fetchAll() {
+        Task { await fetcher.fetchAll() }
     }
 }
 
@@ -93,9 +88,7 @@ struct NavigableSectionView: View {
                         .foregroundColor(.secondary)
                 }
                 .fontWeight(.semibold)
-
             }
-
         }
     }
 }
