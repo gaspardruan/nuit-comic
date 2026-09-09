@@ -11,7 +11,7 @@ struct ChapterLabel: View {
     @Environment(ReaderState.self) private var state
 
     var body: some View {
-        if state.showToolbar {
+        if state.showToolbar && !state.chapters.isEmpty {
             Text(
                 localizedFormat(
                     "reader.chapterPosition",
@@ -19,11 +19,11 @@ struct ChapterLabel: View {
                     state.chapters.count
                 )
             )
-                .font(.footnote)
-                .padding(.horizontal, AppSpacing.tight)
-                .padding(.vertical, AppSpacing.tight)
-                .background(Capsule().fill(.ultraThinMaterial))
-                .shadow(radius: AppSpacing.tight)
+            .font(.footnote)
+            .padding(.horizontal, AppSpacing.tight)
+            .padding(.vertical, AppSpacing.tight)
+            .background(Capsule().fill(.ultraThinMaterial))
+            .shadow(radius: AppSpacing.tight)
         }
     }
 }

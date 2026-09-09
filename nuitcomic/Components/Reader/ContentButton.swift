@@ -33,9 +33,7 @@ struct ContentButton: View {
                     chapters: state.chapters,
                     focusedChapterIndex: state.chapterIndex
                 ) { index in
-                    Task { @MainActor in
-                        state.jumptToChapter(index: index)
-                    }
+                    state.jumpToChapter(index: index)
                 }
             }
         }

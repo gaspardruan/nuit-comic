@@ -11,11 +11,11 @@ struct PageLabel: View {
     @Environment(ReaderState.self) private var state
 
     var body: some View {
-        if state.showToolbar {
+        if state.showToolbar, let currentImage = state.currentImage {
             Text(
                 localizedFormat(
                     "reader.pagePosition",
-                    state.imageIndexInChapter + 1,
+                    currentImage.indexInChapter + 1,
                     state.chapterImageCount
                 )
             )

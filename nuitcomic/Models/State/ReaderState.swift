@@ -14,34 +14,32 @@ enum ReadingMode: String, CaseIterable, Identifiable {
     var id: Self { self }
 }
 
+@MainActor
 @Observable
 final class ReaderState {
     let comic: Comic
     let chapters: [Chapter]
-    let onClose: (Int) -> Void
+    private let onClose: (Int) -> Void
 
-    var chapterIndex: Int
-    // possibly greater than chapterIndex 1 or more when a chapter is too short
-    var nextChapterIndex: Int
+    // Store only the current image; derive the chapter and page from it.
+    private(set) var currentImage: ImageItem?
+    private(set) var imageList: [ImageItem]
+    private var startChapterIndex: Int
 
-    var imageIndex = 0
-    var imageList: [ImageItem]
-    @ObservationIgnored
-    var imageLoaded: [Bool]
-    @ObservationIgnored
-    var imageSizes: [String: CGSize] = [:]
+    // Each chapter jump starts a new scroll session, isolating callbacks from the previous view.
+    private(set) var readingID = UUID()
+    private(set) var imageSizes: [String: CGSize] = [:]
+    private(set) var showToolbar = false
 
-    var preloaded: Bool = false
+    @ObservationIgnored private var requestedImageURLs: Set<String> = []
+    @ObservationIgnored private var hideTask: Task<Void, Never>?
 
-    var showToolbar = false
-    private var hideTask: Task<Void, Never>?
-
-    var imageIndexInChapter: Int {
-        imageList[imageIndex].indexInChapter
+    var chapterIndex: Int {
+        currentImage?.chapterIndex ?? startChapterIndex
     }
 
     var chapterImageCount: Int {
-        chapters[chapterIndex].imageList.count
+        chapters.isEmpty ? 0 : chapters[chapterIndex].imageList.count
     }
 
     init(
@@ -52,136 +50,123 @@ final class ReaderState {
     ) {
         self.comic = comic
         self.chapters = chapters
-        self.chapterIndex = startChapterIndex
-        self.nextChapterIndex = startChapterIndex + 1
         self.onClose = onClose
-        let imageList = generateImageItemList(
-            from: chapters[startChapterIndex].imageList,
-            chapterIndex: startChapterIndex
+
+        // Normalize an outdated saved chapter position once when entering the reader.
+        let index = chapters.indices.contains(startChapterIndex) ? startChapterIndex : 0
+        self.startChapterIndex = index
+        let images = generateImageItemList(
+            from: chapters.isEmpty ? [] : chapters[index].imageList,
+            chapterIndex: index
         )
-        self.imageList = imageList
-        self.imageLoaded = Array(repeating: false, count: imageList.count)
+        imageList = images
+        currentImage = images.first
     }
 
-    func preload() {
-        guard !preloaded else { return }
-        prefetchImagesFrom(
-            index: 0,
-            count: 15,
-            onFinished: {
-                withAnimation { self.preloaded = true }
-                self.showToolbarTemporarily()
-            }
-        )
-    }
+    // MARK: - Reading events
 
-    func prefetchImagesFrom(
-        index: Int,
-        count: Int = 5,
-        onFinished: (() -> Void)? = nil
-    ) {
-        guard index < imageList.count else { return }
-
-        let end = min(index + count, imageList.count)
-        var slice: [String] = []
-        for i in index..<end {
-            if !imageLoaded[i] {
-                slice.append(imageList[i].url)
-                imageLoaded[i] = true
-            }
+    func start() {
+        if let currentImage {
+            appendUpcomingChapters(near: currentImage.indexInList)
+            prefetchImages(startingAt: currentImage.indexInList)
         }
-
-        guard !slice.isEmpty else { return }
-
-        ApiClient.shared.prefetch(
-            urls: slice,
-            onImageLoaded: { [weak self] url, size in
-                self?.updateImageSize(url: url, size: size)
-            },
-            onFinished: onFinished
-        )
-    }
-
-    func mayUpdateImageIndex(index: Int) {
-        guard imageList.indices.contains(index) else { return }
-        guard imageIndex != index else { return }
-        imageIndex = index
-    }
-
-    func mayUpdateChapterIndex(index: Int) {
-        guard chapterIndex != index else { return }
-        chapterIndex = index
         showToolbarTemporarily()
     }
 
-    func mayLoadNextChapter(imageIndex: Int) {
-        guard imageIndex + 5 == imageList.count else { return }
-        guard nextChapterIndex < chapters.count else { return }
+    func jumpToChapter(index: Int) {
+        guard chapters.indices.contains(index), index != chapterIndex else { return }
 
-        let newImageList = generateImageItemList(
-            from: chapters[nextChapterIndex].imageList,
-            chapterIndex: nextChapterIndex,
-            startIndexInList: imageList.count
-        )
-        imageList.append(contentsOf: newImageList)
-        imageLoaded.append(
-            contentsOf: Array(repeating: false, count: newImageList.count)
-        )
-        nextChapterIndex += 1
+        startChapterIndex = index
+        imageList = generateImageItemList(from: chapters[index].imageList, chapterIndex: index)
+        currentImage = imageList.first
+        readingID = UUID()
+        start()
     }
+
+    func visibleImagesChanged(_ images: [ImageItem], readingID: UUID) {
+        // SwiftUI may call back after removing a view. Images in this session belong to imageList.
+        guard self.readingID == readingID,
+            let first = images.min(by: { $0.indexInList < $1.indexInList }),
+            let last = images.max(by: { $0.indexInList < $1.indexInList })
+        else { return }
+
+        let previousChapter = chapterIndex
+        currentImage = first
+        if chapterIndex != previousChapter {
+            showToolbarTemporarily()
+        }
+
+        appendUpcomingChapters(near: last.indexInList)
+        prefetchImages(startingAt: last.indexInList + 1)
+    }
+
+    func close() {
+        hideToolbar()
+        onClose(chapterIndex)
+    }
+
+    // MARK: - Image preparation
+
+    private func appendUpcomingChapters(near imageIndex: Int) {
+        // Append when fewer than five images remain ahead; derive the next chapter from the list.
+        while imageList.count - imageIndex <= 5, let lastImage = imageList.last {
+            let remainingChapters = chapters.indices.dropFirst(lastImage.chapterIndex + 1)
+            guard let next = remainingChapters.first(where: { !chapters[$0].imageList.isEmpty })
+            else { break }
+
+            imageList.append(
+                contentsOf: generateImageItemList(
+                    from: chapters[next].imageList,
+                    chapterIndex: next,
+                    startIndexInList: imageList.count
+                ))
+        }
+    }
+
+    private func prefetchImages(startingAt index: Int) {
+        let urls = imageList.dropFirst(index).prefix(15).map(\.url).filter {
+            requestedImageURLs.insert($0).inserted
+        }
+        guard !urls.isEmpty else { return }
+
+        // Image sizes are reusable across chapters; prefetching does not control reader visibility.
+        ApiClient.shared.prefetch(
+            urls: urls,
+            onImageLoaded: { [weak self] url, size in
+                guard size.width > 0, size.height > 0 else { return }
+                self?.imageSizes[url] = size
+            }
+        )
+    }
+
+    // MARK: - Toolbar
 
     func showToolbarTemporarily() {
         hideTask?.cancel()
-
-        if !showToolbar {
-            withAnimation { showToolbar = true }
-        }
-
-        hideTask = Task { @MainActor in
-            try? await Task.sleep(for: .seconds(3))
-            guard !Task.isCancelled else { return }
-            withAnimation { showToolbar = false }
-            hideTask = nil
+        withAnimation { showToolbar = true }
+        hideTask = Task { [weak self] in
+            do {
+                try await Task.sleep(for: .seconds(3))
+            } catch {
+                return
+            }
+            self?.hideToolbar()
         }
     }
 
     func toggleToolbar() {
         if showToolbar {
-            withAnimation { showToolbar = false }
-            hideTask?.cancel()
-            hideTask = nil
-            return
+            hideToolbar()
+        } else {
+            showToolbarTemporarily()
         }
-
-        showToolbarTemporarily()
     }
 
-    func jumptToChapter(index: Int) {
-        guard chapterIndex != index else { return }
-
-        chapterIndex = index
-        nextChapterIndex = index + 1
-        let imageList = generateImageItemList(
-            from: chapters[index].imageList,
-            chapterIndex: index
-        )
-        self.imageList = imageList
-        imageLoaded = Array(repeating: false, count: imageList.count)
-
-        preloaded = false
-        preload()
+    private func hideToolbar() {
+        hideTask?.cancel()
+        hideTask = nil
+        withAnimation { showToolbar = false }
     }
-
-    func close() {
-        onClose(chapterIndex)
-    }
-
-    private func updateImageSize(url: String, size: CGSize) {
-        guard size.width > 0, size.height > 0 else { return }
-        guard imageSizes[url] == nil else { return }
-        imageSizes[url] = size
-    }
-
 }
 
 struct ImageItem: Hashable {
@@ -189,8 +174,4 @@ struct ImageItem: Hashable {
     let indexInChapter: Int
     let chapterIndex: Int
     let indexInList: Int
-
-    func hash(into hasher: inout Hasher) {
-        hasher.combine(chapterIndex * 1000 + indexInChapter)
-    }
 }

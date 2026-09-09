@@ -35,27 +35,19 @@ struct ComicReader: View {
     }
 
     var body: some View {
-        content
+        readerContent
+            .id(state.readingID)
+            .ignoresSafeArea()
+            .onTapGesture(perform: state.toggleToolbar)
+            .overlay(alignment: .topTrailing) { CloseButton() }
+            .overlay(alignment: .top) { ChapterLabel() }
+            .overlay(alignment: .bottom) { PageLabel() }
+            .overlay(alignment: .bottomLeading) {
+                ReadingModeButton(readingMode: readingModeBinding)
+            }
+            .overlay(alignment: .bottomTrailing) { ContentButton() }
             .environment(state)
-            .task { state.preload() }
-    }
-
-    @ViewBuilder
-    private var content: some View {
-        if state.preloaded {
-            readerContent
-                .ignoresSafeArea()
-                .onTapGesture(perform: state.toggleToolbar)
-                .overlay(alignment: .topTrailing) { CloseButton() }
-                .overlay(alignment: .top) { ChapterLabel() }
-                .overlay(alignment: .bottom) { PageLabel() }
-                .overlay(alignment: .bottomLeading) {
-                    ReadingModeButton(readingMode: readingModeBinding)
-                }
-                .overlay(alignment: .bottomTrailing) { ContentButton() }
-        } else {
-            ProgressView()
-        }
+            .task { state.start() }
     }
 
     @ViewBuilder
@@ -69,7 +61,8 @@ struct ComicReader: View {
     }
 
     private var verticalReader: some View {
-        ScrollViewReader { proxy in
+        let readingID = state.readingID
+        return ScrollViewReader { proxy in
             ScrollView {
                 LazyVStack(spacing: 0) {
                     ForEach(state.imageList, id: \.self) { image in
@@ -89,13 +82,14 @@ struct ComicReader: View {
                 scrollToCurrentImage(with: proxy, anchor: .top)
             }
             .onScrollTargetVisibilityChange(idType: ImageItem.self, threshold: 0.3) { items in
-                handlScrollTargetVisibilityChange(items: items)
+                state.visibleImagesChanged(items, readingID: readingID)
             }
         }
     }
 
     private var horizontalReader: some View {
-        ScrollViewReader { proxy in
+        let readingID = state.readingID
+        return ScrollViewReader { proxy in
             ScrollView(.horizontal) {
                 LazyHStack(spacing: 0) {
                     ForEach(state.imageList, id: \.self) { image in
@@ -116,30 +110,14 @@ struct ComicReader: View {
                 scrollToCurrentImage(with: proxy, anchor: .leading)
             }
             .onScrollTargetVisibilityChange(idType: ImageItem.self, threshold: 0.5) { items in
-                handlScrollTargetVisibilityChange(items: items)
+                state.visibleImagesChanged(items, readingID: readingID)
             }
         }
     }
 
     private func scrollToCurrentImage(with proxy: ScrollViewProxy, anchor: UnitPoint) {
-        guard state.imageList.indices.contains(state.imageIndex) else { return }
-        let currentImage = state.imageList[state.imageIndex]
-
-        Task { @MainActor in
-            proxy.scrollTo(currentImage, anchor: anchor)
-        }
-    }
-
-    private func handlScrollTargetVisibilityChange(items: [ImageItem]) {
-        guard items.count > 0 else { return }
-
-        let first = items[0]
-        let last = items[items.count - 1]
-
-        state.mayLoadNextChapter(imageIndex: first.indexInList)
-        state.mayUpdateImageIndex(index: first.indexInList)
-        state.mayUpdateChapterIndex(index: first.chapterIndex)
-        state.prefetchImagesFrom(index: last.indexInList + 1, count: 15)
+        guard let currentImage = state.currentImage else { return }
+        proxy.scrollTo(currentImage, anchor: anchor)
     }
 }
 
