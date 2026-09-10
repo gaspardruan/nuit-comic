@@ -12,6 +12,7 @@ xcrun swiftc -swift-version 5 \
     "$PROJECT_DIR/nuitcomic/Models/Mapping/Chapter.swift" \
     "$PROJECT_DIR/nuitcomic/Models/Store/StoredComic.swift" \
     "$PROJECT_DIR/nuitcomic/Utils/Utils.swift" \
+    "$PROJECT_DIR/Tests/ReaderImagePrefetcherDouble.swift" \
     "$PROJECT_DIR/Tests/ReaderStateRegressionTests.swift" \
     -o "$TEST_DIR/reader-state-tests"
 

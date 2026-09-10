@@ -5,12 +5,12 @@
 //  Created by Gaspard Ruan on 2026/1/26.
 //
 
-import SwiftData
+import Kingfisher
 import SwiftUI
 
 struct ComicReader: View {
     @State private var state: ReaderState
-    let screenWidth = UIScreen.main.bounds.width
+    @Environment(\.displayScale) private var displayScale
 
     @AppStorage("readerMode") private var readingModeRaw: String = ReadingMode.vertical.rawValue
     private var readingMode: ReadingMode {
@@ -35,32 +35,36 @@ struct ComicReader: View {
     }
 
     var body: some View {
-        readerContent
-            .id(state.readingID)
-            .ignoresSafeArea()
-            .onTapGesture(perform: state.toggleToolbar)
-            .overlay(alignment: .topTrailing) { CloseButton() }
-            .overlay(alignment: .top) { ChapterLabel() }
-            .overlay(alignment: .bottom) { PageLabel() }
-            .overlay(alignment: .bottomLeading) {
-                ReadingModeButton(readingMode: readingModeBinding)
-            }
-            .overlay(alignment: .bottomTrailing) { ContentButton() }
-            .environment(state)
-            .task { state.start() }
+        GeometryReader { geometry in
+            let pixelWidth = max(1, Int(ceil(geometry.size.width * displayScale)))
+            readerContent(width: geometry.size.width, pixelWidth: pixelWidth)
+                .id(state.readingID)
+                .task(id: pixelWidth) { state.start(pixelWidth: pixelWidth) }
+        }
+        .ignoresSafeArea()
+        .onTapGesture(perform: state.toggleToolbar)
+        .overlay(alignment: .topTrailing) { CloseButton() }
+        .overlay(alignment: .top) { ChapterLabel() }
+        .overlay(alignment: .bottom) { PageLabel() }
+        .overlay(alignment: .bottomLeading) {
+            ReadingModeButton(readingMode: readingModeBinding)
+        }
+        .overlay(alignment: .bottomTrailing) { ContentButton() }
+        .environment(state)
+        .onDisappear { state.stopPrefetching() }
     }
 
     @ViewBuilder
-    private var readerContent: some View {
+    private func readerContent(width: CGFloat, pixelWidth: Int) -> some View {
         switch readingMode {
         case .vertical:
-            verticalReader
+            verticalReader(width: width, pixelWidth: pixelWidth)
         case .horizontal:
-            horizontalReader
+            horizontalReader(width: width, pixelWidth: pixelWidth)
         }
     }
 
-    private var verticalReader: some View {
+    private func verticalReader(width: CGFloat, pixelWidth: Int) -> some View {
         let readingID = state.readingID
         return ScrollViewReader { proxy in
             ScrollView {
@@ -68,7 +72,8 @@ struct ComicReader: View {
                     ForEach(state.imageList, id: \.self) { image in
                         ReaderComicImage(
                             url: image.url,
-                            imageSize: state.imageSizes[image.url]
+                            pageWidth: width,
+                            pixelWidth: pixelWidth
                         )
                         .id(image)
                     }
@@ -87,7 +92,7 @@ struct ComicReader: View {
         }
     }
 
-    private var horizontalReader: some View {
+    private func horizontalReader(width: CGFloat, pixelWidth: Int) -> some View {
         let readingID = state.readingID
         return ScrollViewReader { proxy in
             ScrollView(.horizontal) {
@@ -95,9 +100,10 @@ struct ComicReader: View {
                     ForEach(state.imageList, id: \.self) { image in
                         ReaderComicImage(
                             url: image.url,
-                            imageSize: state.imageSizes[image.url]
+                            pageWidth: width,
+                            pixelWidth: pixelWidth
                         )
-                        .frame(width: screenWidth)
+                        .frame(width: width)
                         .id(image)
                     }
                     Text("reader.reachedEnd")
@@ -123,20 +129,51 @@ struct ComicReader: View {
 
 struct ReaderComicImage: View {
     let url: String
-    let imageSize: CGSize?
+    let pageWidth: CGFloat
+    let pixelWidth: Int
+    @State private var imageSize: CGSize?
+    @State private var isVisible = false
+
+    init(url: String, pageWidth: CGFloat, pixelWidth: Int) {
+        self.url = url
+        self.pageWidth = pageWidth
+        self.pixelWidth = pixelWidth
+        // Use prefetched dimensions without reading from disk during layout.
+        let cachedImage = ReaderImageLoading.cache.retrieveImageInMemoryCache(
+            forKey: url, options: [.processor(ReaderImageProcessor(pixelWidth: pixelWidth))])
+        _imageSize = State(initialValue: cachedImage?.size)
+    }
 
     var body: some View {
-        ComicImage(
-            url: url,
-            placeholder: {
-                Image("placeholder")
+        ZStack {
+            if isVisible {
+                KFImage(URL(string: url))
+                    .setProcessor(ReaderImageProcessor(pixelWidth: pixelWidth))
+                    .targetCache(ReaderImageLoading.cache)
+                    .originalCache(ReaderImageLoading.cache)
+                    .requestModifier(ServerConfig.requestModifier)
+                    .loadDiskFileSynchronously(false)
+                    .backgroundDecode()
+                    .cancelOnDisappear(true)
+                    .retry(maxCount: 2, interval: .seconds(2))
+                    .placeholder {
+                        Image("placeholder")
+                            .resizable()
+                            .scaledToFit()
+                            .padding(100)
+                            .frame(height: pageWidth / imageAspectRatio)
+                    }
+                    .onSuccess { result in imageSize = result.image.size }
                     .resizable()
-                    .scaledToFit()
-                    .padding(100)
-                    .frame(height: placeholderHeight)
+                    .id(pixelWidth)
+            } else {
+                Color.clear
             }
-        )
+        }
         .aspectRatio(imageAspectRatio, contentMode: .fit)
+        .onAppear { isVisible = true }
+        // Keep the aspect ratio for layout, but release the offscreen image view and its bitmap.
+        .onDisappear { isVisible = false }
     }
 
     private var imageAspectRatio: CGFloat {
@@ -146,9 +183,6 @@ struct ReaderComicImage: View {
         return imageSize.width / imageSize.height
     }
 
-    private var placeholderHeight: CGFloat {
-        UIScreen.main.bounds.width / imageAspectRatio
-    }
 }
 
 #Preview {

@@ -36,6 +36,9 @@ struct ComicImage<Placeholder: View>: View {
         KFImage(URL(string: currentUrl))
             .requestModifier(ServerConfig.requestModifier)
             .cacheOriginalImage()
+            .loadDiskFileSynchronously(false)
+            .backgroundDecode()
+            .cancelOnDisappear(true)
             .placeholder {
                 placeholder()
             }

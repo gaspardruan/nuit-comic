@@ -49,7 +49,7 @@ let jsonStorage: Storage<String, Data> = {
 func setupKingfisher() {
     let cache = ImageCache.default
 
-    cache.memoryStorage.config.totalCostLimit = 800 * 1024 * 1024  // 800MB
+    cache.memoryStorage.config.totalCostLimit = 128 * 1024 * 1024  // 128 MiB for covers
     cache.memoryStorage.config.expiration = .seconds(60)
 
     cache.diskStorage.config.sizeLimit = 2 * 1024 * 1024 * 1024  // 2GB

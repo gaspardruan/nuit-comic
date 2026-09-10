@@ -15,6 +15,7 @@ xcrun swiftc -swift-version 5 \
     "$PROJECT_DIR/nuitcomic/Models/State/ReaderState.swift" \
     "$PROJECT_DIR/nuitcomic/Utils/Utils.swift" \
     "$PROJECT_DIR/nuitcomic/Utils/Localization.swift" \
+    "$PROJECT_DIR/Tests/ReaderImagePrefetcherDouble.swift" \
     "$PROJECT_DIR/Tests/SearchIndexRegressionTests.swift" \
     -o "$TEST_DIR/search-index-tests"
 

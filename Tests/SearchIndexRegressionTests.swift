@@ -6,11 +6,6 @@ enum ServerConfig {
     static let imageBaseUrl = "https://example.invalid"
 }
 
-final class ApiClient {
-    static let shared = ApiClient()
-    func prefetch(urls: [String], onImageLoaded: ((String, CGSize) -> Void)?) {}
-}
-
 // Control network completion while exercising the real AppState and SQLite store.
 @MainActor
 final class ComicClient {

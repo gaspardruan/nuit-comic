@@ -5,21 +5,6 @@ enum ServerConfig {
     static let imageBaseUrl = "https://example.invalid"
 }
 
-final class ApiClient {
-    static let shared = ApiClient()
-
-    struct Request {
-        let urls: [String]
-        let onImageLoaded: ((String, CGSize) -> Void)?
-    }
-
-    var requests: [Request] = []
-
-    func prefetch(urls: [String], onImageLoaded: ((String, CGSize) -> Void)?) {
-        requests.append(Request(urls: urls, onImageLoaded: onImageLoaded))
-    }
-}
-
 @main
 @MainActor
 struct ReaderStateRegressionTests {
@@ -28,7 +13,7 @@ struct ReaderStateRegressionTests {
         try oldScrollEventsDoNotChangePosition()
         try shortChaptersContinueAutomatically()
         try emptyAndInvalidChapters()
-        try imagePreparationDoesNotControlPosition()
+        try prefetchWindowFollowsReadingPosition()
         try toolbarAndClose()
     }
 
@@ -68,7 +53,7 @@ struct ReaderStateRegressionTests {
     static func shortChaptersContinueAutomatically() throws {
         let state = try makeState(imageCounts: [2, 0, 1, 2, 10])
         defer { state.close() }
-        state.start()
+        state.start(pixelWidth: 1200)
         precondition(state.imageList.count == 15)
         precondition(state.chapterIndex == 0)
         precondition(
@@ -105,42 +90,42 @@ struct ReaderStateRegressionTests {
         invalidStart.close()
 
         let emptyBook = try makeState(imageCounts: [])
-        emptyBook.start()
+        emptyBook.start(pixelWidth: 1200)
         precondition(emptyBook.currentImage == nil && emptyBook.chapterImageCount == 0)
         emptyBook.close()
         print("PASS: empty chapters, invalid selections, and outdated saved positions")
     }
 
-    static func imagePreparationDoesNotControlPosition() throws {
-        ApiClient.shared.requests.removeAll()
-        var state: ReaderState? = try makeState(imageCounts: [40, 3])
-        weak var releasedState = state
-        state!.start()
-        state!.start()
-        precondition(
-            ApiClient.shared.requests.count == 1, "Prefetch requests are deduplicated by URL")
-        let oldRequest = ApiClient.shared.requests[0]
+    static func prefetchWindowFollowsReadingPosition() throws {
+        let state = try makeState(imageCounts: [40, 3])
+        let prefetcher = ReaderImagePrefetcher.instances.last!
+        state.start(pixelWidth: 1200)
+        precondition(prefetcher.updates.last!.urls.count == 6)
+        precondition(prefetcher.updates.last!.pixelWidth == 1200)
 
-        state!.jumpToChapter(index: 1)
-        let readingID = state!.readingID
-        let currentImage = state!.currentImage
-        oldRequest.onImageLoaded?(oldRequest.urls[0], CGSize(width: 100, height: 200))
-        precondition(state!.imageSizes[oldRequest.urls[0]] == CGSize(width: 100, height: 200))
-        precondition(state!.readingID == readingID && state!.currentImage == currentImage)
+        state.visibleImagesChanged([state.imageList[20]], readingID: state.readingID)
+        precondition(prefetcher.updates.last!.urls == Array(state.imageList[21..<27]).map(\.url))
 
-        state!.close()
-        state = nil
-        precondition(
-            releasedState == nil, "Image requests and toolbar timers must not retain the reader")
-        oldRequest.onImageLoaded?(oldRequest.urls[0], CGSize(width: 100, height: 200))
+        state.jumpToChapter(index: 1)
+        precondition(prefetcher.stopCount == 1)
+        precondition(prefetcher.updates.last!.urls.count == 3)
+        precondition(state.currentImage?.indexInChapter == 0)
+
+        state.start(pixelWidth: 2400)
+        precondition(prefetcher.updates.last!.pixelWidth == 2400)
+        state.close()
+        precondition(prefetcher.stopCount == 2)
+        let updateCount = prefetcher.updates.count
+        state.visibleImagesChanged([state.imageList[0]], readingID: state.readingID)
+        precondition(prefetcher.updates.count == updateCount)
         print(
-            "PASS: late image sizes are reusable without changing position or retaining the reader")
+            "PASS: prefetch follows position and display width, stops on chapter changes and close")
     }
 
     static func toolbarAndClose() throws {
         var closedChapter: Int?
         let state = try makeState(imageCounts: [10, 10], onClose: { closedChapter = $0 })
-        state.start()
+        state.start(pixelWidth: 1200)
         precondition(state.showToolbar)
         state.toggleToolbar()
         precondition(!state.showToolbar)

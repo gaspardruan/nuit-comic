@@ -7,7 +7,6 @@
 
 import Alamofire
 import Foundation
-import Kingfisher
 
 final class ApiClient {
     static let shared = ApiClient()
@@ -66,42 +65,4 @@ final class ApiClient {
         return try JSONDecoder().decode(T.self, from: data)
     }
 
-    func prefetch(urls: [String], onFinished: (() -> Void)? = nil) {
-        guard !urls.isEmpty else { return }
-        prefetch(urls: urls, onImageLoaded: nil, onFinished: onFinished)
-    }
-
-    func prefetch(
-        urls: [String],
-        onImageLoaded: ((String, CGSize) -> Void)? = nil,
-        onFinished: (() -> Void)? = nil
-    ) {
-        guard !urls.isEmpty else { return }
-
-        let options: KingfisherOptionsInfo = [
-            .requestModifier(ServerConfig.requestModifier),
-            .cacheOriginalImage,
-        ]
-
-        let group = DispatchGroup()
-
-        for urlString in urls {
-            guard let url = URL(string: urlString) else { continue }
-
-            group.enter()
-            KingfisherManager.shared.retrieveImage(with: url, options: options) {
-                result in
-                if case .success(let value) = result {
-                    DispatchQueue.main.async {
-                        onImageLoaded?(urlString, value.image.size)
-                    }
-                }
-                group.leave()
-            }
-        }
-
-        group.notify(queue: .main) {
-            onFinished?()
-        }
-    }
 }

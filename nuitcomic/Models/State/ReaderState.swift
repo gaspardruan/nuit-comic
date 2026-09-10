@@ -28,10 +28,10 @@ final class ReaderState {
 
     // Each chapter jump starts a new scroll session, isolating callbacks from the previous view.
     private(set) var readingID = UUID()
-    private(set) var imageSizes: [String: CGSize] = [:]
     private(set) var showToolbar = false
 
-    @ObservationIgnored private var requestedImageURLs: Set<String> = []
+    @ObservationIgnored private let imagePrefetcher = ReaderImagePrefetcher()
+    @ObservationIgnored private var imagePixelWidth = 0
     @ObservationIgnored private var hideTask: Task<Void, Never>?
 
     var chapterIndex: Int {
@@ -65,7 +65,8 @@ final class ReaderState {
 
     // MARK: - Reading events
 
-    func start() {
+    func start(pixelWidth: Int) {
+        imagePixelWidth = pixelWidth
         if let currentImage {
             appendUpcomingChapters(near: currentImage.indexInList)
             prefetchImages(startingAt: currentImage.indexInList)
@@ -76,11 +77,12 @@ final class ReaderState {
     func jumpToChapter(index: Int) {
         guard chapters.indices.contains(index), index != chapterIndex else { return }
 
+        imagePrefetcher.stop()
         startChapterIndex = index
         imageList = generateImageItemList(from: chapters[index].imageList, chapterIndex: index)
         currentImage = imageList.first
         readingID = UUID()
-        start()
+        start(pixelWidth: imagePixelWidth)
     }
 
     func visibleImagesChanged(_ images: [ImageItem], readingID: UUID) {
@@ -101,8 +103,14 @@ final class ReaderState {
     }
 
     func close() {
+        stopPrefetching()
         hideToolbar()
         onClose(chapterIndex)
+    }
+
+    func stopPrefetching() {
+        imagePixelWidth = 0
+        imagePrefetcher.stop()
     }
 
     // MARK: - Image preparation
@@ -124,19 +132,9 @@ final class ReaderState {
     }
 
     private func prefetchImages(startingAt index: Int) {
-        let urls = imageList.dropFirst(index).prefix(15).map(\.url).filter {
-            requestedImageURLs.insert($0).inserted
-        }
-        guard !urls.isEmpty else { return }
-
-        // Image sizes are reusable across chapters; prefetching does not control reader visibility.
-        ApiClient.shared.prefetch(
-            urls: urls,
-            onImageLoaded: { [weak self] url, size in
-                guard size.width > 0, size.height > 0 else { return }
-                self?.imageSizes[url] = size
-            }
-        )
+        guard imagePixelWidth > 0 else { return }
+        let urls = imageList.dropFirst(index).prefix(6).map(\.url)
+        imagePrefetcher.update(urls: urls, pixelWidth: imagePixelWidth)
     }
 
     // MARK: - Toolbar
