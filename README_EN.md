@@ -2,9 +2,9 @@
 
 An ios comic reader for the comics from the [YYMH](https://yymh.app/) website.
 
-## Supported Version
+## Supported Systems
 
-iOS18
+Supports iPhone running iOS 18.5 or later and iPad running iPadOS 18.5 or later.
 
 ## Screen Shots
 
