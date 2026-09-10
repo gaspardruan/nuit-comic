@@ -20,6 +20,7 @@ struct ComicListItem: View {
         HStack {
             ComicImage(url: comic.image)
                 .aspectRatio(5 / 7, contentMode: .fit)
+                .frame(width: 90, height: 126)
                 .cornerRadius(4)
             VStack(alignment: .leading, spacing: AppSpacing.tight) {
                 highlightedText(comic.title)

@@ -21,8 +21,12 @@ struct ComicSectionItem: View {
 
     var body: some View {
         VStack(alignment: .leading) {
-            ComicImage(url: comic.image)
-                .aspectRatio(5 / 7, contentMode: .fill)
+            Color.clear
+                .aspectRatio(5 / 7, contentMode: .fit)
+                .overlay {
+                    ComicImage(url: comic.image)
+                        .aspectRatio(5 / 7, contentMode: .fill)
+                }
                 .cornerRadius(4)
 
             Text(comic.title)
