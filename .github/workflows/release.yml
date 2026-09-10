@@ -1,0 +1,70 @@
+name: Draft release
+
+on:
+  push:
+    tags:
+      - 'v[0-9]*'
+
+permissions:
+  contents: read
+
+concurrency:
+  group: release-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  release:
+    runs-on: macos-26
+    timeout-minutes: 30
+    permissions:
+      contents: write
+    env:
+      DEVELOPER_DIR: /Applications/Xcode_26.6.app/Contents/Developer
+      RELEASE_TAG: ${{ github.ref_name }}
+    steps:
+      - uses: actions/checkout@v7.0.1
+
+      - name: Verify release version
+        run: |
+          VERSION=$(python3 scripts/version.py)
+          if [ "$RELEASE_TAG" != "v$VERSION" ]; then
+            echo "Tag $RELEASE_TAG does not match project version $VERSION."
+            exit 1
+          fi
+          xcodebuild -version
+
+      - name: Run regression tests
+        run: |
+          python3 Tests/ReleaseWorkflowTests.py
+          sh Tests/run-reader-state-tests.sh
+          sh Tests/run-search-index-tests.sh
+          sh Tests/run-image-downsampler-tests.sh
+
+      - name: Build unsigned IPA
+        run: sh build.sh
+
+      - name: Save IPA and debug symbols
+        uses: actions/upload-artifact@v7.0.1
+        with:
+          name: NuitComic-${{ github.ref_name }}
+          path: |
+            build/exported/nuitcomic.ipa
+            build/nuitcomic.xcarchive/dSYMs
+          if-no-files-found: error
+          retention-days: 14
+
+      - name: Create or update draft release
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GH_REPO: ${{ github.repository }}
+        run: |
+          if gh release view "$RELEASE_TAG" --json isDraft > "$RUNNER_TEMP/release.json" 2>/dev/null; then
+            if ! jq -e '.isDraft == true' "$RUNNER_TEMP/release.json" >/dev/null; then
+              echo "Release $RELEASE_TAG is already published; refusing to replace its IPA."
+              exit 1
+            fi
+            gh release upload "$RELEASE_TAG" build/exported/nuitcomic.ipa --clobber
+          else
+            gh release create "$RELEASE_TAG" build/exported/nuitcomic.ipa \
+              --draft --verify-tag --generate-notes --title "NuitComic $RELEASE_TAG"
+          fi

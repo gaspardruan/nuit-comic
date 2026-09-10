@@ -5,56 +5,36 @@
 #
 #  Created by Gaspard Ruan on 2026/4/24.
 #
-set -e
+set -eu
 
 SCRIPT_DIR=$(CDPATH= cd -- "$(dirname -- "$0")" && pwd)
 cd "$SCRIPT_DIR"
 
 PROJECT_NAME="nuitcomic"
-PROJECT_PATH="$SCRIPT_DIR/${PROJECT_NAME}.xcodeproj"
-SCHEME="nuitcomic"
-CONFIGURATION="Release"
-EXPORT_METHOD="${EXPORT_METHOD:-development}"
-DERIVED_DATA="$SCRIPT_DIR/build"
-ARCHIVE_PATH="$DERIVED_DATA/${PROJECT_NAME}.xcarchive"
-EXPORT_PATH="$DERIVED_DATA/exported"
-EXPORT_OPTIONS_PLIST="$DERIVED_DATA/ExportOptions.plist"
+BUILD_DIR="$SCRIPT_DIR/build"
+ARCHIVE_PATH="$BUILD_DIR/${PROJECT_NAME}.xcarchive"
+EXPORT_PATH="$BUILD_DIR/exported"
+PAYLOAD_PATH="$BUILD_DIR/Payload"
 
-rm -rf "$DERIVED_DATA"
-mkdir -p "$DERIVED_DATA"
+# Keep DerivedData between builds, but never package an old archive or IPA.
+rm -rf "$ARCHIVE_PATH" "$EXPORT_PATH" "$PAYLOAD_PATH"
+mkdir -p "$EXPORT_PATH"
 
-# create plist
-cat > "$EXPORT_OPTIONS_PLIST" <<EOF
-<?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
-<plist version="1.0">
-<dict>
-    <key>method</key>
-    <string>${EXPORT_METHOD}</string>
-    <key>signingStyle</key>
-    <string>automatic</string>
-    <key>compileBitcode</key>
-    <false/>
-    <key>stripSwiftSymbols</key>
-    <true/>
-    <key>destination</key>
-    <string>export</string>
-</dict>
-</plist>
-EOF
-
-# archive
-xcodebuild -project "$PROJECT_PATH" \
-  -scheme "$SCHEME" \
-  -configuration "$CONFIGURATION" \
+xcodebuild -project "${PROJECT_NAME}.xcodeproj" \
+  -scheme "$PROJECT_NAME" \
+  -configuration Release \
+  -derivedDataPath "$BUILD_DIR/DerivedData" \
   -archivePath "$ARCHIVE_PATH" \
   -destination "generic/platform=iOS" \
-  -allowProvisioningUpdates \
-  clean archive
+  -onlyUsePackageVersionsFromResolvedFile \
+  CODE_SIGNING_ALLOWED=NO CODE_SIGNING_REQUIRED=NO CODE_SIGN_IDENTITY="" \
+  archive
 
-# export ipa
-xcodebuild -exportArchive \
-  -archivePath "$ARCHIVE_PATH" \
-  -exportOptionsPlist "$EXPORT_OPTIONS_PLIST" \
-  -exportPath "$EXPORT_PATH" \
-  -allowProvisioningUpdates
+# An unsigned IPA is a ZIP containing Payload/<app>.app.
+mkdir -p "$PAYLOAD_PATH"
+ditto "$ARCHIVE_PATH/Products/Applications/${PROJECT_NAME}.app" "$PAYLOAD_PATH/${PROJECT_NAME}.app"
+ditto -c -k --keepParent --norsrc "$PAYLOAD_PATH" "$EXPORT_PATH/${PROJECT_NAME}.ipa"
+rm -rf "$PAYLOAD_PATH"
+
+printf '\nUnsigned IPA: %s\n' "$EXPORT_PATH/${PROJECT_NAME}.ipa"
+du -h "$EXPORT_PATH/${PROJECT_NAME}.ipa"
