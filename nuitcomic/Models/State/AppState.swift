@@ -31,6 +31,14 @@ final class AppState {
     var availableUpdate: AppUpdateInfo?
     var showUpdateAlert = false
 
+    private(set) var searchStatus: SearchStatus?
+    private(set) var isRefreshingSearchIndex = false
+    private(set) var searchIndexError: String?
+
+    var hasSearchIndex: Bool {
+        (searchStatus?.comicCount ?? 0) > 0 || searchStatus?.lastSyncAt != nil
+    }
+
     init(
         storedComicStore: StoredComicStore,
         comicSearchStore: ComicSearchStore = .shared,
@@ -101,21 +109,28 @@ final class AppState {
         return try await comicSearchStore.status()
     }
 
-    func refreshSearchIndexIfNeeded() async throws -> SearchStatus {
-        let status = try await comicSearchStore.status()
+    func refreshSearchIndexIfNeeded(force: Bool = false) async {
+        guard !isRefreshingSearchIndex else { return }
+        isRefreshingSearchIndex = true
+        searchIndexError = nil
+        defer { isRefreshingSearchIndex = false }
 
-        if status.comicCount > 0, let lastSyncAt = status.lastSyncAt,
-            Date().timeIntervalSince(lastSyncAt) < 12 * 60 * 60
-        {
-            return status
+        do {
+            let status = try await comicSearchStore.status()
+            searchStatus = status
+
+            if !force, let lastSyncAt = status.lastSyncAt,
+                Date().timeIntervalSince(lastSyncAt) < 12 * 60 * 60
+            {
+                return
+            }
+
+            let comics = try await ComicClient.shared.fetchAllComics()
+            searchStatus = try await comicSearchStore.replaceIndex(with: comics)
+        } catch {
+            // Preserve the last usable index when a background refresh fails.
+            searchIndexError = error.localizedDescription
         }
-
-        return try await refreshSearchIndex()
-    }
-
-    func refreshSearchIndex() async throws -> SearchStatus {
-        let comics = try await ComicClient.shared.fetchAllComics()
-        return try await comicSearchStore.replaceIndex(with: comics)
     }
 
     func searchComics(query: String, limit: Int? = nil) async throws -> [Comic] {

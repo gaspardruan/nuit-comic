@@ -47,6 +47,9 @@
 "search.end" = "到底了";
 "search.prompt" = "漫画名、简介、关键词、作者";
 "search.about" = "关于";
+"search.data.loading" = "正在准备搜索…";
+"search.data.loadFailed" = "搜索数据加载失败";
+"search.data.updateFailed" = "搜索数据更新失败，仍可搜索已保存的内容。";
 "search.history.title" = "近期搜索记录";
 "search.history.clear" = "清除";
 "search.history.confirmTitle" = "清除搜索历史记录";

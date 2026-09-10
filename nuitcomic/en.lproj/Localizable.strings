@@ -47,6 +47,9 @@
 "search.end" = "No more results";
 "search.prompt" = "Title, description, keyword, author";
 "search.about" = "About";
+"search.data.loading" = "Preparing search...";
+"search.data.loadFailed" = "Couldn't prepare search";
+"search.data.updateFailed" = "Couldn't update search. Showing saved data.";
 "search.history.title" = "Recent Searches";
 "search.history.clear" = "Clear";
 "search.history.confirmTitle" = "Clear search history";

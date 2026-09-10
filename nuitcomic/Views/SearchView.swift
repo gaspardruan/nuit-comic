@@ -9,7 +9,7 @@ import SwiftData
 import SwiftUI
 
 struct SearchView: View {
-    private static let debouceDuration = Duration.milliseconds(300)
+    private static let debounceDuration = Duration.milliseconds(300)
     private static let previewCount = 10
 
     @Environment(AppState.self) private var appState
@@ -32,6 +32,15 @@ struct SearchView: View {
         submitted ? results : Array(results.prefix(Self.previewCount))
     }
 
+    private var searchRequest: SearchRequest {
+        // Refresh an unchanged query when new search data becomes available.
+        SearchRequest(
+            query: query,
+            limit: searchFocused ? Self.previewCount + 1 : nil,
+            indexUpdatedAt: appState.searchStatus?.lastSyncAt
+        )
+    }
+
     var body: some View {
         NavigationStack {
             List {
@@ -51,10 +60,34 @@ struct SearchView: View {
             .searchable(text: $query, isPresented: $isPresented, prompt: "search.prompt")
             .searchFocused($searchFocused)
             .onSubmit(of: .search, handleSubmit)
-            .task(id: query) { await search() }
+            .task(id: searchRequest) { await search(searchRequest) }
             .overlay {
-                if !isPresented {
+                if !appState.hasSearchIndex {
+                    if let error = appState.searchIndexError {
+                        ContentUnavailableView {
+                            Label("search.data.loadFailed", systemImage: "exclamationmark.triangle")
+                        } description: {
+                            Text(error)
+                        } actions: {
+                            Button("common.retry", action: retrySearchIndex)
+                        }
+                    } else {
+                        ProgressView("search.data.loading")
+                    }
+                } else if !isPresented {
                     SearchHistoryList(onClick: handleHistoryClick)
+                }
+            }
+            .safeAreaInset(edge: .top) {
+                if appState.hasSearchIndex, appState.searchIndexError != nil {
+                    HStack {
+                        Text("search.data.updateFailed")
+                            .font(.footnote)
+                        Spacer()
+                        Button("common.retry", action: retrySearchIndex)
+                    }
+                    .padding()
+                    .background(.bar)
                 }
             }
             .alert(
@@ -80,30 +113,35 @@ struct SearchView: View {
         query = history
         isPresented = true
         searchFocused = false
-        Task { await search() }
     }
 
     private func handleSubmit() {
-        Task { await search() }
+        searchFocused = false
         addSearchHistory()
     }
 
-    private func search() async {
-        let trimmedQuery = query.trimmingCharacters(in: .whitespacesAndNewlines)
-        guard !trimmedQuery.isEmpty else {
+    private func retrySearchIndex() {
+        Task { await appState.refreshSearchIndexIfNeeded(force: true) }
+    }
+
+    private func search(_ request: SearchRequest) async {
+        let trimmedQuery = request.query.trimmingCharacters(in: .whitespacesAndNewlines)
+        guard !trimmedQuery.isEmpty, appState.hasSearchIndex else {
             results = []
             return
         }
 
         errMessage = nil
         do {
-            try await Task.sleep(for: Self.debouceDuration)
+            try await Task.sleep(for: Self.debounceDuration)
 
-            results = try await appState.searchComics(
-                query: trimmedQuery, limit: searchFocused ? Self.previewCount + 1 : nil)
+            let comics = try await appState.searchComics(query: trimmedQuery, limit: request.limit)
+            try Task.checkCancellation()
+            results = comics
         } catch is CancellationError {
             return
         } catch {
+            guard !Task.isCancelled else { return }
             results = []
             errMessage = error.localizedDescription
             showErrorAlert = true
@@ -132,9 +170,16 @@ struct SearchView: View {
     }
 }
 
+private struct SearchRequest: Equatable {
+    let query: String
+    let limit: Int?
+    let indexUpdatedAt: Date?
+}
+
 #Preview {
+    let appState = AppState.defaultState
     SearchView()
-        .environment(AppState.defaultState)
+        .environment(appState)
         .modelContainer(for: SearchHistory.self)
-        .task { _ = try? await AppState.defaultState.refreshSearchIndexIfNeeded() }
+        .task { await appState.refreshSearchIndexIfNeeded() }
 }

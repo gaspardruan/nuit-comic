@@ -28,14 +28,14 @@ struct nuitcomicApp: App {
                 .environment(appState)
                 .modelContainer(modelContainer)
                 .task {
-                    _ = try? await appState.refreshSearchIndexIfNeeded()
+                    await appState.refreshSearchIndexIfNeeded()
                     await appState.checkAppUpdateIfNeeded()
                 }
                 .onChange(of: scenePhase) { _, newPhase in
                     guard newPhase == .active else { return }
 
                     Task {
-                        _ = try? await appState.refreshSearchIndexIfNeeded()
+                        await appState.refreshSearchIndexIfNeeded()
                         await appState.checkAppUpdateIfNeeded()
                     }
                 }
