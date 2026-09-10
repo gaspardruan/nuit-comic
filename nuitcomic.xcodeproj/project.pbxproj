@@ -375,7 +375,7 @@
 			repositoryURL = "https://github.com/onevcat/Kingfisher";
 			requirement = {
 				kind = upToNextMajorVersion;
-				minimumVersion = 8.6.2;
+				minimumVersion = 8.12.0;
 			};
 		};
 		1B3A6E382F225D2500ADC172 /* XCRemoteSwiftPackageReference "Cache" */ = {
@@ -390,8 +390,8 @@
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/Alamofire/Alamofire.git";
 			requirement = {
-				kind = upToNextMajorVersion;
-				minimumVersion = 5.11.0;
+				kind = exactVersion;
+				version = 5.12.0;
 			};
 		};
 /* End XCRemoteSwiftPackageReference section */
