@@ -53,6 +53,8 @@ final class AppState {
         startChapterIndex: Int,
         transition: ReaderTransition? = nil
     ) {
+        guard !chapters.isEmpty else { return }
+
         storedComicStore.upsert(
             comic: comic,
             lastReadChapterIndex: startChapterIndex,

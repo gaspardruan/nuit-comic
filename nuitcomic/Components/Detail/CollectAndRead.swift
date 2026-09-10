@@ -57,6 +57,7 @@ struct CollectAndRead: View {
                     .frame(maxWidth: .infinity)
                     .padding(.vertical, 4)
             }
+            .disabled(chapters.isEmpty)
 
         }
         .buttonStyle(.bordered)
