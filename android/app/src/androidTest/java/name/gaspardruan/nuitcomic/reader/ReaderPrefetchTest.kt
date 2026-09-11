@@ -5,6 +5,8 @@ import android.graphics.Bitmap
 import android.graphics.Color
 import androidx.activity.ComponentActivity
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.BoxWithConstraints
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.width
 import androidx.compose.runtime.mutableStateOf
@@ -36,6 +38,7 @@ import java.util.UUID
 import java.util.concurrent.ConcurrentHashMap
 import java.util.concurrent.atomic.AtomicInteger
 import kotlin.math.ceil
+import kotlin.math.roundToInt
 import kotlinx.coroutines.runBlocking
 import name.gaspardruan.nuitcomic.R
 import name.gaspardruan.nuitcomic.ReadingSession
@@ -129,8 +132,6 @@ class ReaderPrefetchTest {
         val url = "https://example.invalid/${UUID.randomUUID()}.png"
         cachePage(context, url, height = 20_000)
         val info = runBlocking { images.info(url) }
-        val width = 400
-        val viewportHeight = 1800
         val session = ReadingSession(comic = Comic(11, "Long page predecode"),
             navigator = ReaderNavigator(listOf(Chapter(1, "Chapter", listOf(url)))), initialIndex = 0)
         val position = AtomicInteger(-1)
@@ -138,13 +139,16 @@ class ReaderPrefetchTest {
             compose.setContent {
                 NuitComicTheme {
                     val density = LocalDensity.current
-                    Box(Modifier.width(with(density) { width.toDp() }).height(with(density) { viewportHeight.toDp() })) {
+                    Box(Modifier.width(with(density) { 400.toDp() }).height(with(density) { 1800.toDp() })
+                        .testTag("reader-viewport")) {
                         ReaderScreen(session, images, position::set, {})
                     }
                 }
             }
+            val viewport = compose.onNodeWithTag("reader-viewport").fetchSemanticsNode().boundsInRoot
+            val width = viewport.width.roundToInt()
             val stripHeight = info.tileHeight(0, width).toFloat() * width / info.width
-            val nextStrip = ceil(viewportHeight / stripHeight).toInt()
+            val nextStrip = ceil(viewport.height / stripHeight).toInt()
             compose.waitUntil(5_000) { images.cachedTile(url, nextStrip, width) != null }
             assertEquals("Predecode must happen before the reader advances", 0, position.get())
             assertNull("The distant end of a long image must stay undecoded", images.cachedTile(url, info.tileCount(width) - 1, width))
@@ -162,7 +166,6 @@ class ReaderPrefetchTest {
         val images = ReaderImages(context, OkHttpClient())
         val urls = List(9) { "https://example.invalid/${UUID.randomUUID()}.png" }
         urls.forEach { cachePage(context, it) }
-        val width = 400
         val session = ReadingSession(comic = Comic(12, "Horizontal predecode"),
             navigator = ReaderNavigator(listOf(Chapter(1, "Chapter", urls))), initialIndex = 0)
         val position = AtomicInteger(-1)
@@ -170,12 +173,14 @@ class ReaderPrefetchTest {
             compose.setContent {
                 NuitComicTheme {
                     val density = LocalDensity.current
-                    Box(Modifier.width(with(density) { width.toDp() }).height(with(density) { 1000.toDp() })) {
+                    Box(Modifier.width(with(density) { 400.toDp() }).height(with(density) { 1000.toDp() })
+                        .testTag("reader-viewport")) {
                         ReaderScreen(session, images, position::set, {})
                     }
                 }
             }
             compose.onNodeWithContentDescription(context.getString(R.string.reader_vertical)).assertIsDisplayed()
+            val width = compose.onNodeWithTag("reader-viewport").fetchSemanticsNode().boundsInRoot.width.roundToInt()
             compose.waitUntil(5_000) {
                 images.cachedTile(urls[1], 0, width) != null && images.cachedTile(urls[2], 0, width) != null
             }
@@ -190,28 +195,34 @@ class ReaderPrefetchTest {
         val urls = List(2) { "https://example.invalid/${UUID.randomUUID()}.png" }
         cachePage(context, urls[0], color = Color.BLUE)
         cachePage(context, urls[1], color = Color.GREEN)
-        val width = 400
         val info = runBlocking { urls.map { images.info(it) } }
-        runBlocking { urls.forEachIndexed { index, url -> images.prefetchTile(url, info[index], 0, width) } }
         val selected = mutableStateOf<Int?>(null)
         try {
             compose.setContent {
                 NuitComicTheme {
-                    selected.value?.let { index ->
-                        val density = LocalDensity.current
-                        Box(Modifier.width(with(density) { width.toDp() }).testTag("prewarmed-page")) {
-                            PageTile(ReaderPage(0, index, urls[index]), null, 0, width, images, false, {})
+                    val density = LocalDensity.current
+                    BoxWithConstraints(Modifier.fillMaxSize().testTag("prewarmed-viewport")) {
+                        val width = minOf(400, with(density) { maxWidth.roundToPx() })
+                        selected.value?.let { index ->
+                            Box(Modifier.width(with(density) { width.toDp() }).testTag("prewarmed-page")) {
+                                PageTile(ReaderPage(0, index, urls[index]), null, 0, width, images, false, {})
+                            }
                         }
                     }
                 }
             }
+            val viewport = compose.onNodeWithTag("prewarmed-viewport").fetchSemanticsNode().boundsInRoot
+            val width = minOf(400, viewport.width.roundToInt())
+            runBlocking { urls.forEachIndexed { index, url -> images.prefetchTile(url, info[index], 0, width) } }
             compose.mainClock.autoAdvance = false
             listOf(Color.BLUE, Color.GREEN).forEachIndexed { index, color ->
                 compose.runOnUiThread { selected.value = index }
                 // Permit only the mounting frame, before an asynchronous cache lookup could recompose.
                 compose.mainClock.advanceTimeByFrame()
                 val tile = compose.onNodeWithTag("prewarmed-page").assertIsDisplayed()
-                assertEquals("Cached pixels must supply geometry before metadata arrives", 600f,
+                val expectedHeight = minOf(info[index].tileHeight(0, width).toFloat() * width / info[index].width,
+                    viewport.height)
+                assertEquals("Cached pixels must supply geometry before metadata arrives", expectedHeight,
                     tile.fetchSemanticsNode().boundsInRoot.height, 1f)
                 compose.onAllNodes(SemanticsMatcher.expectValue(
                     SemanticsProperties.ProgressBarRangeInfo, ProgressBarRangeInfo.Indeterminate,
@@ -239,12 +250,17 @@ class ReaderPrefetchTest {
             compose.setContent {
                 NuitComicTheme {
                     val density = LocalDensity.current
-                    Box(Modifier.width(with(density) { 400.toDp() }).height(with(density) { 1000.toDp() })) {
+                    Box(Modifier.width(with(density) { 400.toDp() }).height(with(density) { 1000.toDp() })
+                        .testTag("reader-viewport")) {
                         ReaderScreen(session, images, position::set, {})
                     }
                 }
             }
-            compose.waitUntil(5_000) { images.cachedInfo(urls[10]) != null }
+            val viewport = compose.onNodeWithTag("reader-viewport").fetchSemanticsNode().boundsInRoot
+            val pageHeight = 60f * viewport.width / 400
+            val lastVisiblePage = (ceil(viewport.height / pageHeight).toInt() - 1).coerceAtMost(urls.lastIndex)
+            assertTrue("The fixture must show pages beyond the initial seven-page window", lastVisiblePage >= 7)
+            compose.waitUntil(5_000) { images.cachedInfo(urls[lastVisiblePage]) != null }
             assertEquals("All visible short pages must load before scrolling", 0, position.get())
         } finally { images.clearMemory() }
     }

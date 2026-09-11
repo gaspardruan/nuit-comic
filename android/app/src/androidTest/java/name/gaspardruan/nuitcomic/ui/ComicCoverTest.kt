@@ -22,6 +22,7 @@ import androidx.compose.ui.unit.dp
 import androidx.test.core.app.ApplicationProvider
 import java.io.File
 import kotlin.math.abs
+import kotlin.math.ceil
 import name.gaspardruan.nuitcomic.data.Comic
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertTrue
@@ -62,6 +63,9 @@ class ComicCoverTest {
             }
             assertEquals(reservedBounds, cover.fetchSemanticsNode().boundsInRoot)
             val screenshot = cover.captureToImage()
+            File(context.cacheDir, "detail-cover-portrait.png").outputStream().use {
+                assertTrue(screenshot.asAndroidBitmap().compress(Bitmap.CompressFormat.PNG, 100, it))
+            }
             val pixels = screenshot.toPixelMap()
             val middle = pixels.height / 2
             val imageColumns = (0 until pixels.width).filter { colorsMatch(portrait, pixels[it, middle]) }
@@ -74,13 +78,20 @@ class ComicCoverTest {
             assertColor(background, pixels[(right + pixels.width) / 2, middle], "Right letterbox")
             assertColor(portrait, pixels[pixels.width / 2, 1], "Image top edge")
             assertColor(portrait, pixels[pixels.width / 2, pixels.height - 2], "Image bottom edge")
-            for (x in listOf(left + 1, right - 1)) {
-                for (y in listOf(1, pixels.height - 2)) {
-                    assertColor(background, pixels[x, y], "Rounded image corner at ($x, $y)")
+            val radius = with(compose.density) { 6.dp.toPx() }
+            // Stay clear of the antialiased arc, including when the radius is only six pixels.
+            val outsideInset = (radius * 0.05f).toInt()
+            val insideInset = ceil(radius / 2f).toInt()
+            for (rightCorner in listOf(false, true)) {
+                for (bottomCorner in listOf(false, true)) {
+                    val outsideX = if (rightCorner) right - outsideInset else left + outsideInset
+                    val outsideY = if (bottomCorner) pixels.height - 1 - outsideInset else outsideInset
+                    val insideX = if (rightCorner) right - insideInset else left + insideInset
+                    val insideY = if (bottomCorner) pixels.height - 1 - insideInset else insideInset
+                    val location = "${pixels.width}x${pixels.height}, radius=$radius"
+                    assertColor(background, pixels[outsideX, outsideY], "Outside rounded corner ($outsideX, $outsideY), $location")
+                    assertColor(portrait, pixels[insideX, insideY], "Inside rounded corner ($insideX, $insideY), $location")
                 }
-            }
-            File(context.cacheDir, "detail-cover-portrait.png").outputStream().use {
-                assertTrue(screenshot.asAndroidBitmap().compress(Bitmap.CompressFormat.PNG, 100, it))
             }
         } finally {
             file.delete()
