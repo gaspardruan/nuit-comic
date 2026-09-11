@@ -1,0 +1,301 @@
+{
+  "formatVersion": 1,
+  "database": {
+    "version": 1,
+    "identityHash": "8753f2ed39b4c1404ad89d29d59c1926",
+    "entities": [
+      {
+        "tableName": "library",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER NOT NULL, `isCollected` INTEGER NOT NULL, `lastReadChapterIndex` INTEGER NOT NULL, `lastReadPageIndex` INTEGER NOT NULL, `chapterCount` INTEGER NOT NULL, `updatedAt` INTEGER NOT NULL, `comic_id` INTEGER NOT NULL, `comic_title` TEXT NOT NULL, `comic_image` TEXT NOT NULL, `comic_cover` TEXT NOT NULL, `comic_description` TEXT NOT NULL, `comic_author` TEXT NOT NULL, `comic_keyword` TEXT NOT NULL, `comic_follow` INTEGER NOT NULL, `comic_view` INTEGER NOT NULL, `comic_isOver` INTEGER NOT NULL, `comic_score` REAL NOT NULL, `comic_updateTime` INTEGER NOT NULL, PRIMARY KEY(`id`))",
+        "fields": [
+          {
+            "fieldPath": "id",
+            "columnName": "id",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "isCollected",
+            "columnName": "isCollected",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "lastReadChapterIndex",
+            "columnName": "lastReadChapterIndex",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "lastReadPageIndex",
+            "columnName": "lastReadPageIndex",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "chapterCount",
+            "columnName": "chapterCount",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "updatedAt",
+            "columnName": "updatedAt",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "comic.id",
+            "columnName": "comic_id",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "comic.title",
+            "columnName": "comic_title",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "comic.image",
+            "columnName": "comic_image",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "comic.cover",
+            "columnName": "comic_cover",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "comic.description",
+            "columnName": "comic_description",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "comic.author",
+            "columnName": "comic_author",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "comic.keyword",
+            "columnName": "comic_keyword",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "comic.follow",
+            "columnName": "comic_follow",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "comic.view",
+            "columnName": "comic_view",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "comic.isOver",
+            "columnName": "comic_isOver",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "comic.score",
+            "columnName": "comic_score",
+            "affinity": "REAL",
+            "notNull": true
+          },
+          {
+            "fieldPath": "comic.updateTime",
+            "columnName": "comic_updateTime",
+            "affinity": "INTEGER",
+            "notNull": true
+          }
+        ],
+        "primaryKey": {
+          "autoGenerate": false,
+          "columnNames": [
+            "id"
+          ]
+        }
+      },
+      {
+        "tableName": "search_comics",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER NOT NULL, `comic_id` INTEGER NOT NULL, `comic_title` TEXT NOT NULL, `comic_image` TEXT NOT NULL, `comic_cover` TEXT NOT NULL, `comic_description` TEXT NOT NULL, `comic_author` TEXT NOT NULL, `comic_keyword` TEXT NOT NULL, `comic_follow` INTEGER NOT NULL, `comic_view` INTEGER NOT NULL, `comic_isOver` INTEGER NOT NULL, `comic_score` REAL NOT NULL, `comic_updateTime` INTEGER NOT NULL, PRIMARY KEY(`id`))",
+        "fields": [
+          {
+            "fieldPath": "id",
+            "columnName": "id",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "comic.id",
+            "columnName": "comic_id",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "comic.title",
+            "columnName": "comic_title",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "comic.image",
+            "columnName": "comic_image",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "comic.cover",
+            "columnName": "comic_cover",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "comic.description",
+            "columnName": "comic_description",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "comic.author",
+            "columnName": "comic_author",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "comic.keyword",
+            "columnName": "comic_keyword",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "comic.follow",
+            "columnName": "comic_follow",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "comic.view",
+            "columnName": "comic_view",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "comic.isOver",
+            "columnName": "comic_isOver",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "comic.score",
+            "columnName": "comic_score",
+            "affinity": "REAL",
+            "notNull": true
+          },
+          {
+            "fieldPath": "comic.updateTime",
+            "columnName": "comic_updateTime",
+            "affinity": "INTEGER",
+            "notNull": true
+          }
+        ],
+        "primaryKey": {
+          "autoGenerate": false,
+          "columnNames": [
+            "id"
+          ]
+        }
+      },
+      {
+        "tableName": "search_metadata",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER NOT NULL, `lastSyncAt` INTEGER NOT NULL, PRIMARY KEY(`id`))",
+        "fields": [
+          {
+            "fieldPath": "id",
+            "columnName": "id",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "lastSyncAt",
+            "columnName": "lastSyncAt",
+            "affinity": "INTEGER",
+            "notNull": true
+          }
+        ],
+        "primaryKey": {
+          "autoGenerate": false,
+          "columnNames": [
+            "id"
+          ]
+        }
+      },
+      {
+        "tableName": "search_history",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`query` TEXT NOT NULL COLLATE NOCASE, `updatedAt` INTEGER NOT NULL, PRIMARY KEY(`query`))",
+        "fields": [
+          {
+            "fieldPath": "query",
+            "columnName": "query",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "updatedAt",
+            "columnName": "updatedAt",
+            "affinity": "INTEGER",
+            "notNull": true
+          }
+        ],
+        "primaryKey": {
+          "autoGenerate": false,
+          "columnNames": [
+            "query"
+          ]
+        }
+      },
+      {
+        "tableName": "chapter_cache",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`comicID` INTEGER NOT NULL, `chapters` TEXT NOT NULL, `fetchedAt` INTEGER NOT NULL, PRIMARY KEY(`comicID`))",
+        "fields": [
+          {
+            "fieldPath": "comicID",
+            "columnName": "comicID",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "chapters",
+            "columnName": "chapters",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "fetchedAt",
+            "columnName": "fetchedAt",
+            "affinity": "INTEGER",
+            "notNull": true
+          }
+        ],
+        "primaryKey": {
+          "autoGenerate": false,
+          "columnNames": [
+            "comicID"
+          ]
+        }
+      }
+    ],
+    "setupQueries": [
+      "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '8753f2ed39b4c1404ad89d29d59c1926')"
+    ]
+  }
+}

@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="detail_directory">Directory</string>
+    <string name="detail_close">Close</string>
+    <string name="detail_no_readable_pages">No readable pages available.</string>
+</resources>

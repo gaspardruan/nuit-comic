@@ -1,12 +1,14 @@
 #  NuitComic
 
-An ios comic reader for the comics from the [YYMH](https://yymh.app/) website.
+A comic reader for the [YYMH](https://yymh.app/) website, available for iOS and Android.
 
 ## Supported Systems
 
-Supports iPhone running iOS 18.5 or later and iPad running iPadOS 18.5 or later.
+- iPhone: iOS 18.5 or later.
+- iPad: iPadOS 18.5 or later.
+- Android phones and tablets: Android 8.0 or later.
 
-## Screen Shots
+## iOS Screenshots
 
 > **Notice: Some images blur, because there is adult content.**
 

@@ -31,7 +31,7 @@ if git rev-parse --verify --quiet "refs/tags/$TAG" >/dev/null; then
 fi
 
 python3 scripts/version.py "$NEW_VERSION" >/dev/null
-git add -- nuitcomic.xcodeproj/project.pbxproj
+git add -- ios/nuitcomic.xcodeproj/project.pbxproj android/version.properties
 git commit -m "chore: release $TAG"
 git tag -a "$TAG" -m "Release $TAG"
 
@@ -41,4 +41,4 @@ if ! git push --atomic origin "HEAD:refs/heads/$BRANCH" "refs/tags/$TAG"; then
   printf "git push --atomic origin 'HEAD:refs/heads/%s' 'refs/tags/%s'\n" "$BRANCH" "$TAG" >&2
   exit 1
 fi
-printf '\nPushed %s. GitHub Actions will build the IPA and create a draft release.\n' "$TAG"
+printf '\nPushed %s. GitHub Actions will build the IPA and APK and create one draft release.\n' "$TAG"

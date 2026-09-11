@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="detail_directory">目录</string>
+    <string name="detail_close">关闭</string>
+    <string name="detail_no_readable_pages">暂无可阅读的页面。</string>
+</resources>

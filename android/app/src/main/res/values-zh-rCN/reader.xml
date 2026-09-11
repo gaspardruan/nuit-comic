@@ -1,0 +1,10 @@
+<resources>
+    <string name="reader_close">关闭阅读器</string>
+    <string name="reader_chapters">章节列表</string>
+    <string name="reader_vertical">纵向阅读</string>
+    <string name="reader_horizontal">横向阅读</string>
+    <string name="reader_position">%1$d / %2$d</string>
+    <string name="reader_end">已经到底了</string>
+    <string name="reader_retry">图片加载失败，点击重试</string>
+    <string name="reader_save_failed">阅读进度保存失败，点击重试</string>
+</resources>

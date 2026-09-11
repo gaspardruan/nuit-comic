@@ -1,0 +1,10 @@
+<resources>
+    <string name="reader_close">Close reader</string>
+    <string name="reader_chapters">Chapters</string>
+    <string name="reader_vertical">Read vertically</string>
+    <string name="reader_horizontal">Read horizontally</string>
+    <string name="reader_position">%1$d / %2$d</string>
+    <string name="reader_end">You have reached the end</string>
+    <string name="reader_retry">Image failed to load. Tap to retry</string>
+    <string name="reader_save_failed">Progress could not be saved. Tap to retry</string>
+</resources>

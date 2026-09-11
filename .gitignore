@@ -6,3 +6,12 @@ xcuserdata/
 *.xcuserstate
 
 /Docs/
+
+/android/.gradle/
+/android/.kotlin/
+/android/.idea/
+/android/local.properties
+*.jks
+*.keystore
+*.iml
+__pycache__/

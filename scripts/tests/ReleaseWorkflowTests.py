@@ -8,8 +8,9 @@ import subprocess
 import tempfile
 import unittest
 
-ROOT = Path(__file__).resolve().parents[1]
-PROJECT = "nuitcomic.xcodeproj/project.pbxproj"
+ROOT = Path(__file__).resolve().parents[2]
+PROJECT = "ios/nuitcomic.xcodeproj/project.pbxproj"
+ANDROID = "android/version.properties"
 
 
 class ReleaseWorkflowTests(unittest.TestCase):
@@ -30,16 +31,19 @@ class ReleaseWorkflowTests(unittest.TestCase):
             destination = self.repo / name
             destination.parent.mkdir(parents=True, exist_ok=True)
             shutil.copy2(ROOT / name, destination)
-        (self.repo / PROJECT).parent.mkdir()
+        (self.repo / PROJECT).parent.mkdir(parents=True)
         (self.repo / PROJECT).write_text(
             "MARKETING_VERSION = 1.2.0;\nCURRENT_PROJECT_VERSION = 1;\n" * 2
         )
+        (self.repo / ANDROID).parent.mkdir()
+        (self.repo / ANDROID).write_text("versionName=1.2.0\nversionCode=1\n")
         self.git("add", ".")
         self.git("commit", "-m", "Initial")
         self.git("remote", "add", "origin", str(self.remote))
         self.git("push", "-u", "origin", "main")
         self.initial = self.git("rev-parse", "HEAD")
         self.original = (self.repo / PROJECT).read_text()
+        self.original_android = (self.repo / ANDROID).read_text()
 
     def git(self, *args):
         return subprocess.check_output(
@@ -55,6 +59,7 @@ class ReleaseWorkflowTests(unittest.TestCase):
     def assert_unchanged(self):
         self.assertEqual(self.git("rev-parse", "HEAD"), self.initial)
         self.assertEqual((self.repo / PROJECT).read_text(), self.original)
+        self.assertEqual((self.repo / ANDROID).read_text(), self.original_android)
         self.assertEqual(self.git("--git-dir", str(self.remote), "rev-parse", "main"), self.initial)
 
     def test_release_only_commits_version_and_pushes_selected_tag(self):
@@ -65,7 +70,8 @@ class ReleaseWorkflowTests(unittest.TestCase):
         text = (self.repo / PROJECT).read_text()
         self.assertEqual(text.count("MARKETING_VERSION = 1.2.1;"), 2)
         self.assertEqual(text.count("CURRENT_PROJECT_VERSION = 2;"), 2)
-        self.assertEqual(self.git("diff", "--name-only", "HEAD^", "HEAD"), PROJECT)
+        self.assertEqual((self.repo / ANDROID).read_text(), "versionName=1.2.1\nversionCode=2\n")
+        self.assertEqual(set(self.git("diff", "--name-only", "HEAD^", "HEAD").splitlines()), {PROJECT, ANDROID})
         self.assertEqual(self.git("status", "--porcelain"), "")
         self.assertEqual(self.git("cat-file", "-t", "v1.2.1"), "tag")
         self.assertEqual(self.git("--git-dir", str(self.remote), "rev-parse", "v1.2.1^{}"), self.git("rev-parse", "HEAD"))
@@ -139,6 +145,49 @@ class ReleaseWorkflowTests(unittest.TestCase):
         self.assertNotEqual(result.returncode, 0)
         self.assertIn("same marketing version", result.stderr)
         self.assertEqual(project.read_text(), self.original.replace("1.2.0", "1.3.0", 1))
+        self.assertEqual((self.repo / ANDROID).read_text(), self.original_android)
+
+    def test_platform_version_mismatch_prevents_reads_and_updates(self):
+        for content, message in (
+            ("versionName=1.1.0\nversionCode=1\n", "same version"),
+            ("versionName=1.2.0\nversionCode=2\n", "same build number"),
+            ("versionName=1.2.0\nversionName=1.2.0\nversionCode=1\n", "same version"),
+            ("versionName=1.2.0\nversionCode=abc\n", "same build number"),
+        ):
+            for arguments in ([], ["1.3.0"]):
+                with self.subTest(content=content, arguments=arguments):
+                    (self.repo / ANDROID).write_text(content)
+                    result = subprocess.run(
+                        ["python3", "scripts/version.py", *arguments], cwd=self.repo,
+                        capture_output=True, text=True,
+                    )
+                    self.assertNotEqual(result.returncode, 0)
+                    self.assertIn(message, result.stderr)
+                    self.assertEqual((self.repo / PROJECT).read_text(), self.original)
+                    self.assertEqual((self.repo / ANDROID).read_text(), content)
+
+    def test_android_build_number_limit_prevents_partial_update(self):
+        project = self.original.replace("CURRENT_PROJECT_VERSION = 1;", "CURRENT_PROJECT_VERSION = 2100000000;")
+        android = "versionName=1.2.0\nversionCode=2100000000\n"
+        (self.repo / PROJECT).write_text(project)
+        (self.repo / ANDROID).write_text(android)
+        result = subprocess.run(
+            ["python3", "scripts/version.py", "1.3.0"], cwd=self.repo,
+            capture_output=True, text=True,
+        )
+        self.assertNotEqual(result.returncode, 0)
+        self.assertIn("versionCode limit", result.stderr)
+        self.assertEqual((self.repo / PROJECT).read_text(), project)
+        self.assertEqual((self.repo / ANDROID).read_text(), android)
+
+    def test_missing_android_version_does_not_modify_ios(self):
+        (self.repo / ANDROID).unlink()
+        result = subprocess.run(
+            ["python3", "scripts/version.py", "1.3.0"], cwd=self.repo,
+            capture_output=True, text=True,
+        )
+        self.assertNotEqual(result.returncode, 0)
+        self.assertEqual((self.repo / PROJECT).read_text(), self.original)
 
 
 if __name__ == "__main__":

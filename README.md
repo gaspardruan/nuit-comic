@@ -2,13 +2,15 @@
 
 [**中文**](https://github.com/gaspardruan/nuit-comic) | [**English**](https://github.com/gaspardruan/nuit-comic/blob/main/README_EN.md)
 
-一个用来看 [YYMH](https://yymh.app/) 网站上漫画的 IOS APP.
+一个用来阅读 [YYMH](https://yymh.app/) 网站漫画的应用，提供 iOS 和 Android 两个版本。
 
 ## 支持的系统
 
-支持运行 iOS 18.5 及以上版本的 iPhone，以及运行 iPadOS 18.5 及以上版本的 iPad。
+- iPhone：iOS 18.5 及以上。
+- iPad：iPadOS 18.5 及以上。
+- Android 手机和平板：Android 8.0 及以上。
 
-## 使用截图
+## iOS 使用截图
 
 > **注意：因为成人内容，所有有些图片模糊处理了.**
 
